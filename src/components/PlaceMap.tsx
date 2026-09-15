@@ -4,6 +4,13 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import type { Content } from '../types';
+import { loadMapViewport, saveMapViewport } from '../lib/explore';
+
+function textLabel(value: string): HTMLElement {
+  const element = document.createElement('span');
+  element.textContent = value;
+  return element;
+}
 
 const COLOR: Record<string, string> = {
   stay: '#0A6E6D',
@@ -133,16 +140,25 @@ export default function PlaceMap({
           interactive: false,
           keyboard: false,
         })
-          .bindTooltip(s.name, { permanent: true, direction: 'right', offset: [9, 0], className: 'jmap-spot' })
+          .bindTooltip(textLabel(s.name), { permanent: true, direction: 'right', offset: [9, 0], className: 'jmap-spot' })
           .addTo(lyr);
       }
     };
     refreshRef.current = refresh;
     map.on('zoomend moveend', refresh);
 
-    map.fitBounds(JEJU_BOUNDS, { padding: [10, 10] });
-    setTimeout(() => map.invalidateSize(), 120);
+    const viewport = loadMapViewport();
+    if (viewport) map.setView([viewport.lat, viewport.lng], viewport.zoom, { animate: false });
+    else map.fitBounds(JEJU_BOUNDS, { padding: [10, 10] });
+    const rememberView = () => {
+      const center = map.getCenter();
+      saveMapViewport({ lat: center.lat, lng: center.lng, zoom: map.getZoom() });
+    };
+    map.on('moveend zoomend', rememberView);
+    const resizeTimer = setTimeout(() => map.invalidateSize({ pan: false }), 120);
     return () => {
+      clearTimeout(resizeTimer);
+      rememberView();
       map.remove();
       mapRef.current = null;
     };
@@ -207,7 +223,7 @@ export default function PlaceMap({
     for (const s of mySpots) {
       const name = (s.name || '내 스팟').replace(/[<>&]/g, '');
       const m = L.marker([s.lat, s.lng], { icon: myIcon(), zIndexOffset: 2000 });
-      m.bindTooltip(name, { permanent: true, direction: 'right', offset: [10, -8], className: 'jmap-my' });
+      m.bindTooltip(textLabel(name), { permanent: true, direction: 'right', offset: [10, -8], className: 'jmap-my' });
       m.bindPopup(
         `<div style="font-weight:700;font-size:13px;margin-bottom:6px">★ ${name}</div>` +
           `<button data-id="${s.id}" class="jmap-del" style="background:#db2777;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">삭제</button>`,

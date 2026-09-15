@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
 import BottomNav from '../components/BottomNav';
-import { CONTENTS } from '../data/contents';
-import { loadLiveCache } from '../lib/live';
-import { loadSavedIds, saveSavedIds, loadProfile } from '../lib/storage';
+import { resolvePlaces } from '../lib/places';
+import { currentTrip } from '../lib/trip';
+import { loadSavedIds, saveSavedIds } from '../lib/storage';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
 import { nightsLabel } from './Onboarding';
 import { useToast } from '../components/Toast';
@@ -23,30 +23,31 @@ export default function MyTrip() {
   const [ids, setIds] = useState<number[]>(() => loadSavedIds());
   const [filter, setFilter] = useState<'all' | ContentType>('all');
   const [confirmClear, setConfirmClear] = useState(false);
-  const profile = loadProfile();
   const { show, node: toast } = useToast();
   const { t } = useI18n();
 
   async function share() {
     if (items.length === 0) return;
-    const nights = profile?.nights ?? 0;
-    const headcount = profile?.headcount ?? 1;
-    const url = shareUrl(ids, nights, headcount);
-    const text = buildTripText(items, nightsLabel(nights), headcount, url);
-    const res = await doShare('제주올인 추천 여행', text);
-    show(res === 'shared' ? '공유했어요' : res === 'copied' ? '여행 정보가 복사되었어요' : '공유에 실패했어요');
+    const trip = currentTrip();
+    const nights = trip.nights;
+    const headcount = trip.headcount;
+    try {
+      const url = shareUrl(trip);
+      const text = buildTripText(items, nightsLabel(nights), headcount, url);
+      const res = await doShare('제주올인 추천 여행', text);
+      if (res === 'cancelled') return;
+      show(res === 'shared' ? '공유했어요' : res === 'copied' ? '여행 정보가 복사되었어요' : '공유에 실패했어요');
+    } catch (error) { show(error instanceof Error ? error.message : '공유에 실패했어요'); }
   }
 
-  const items = useMemo(() => {
-    const pool = [...CONTENTS, ...(loadLiveCache() ?? [])];
-    return ids.map((id) => pool.find((c) => c.id === id)).filter(Boolean) as typeof CONTENTS;
-  }, [ids]);
+  const items = useMemo(() => resolvePlaces(ids), [ids]);
+  const missing = ids.filter(id => !items.some(p => p.id === id));
   const visible = items.filter((c) => filter === 'all' || c.contentType === filter);
 
   function remove(id: number) {
     setIds((prev) => {
       const next = prev.filter((x) => x !== id);
-      saveSavedIds(next);
+      if (!saveSavedIds(next)) { show('보관함 변경을 저장하지 못했어요.'); return prev; }
       return next;
     });
   }
@@ -57,8 +58,8 @@ export default function MyTrip() {
       setTimeout(() => setConfirmClear(false), 3000);
       return;
     }
+    if (!saveSavedIds([])) { show('보관함 변경을 저장하지 못했어요.'); return; }
     setIds([]);
-    saveSavedIds([]);
     setConfirmClear(false);
     show('담은 목록을 모두 비웠어요');
   }
@@ -69,6 +70,11 @@ export default function MyTrip() {
   return (
     <div className="min-h-screen bg-surface font-sans text-ink">
       <main className="max-w-md mx-auto pt-6 pb-28 px-4 flex flex-col gap-6">
+        {missing.length > 0 && <div role="alert" className="p-4 rounded-xl bg-amber-50 text-sm">
+          기존에 담은 {missing.length}곳은 정보가 없거나 샘플 목록에서 제외된 장소입니다.
+          <button className="block underline mt-2" onClick={() => { const next = ids.filter(id => !missing.includes(id)); if (saveSavedIds(next)) setIds(next); else show('보관함 변경을 저장하지 못했어요.'); }}>찾을 수 없는 장소를 보관함에서 제거</button>
+        </div>}
+
         <section className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -103,7 +109,7 @@ export default function MyTrip() {
               <Icon name="verified_user" className="text-[18px]" fill />
             </div>
             <p className="text-xs leading-snug">
-              취향에 맞게 담아둔 장소들입니다. <span className="text-primary font-medium">기기 내 안전하게 보관</span>되고 있어요.
+              취향에 맞게 담아둔 장소들입니다. <span className="text-primary font-medium">이 브라우저에 보관</span>되고 있어요.
             </p>
           </div>
         </section>
@@ -111,20 +117,20 @@ export default function MyTrip() {
         {/* 동선 만들기 — 상단 노출 CTA */}
         {items.length > 0 && (
           <button
-            onClick={() => items.length >= 2 && navigate('/planner')}
-            disabled={items.length < 2}
+            onClick={() => items.length >= 1 && navigate('/planner')}
+            disabled={items.length < 1}
             className={`flex items-center justify-between gap-2 rounded-2xl p-4 shadow-raised transition-all active:scale-[0.99] ${
-              items.length >= 2 ? 'bg-gradient-to-br from-primary-dark to-primary text-white' : 'bg-white text-muted'
+              items.length >= 1 ? 'bg-gradient-to-br from-primary-dark to-primary text-white' : 'bg-white text-muted'
             }`}
           >
             <div className="flex items-center gap-3 text-left">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${items.length >= 2 ? 'bg-white/20 text-white' : 'bg-surface-sub text-muted'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${items.length >= 1 ? 'bg-white/20 text-white' : 'bg-surface-sub text-muted'}`}>
                 <Icon name="alt_route" className="text-[22px]" />
               </div>
               <div>
                 <div className="font-bold text-[15px]">{t('mt.route')}</div>
-                <div className={`text-xs ${items.length >= 2 ? 'text-white/80' : 'text-muted'}`}>
-                  {items.length >= 2 ? `담은 ${items.length}곳으로 하루 동선 자동 생성` : '2곳 이상 담으면 동선을 만들 수 있어요'}
+                <div className={`text-xs ${items.length >= 1 ? 'text-white/80' : 'text-muted'}`}>
+                  {items.length >= 1 ? `담은 ${items.length}곳으로 날짜별 일정 만들기` : '장소를 담으면 일정을 만들 수 있어요'}
                 </div>
               </div>
             </div>

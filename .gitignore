@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.npm-cache/
+.backups/
+.test-output/
+output/verification/
+*.tsbuildinfo
+
+.deployment/
+output/deployment/

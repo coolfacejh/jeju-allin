@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
-import { CONTENTS } from '../data/contents';
-import { loadSavedIds, loadProfile, loadPlanNotes, savePlanNote } from '../lib/storage';
-import { orderRoute, chunkIntoDays, scheduleDay } from '../lib/planner';
+import ScheduleForm from '../components/ScheduleForm';
+import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
+import { currentTrip, makeTrip, saveTrip } from '../lib/trip';
+import { loadSavedIds } from '../lib/storage';
+import { scheduleDay } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
 import { kakaoRouteUrl } from '../lib/maps';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
@@ -20,6 +22,8 @@ const TYPE_META: Record<string, { emoji: string; label: string }> = {
 
 // 도착 시각(HH:MM) → 추천 시간대 라벨
 function band(hhmm: string): { label: string; icon: string } {
+  if (hhmm === '확인 필요') return { label: '시간 확인 필요', icon: 'help' };
+  if (hhmm.startsWith('+')) return { label: '다음 날로 초과', icon: 'warning' };
   const h = parseInt(hhmm.slice(0, 2), 10);
   if (h < 12) return { label: '오전', icon: 'wb_sunny' };
   if (h < 14) return { label: '점심', icon: 'lunch_dining' };
@@ -28,8 +32,8 @@ function band(hhmm: string): { label: string; icon: string } {
   return { label: '밤', icon: 'bedtime' };
 }
 
-function stayLabel(item: Content): string {
-  const m = item.avgStayMinutes ?? (item.contentType === 'food' ? 60 : 90);
+function stayLabel(item: Content, duration?: number): string {
+  const m = duration ?? item.avgStayMinutes ?? (item.contentType === 'food' ? 60 : 90);
   if (item.contentType === 'stay') return '체크인·휴식';
   if (m >= 60) return `약 ${Math.round((m / 60) * 10) / 10}시간 체류`;
   return `약 ${m}분 체류`;
@@ -49,41 +53,59 @@ function estimateCost(items: Content[]): number {
 
 export default function Planner() {
   const navigate = useNavigate();
-  const ids = loadSavedIds();
-  const profile = loadProfile();
-  const items = useMemo(() => CONTENTS.filter((c) => ids.includes(c.id)), [ids]);
-  const days = Math.max(1, (profile?.nights ?? 0) + 1);
-
-  // 날짜별 버킷(순서 포함)을 상태로 관리 → 수동 재정렬 가능
-  const [buckets, setBuckets] = useState<Content[][]>(() =>
-    chunkIntoDays(orderRoute(items), days),
-  );
+  const [initial] = useState(currentTrip);
+  const profile = { nights: initial.nights, headcount: initial.headcount };
+  const items = initial.places;
+  const days = initial.nights + 1;
+  const [buckets, setBuckets] = useState<Content[][]>(() => initial.days.map(d => d.map(id => initial.places.find(p => p.id === id)!)));
   const [day, setDay] = useState(0);
   const { show, node: toast } = useToast();
   const { t } = useI18n();
-  const [notes, setNotes] = useState<Record<string, string>>(() => loadPlanNotes());
+  const [notes, setNotes] = useState(initial.notes);
+  const [settings, setSettings] = useState(() => initial.schedule ?? { ...DEFAULT_SCHEDULE, visits: {} });
+  function setVisit(id: number, patch: VisitWindow) {
+    setSettings(previous => ({ ...previous, visits: { ...previous.visits, [id]: { ...previous.visits[id], ...patch } } }));
+  }
+  const [saveFailed, setSaveFailed] = useState(false);
+  const missing = loadSavedIds().filter(id => !items.some(p => p.id === id)).length;
+  useEffect(() => {
+    setSaveFailed(!saveTrip(makeTrip(buckets, profile.nights, profile.headcount, notes, settings)));
+  }, [buckets, notes, settings, profile.nights, profile.headcount]);
+
+  function moveDay(id: number, target: number) {
+    setBuckets(previous => {
+      const place = previous.flat().find(p => p.id === id);
+      if (!place) return previous;
+      const next = previous.map(d => d.filter(p => p.id !== id));
+      next[target].push(place);
+      return next;
+    });
+  }
 
   async function share() {
     const ordered = buckets.flat();
     if (ordered.length === 0) return;
     const nights = profile?.nights ?? 0;
     const headcount = profile?.headcount ?? 1;
-    const url = shareUrl(ordered.map((c) => c.id), nights, headcount);
-    const text = buildTripText(ordered, nightsLabel(nights), headcount, url);
-    const res = await doShare('제주올인 추천 동선', text);
-    show(res === 'shared' ? '공유했어요' : res === 'copied' ? '동선 정보가 복사되었어요' : '공유에 실패했어요');
+    try {
+      const url = shareUrl(makeTrip(buckets, nights, headcount, notes, settings));
+      const text = buildTripText(ordered, nightsLabel(nights), headcount, url);
+      const res = await doShare('제주올인 추천 동선', text);
+      if (res === 'cancelled') return;
+      show(res === 'shared' ? '공유했어요' : res === 'copied' ? '동선 정보가 복사되었어요' : '공유에 실패했어요');
+    } catch (error) { show(error instanceof Error ? error.message : '공유에 실패했어요'); }
   }
 
   const dayItems = buckets[day] ?? [];
-  const plan = useMemo(() => scheduleDay(dayItems), [dayItems]);
+  const plan = useMemo(() => scheduleDay(dayItems, settings, day, initial.nights), [dayItems, settings, day, initial.nights]);
   const totalH = Math.floor(plan.totalTravelMin / 60);
   const totalM = plan.totalTravelMin % 60;
 
   function spokenRoute(): string {
     const head = days > 1 ? `${day + 1}일차 동선.` : '오늘의 동선.';
     const lines = plan.stops.map((s, i) => {
-      const leg = s.legFromPrev ? ` 이동 약 ${s.legFromPrev.minutes}분.` : '';
-      return `${leg} ${i + 1}. ${s.item.name}, ${s.item.region}, ${band(s.arrive).label}, ${stayLabel(s.item)}.`;
+      const leg = s.legFromPrev ? s.legFromPrev.minutes === null ? ' 이동시간 확인 필요.' : ` 이동 약 ${s.legFromPrev.minutes}분.` : '';
+      return `${leg} ${i + 1}. ${s.item.name}, ${s.item.region}, ${band(s.arrive).label}, ${stayLabel(s.item, settings.visits[s.item.id]?.durationMin)}.`;
     });
     return head + lines.join('');
   }
@@ -114,7 +136,7 @@ export default function Planner() {
             <span className="text-[10px] font-bold uppercase tracking-wider text-accent">Smart Route</span>
             <span className="font-bold text-[17px]">{t('pl.title')}</span>
           </div>
-          {items.length >= 2 && (
+          {items.length >= 1 && (
             <div className="ml-auto flex items-center gap-2">
               <SpeakButton getText={spokenRoute} />
               <button
@@ -130,15 +152,18 @@ export default function Planner() {
       </header>
 
       <main className="max-w-md mx-auto pt-16 pb-16 px-4 flex flex-col gap-5">
-        {items.length < 2 ? (
+        {saveFailed && <p role="alert" className="mt-4 text-sm text-red-700">일정을 저장하지 못했어요. 입력값 범위와 브라우저 저장 공간을 확인해 주세요.</p>}
+        {missing > 0 && <p role="alert" className="mt-4 text-sm text-amber-800">기존에 담은 {missing}곳의 정보를 찾을 수 없어요. 보관함에서 확인해 주세요.</p>}
+        {items.length < 1 ? (
           <EmptyState onGo={() => navigate('/home')} />
         ) : (
           <>
+            <ScheduleForm value={settings} onChange={setSettings} />
             {/* 요약 */}
             <section className="mt-4 rounded-2xl bg-gradient-to-br from-primary-dark to-primary text-white p-5 shadow-raised">
               <div className="flex items-center gap-1.5 mb-2">
                 <Icon name="auto_awesome" className="text-[18px]" />
-                <span className="text-xs font-bold uppercase tracking-wide">AI 추천 동선</span>
+                <span className="text-xs font-bold uppercase tracking-wide">거리 기준 일정 초안</span>
               </div>
               <p className="text-sm text-white/85 mb-1">
                 담아둔 {items.length}곳을 {profile ? nightsLabel(profile.nights ?? 0) : ''} 일정에 맞춰 배치했어요.
@@ -148,10 +173,11 @@ export default function Planner() {
                   {nightsLabel(profile.nights ?? 0)} · {profile.headcount ?? 2}명 기준
                 </p>
               )}
+              <p className="text-xs text-white/85 mb-3">입력한 방문 시간과 여유시간을 반영합니다. 이동은 직선거리 추정이며 실제 도로·교통상황·영업시간은 자동 조회하지 않습니다.</p>
               <div className="flex gap-2">
                 <Stat icon="pin_drop" value={`${dayItems.length}곳`} label={days > 1 ? `${day + 1}일차` : '방문지'} />
-                <Stat icon="alt_route" value={`${plan.totalKm}km`} label="총 이동" />
-                <Stat icon="schedule" value={totalH > 0 ? `${totalH}시간 ${totalM}분` : `${totalM}분`} label="이동시간" />
+                <Stat icon="alt_route" value={`${plan.totalKm}km`} label="확인된 직선거리 합" />
+                <Stat icon="schedule" value={!plan.complete ? '확인 필요' : totalH > 0 ? `${totalH}시간 ${totalM}분` : `${totalM}분`} label="추정 이동시간" />
               </div>
               <div className="mt-2 flex items-center gap-1.5 text-xs text-white/85">
                 <Icon name="payments" className="text-[15px]" />
@@ -160,6 +186,11 @@ export default function Planner() {
               </div>
             </section>
 
+            <p className="text-sm text-primary font-bold">{dateForDay(settings.startDate, day) || `${day + 1}일차`} · 일정 종료 한도 {plan.deadline}</p>
+            {plan.warnings.length > 0 && <section role="alert" className="p-4 bg-amber-50 text-amber-900 rounded-xl text-sm">
+              <h2 className="font-bold mb-2">일정 조정이 필요해요</h2>
+              <ul className="list-disc pl-4 space-y-2">{plan.warnings.map((warning, i) => <li key={i}>{warning}</li>)}</ul>
+            </section>}
             {/* 날짜 탭 */}
             {days > 1 && (
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
@@ -171,7 +202,7 @@ export default function Planner() {
                       day === i ? 'bg-primary text-white shadow-sm' : 'bg-white text-muted'
                     }`}
                   >
-                    {i + 1}일차 <span className="opacity-70">· {b.length}곳</span>
+                    {i + 1}일차 {dateForDay(settings.startDate, i).slice(5)} <span className="opacity-70">· {b.length}곳</span>
                   </button>
                 ))}
               </div>
@@ -191,7 +222,7 @@ export default function Planner() {
                       <div className="flex items-center gap-2 pl-6 py-1 text-muted">
                         <Icon name="directions_car" className="text-[16px]" />
                         <span className="text-[11px]">
-                          이동 약 {s.legFromPrev.minutes}분 · {s.legFromPrev.km}km
+                          {s.legFromPrev.minutes === null ? '이동시간 확인 필요' : `이동 약 ${s.legFromPrev.minutes}분`} · {s.legFromPrev.km === null ? '좌표 없음' : `직선 ${s.legFromPrev.km}km`}
                         </span>
                       </div>
                     )}
@@ -212,9 +243,9 @@ export default function Planner() {
                             <span className="text-[11px] px-2 py-0.5 rounded-full bg-surface-sub text-muted">
                               {TYPE_META[s.item.contentType].emoji} {TYPE_META[s.item.contentType].label}
                             </span>
-                            <span className="text-[11px] text-muted">· {stayLabel(s.item)}</span>
+                            <span className="text-[11px] text-muted">· {stayLabel(s.item, settings.visits[s.item.id]?.durationMin)}</span>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 shrink-0">
                             {/* 순서 조정 */}
                             <button
                               onClick={() => move(i, -1)}
@@ -222,7 +253,7 @@ export default function Planner() {
                               className="w-7 h-7 rounded-full bg-surface-sub text-sub flex items-center justify-center active:scale-90 disabled:opacity-30"
                               aria-label="위로"
                             >
-                              <Icon name="keyboard_arrow_up" className="text-[18px]" />
+                              <span aria-hidden="true">↑</span>
                             </button>
                             <button
                               onClick={() => move(i, 1)}
@@ -230,13 +261,13 @@ export default function Planner() {
                               className="w-7 h-7 rounded-full bg-surface-sub text-sub flex items-center justify-center active:scale-90 disabled:opacity-30"
                               aria-label="아래로"
                             >
-                              <Icon name="keyboard_arrow_down" className="text-[18px]" />
+                              <span aria-hidden="true">↓</span>
                             </button>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center text-2xl shrink-0">
-                            {s.item.image}
+                            {/^https?:/.test(s.item.image) ? <img src={s.item.image} alt={s.item.name} className="w-full h-full object-cover rounded-xl" /> : s.item.image}
                           </div>
                           <div className="min-w-0">
                             <h3 className="font-bold text-[15px] truncate">{s.item.name}</h3>
@@ -258,12 +289,29 @@ export default function Planner() {
                             토닥이 산책 {s.item.walkGuide.durationMin}분 포함
                           </div>
                         )}
+                        {days > 1 && <label className="flex items-center gap-2 text-xs mt-3">방문 날짜
+                          <select aria-label={`${s.item.name} 방문 날짜`} value={day} onChange={e => moveDay(s.item.id, Number(e.target.value))} className="p-2 rounded-lg border border-line">
+                            {buckets.map((_, index) => <option key={index} value={index}>{index + 1}일차</option>)}
+                          </select>
+                        </label>}
+                        <p className="text-xs text-primary font-bold mt-3">예상 방문 {s.arrive} ~ {s.depart}</p>
+                        <details className="mt-2 text-xs">
+                          <summary className="cursor-pointer text-primary py-2">직접 확인한 방문 시간 · 체류시간</summary>
+                          <div className="grid grid-cols-2 gap-2 mt-2">
+                            <label>방문 가능 시작<input aria-label={`${s.item.name} 방문 가능 시작`} type="time" value={settings.visits[s.item.id]?.open ?? ''} onChange={e => setVisit(s.item.id, { open: e.target.value })} className="w-full min-w-0 p-2 border border-line rounded-lg" /></label>
+                            <label>방문 가능 마감<input aria-label={`${s.item.name} 방문 가능 마감`} type="time" value={settings.visits[s.item.id]?.close ?? ''} onChange={e => setVisit(s.item.id, { close: e.target.value })} className="w-full min-w-0 p-2 border border-line rounded-lg" /></label>
+                            <label className="col-span-2">체류시간(분)<input aria-label={`${s.item.name} 체류시간`} type="number" min="1" max="1440" placeholder="기본값 사용" value={settings.visits[s.item.id]?.durationMin ?? ''} onChange={e => setVisit(s.item.id, { durationMin: e.target.value === '' ? undefined : Number(e.target.value) })} className="w-full p-2 border border-line rounded-lg" /></label>
+                          </div>
+                          <p className="text-muted mt-2">운영시간·휴무·예약 여부를 직접 확인해 입력해 주세요. 입력하지 않은 장소의 영업 여부는 판단하지 않습니다.</p>
+                        </details>
                         <input
+                          aria-label={`${s.item.name} 메모`}
+                          maxLength={500}
                           value={notes[s.item.id] ?? ''}
                           onChange={(e) => {
                             const v = e.target.value;
                             setNotes((n) => ({ ...n, [s.item.id]: v }));
-                            savePlanNote(s.item.id, v);
+
                           }}
                           placeholder="＋ 메모 (예약시간, 준비물…)"
                           className="w-full mt-2 text-xs px-2.5 py-2 rounded-lg bg-surface border border-line outline-none focus:border-primary"
@@ -330,7 +378,7 @@ function EmptyState({ onGo }: { onGo: () => void }) {
       <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center text-primary">
         <Icon name="alt_route" className="text-[32px]" />
       </div>
-      <h3 className="font-bold text-[17px]">동선을 만들려면 2곳 이상 담아주세요</h3>
+      <h3 className="font-bold text-[17px]">동선을 만들려면 장소를 담아주세요</h3>
       <p className="text-xs text-muted max-w-[260px]">
         큐레이션에서 마음에 드는 장소를 담으면 이동 순서를 자동으로 짜드려요.
       </p>

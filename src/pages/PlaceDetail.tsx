@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import Icon from '../components/Icon';
-import { CONTENTS } from '../data/contents';
+import { loadPlaces, rememberPlaces } from '../lib/places';
 import { calculateCuration } from '../lib/curate';
-import { loadLiveCache, fetchAccessDetail, type AccessDetail } from '../lib/live';
+import { fetchAccessDetail, type AccessDetail } from '../lib/live';
 import { loadProfile, loadSavedIds, saveSavedIds, loadWalkNotes, saveWalkNote } from '../lib/storage';
 import { kakaoMapUrl, kakaoRouteUrl, naverMapUrl, googleMapUrl } from '../lib/maps';
 import { useI18n } from '../i18n';
@@ -16,7 +16,7 @@ export default function PlaceDetail() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const placeId = Number(id);
-  const base = CONTENTS.find((c) => c.id === placeId) ?? (loadLiveCache() ?? []).find((c) => c.id === placeId);
+  const base = loadPlaces().find((c) => c.id === placeId);
   const profile = loadProfile();
 
   const curated = useMemo(() => {
@@ -32,6 +32,7 @@ export default function PlaceDetail() {
   const [access, setAccess] = useState<AccessDetail | null>(null);
   useEffect(() => {
     let alive = true;
+    if (base?.provenance?.source !== 'tourapi') return;
     fetchAccessDetail(placeId).then((d) => { if (alive) setAccess(d); });
     return () => { alive = false; };
   }, [placeId]);
@@ -39,9 +40,11 @@ export default function PlaceDetail() {
   if (!base) return <Navigate to="/home" replace />;
 
   function toggleSave() {
+    if (base && !rememberPlaces([base])) { window.alert('장소 저장에 실패했어요. 저장 공간을 확인해 주세요.'); return; }
     const ids = loadSavedIds();
     const next = ids.includes(placeId) ? ids.filter((x) => x !== placeId) : [...ids, placeId];
-    saveSavedIds(next);
+    if (next.length > 100) { window.alert('한 여행에는 최대 100곳까지 담을 수 있어요.'); return; }
+    if (!saveSavedIds(next)) { window.alert('저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.'); return; }
     setSaved(next.includes(placeId));
   }
 
@@ -96,7 +99,7 @@ export default function PlaceDetail() {
         {curated && (
           <div className="absolute bottom-3 left-4 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-md">
             <Icon name="spa" className="text-[15px]" fill />
-            {curated.matchScore}% {curated.matchGrade}
+            {curated.matchScore}점 {curated.matchGrade}
           </div>
         )}
       </div>
@@ -140,11 +143,14 @@ export default function PlaceDetail() {
           </div>
           {base.rating === 0 && (
             <p className="text-[11px] text-muted flex items-center gap-1 mt-1">
-              <Icon name="info" className="text-[13px]" /> 정보 출처: 한국관광공사 · 방문 전 운영시간·시설 확인 권장
+              <Icon name="info" className="text-[13px]" /> {base.provenance?.source === 'tourapi' ? '출처: 한국관광공사 관광정보' : base.provenance?.source === 'shared' ? '출처: 공유자가 전달한 장소' : '출처: 앱 초기 수록 정보 · 현장 미검증'}
             </p>
           )}
         </section>
 
+        <p className="text-xs text-muted px-2">운영시간·요금·편의시설은 방문 전 확인이 필요합니다.
+          {base.provenance?.retrievedAt && ` 정보 수신: ${new Date(base.provenance.retrievedAt).toLocaleDateString('ko-KR')} (현장 확인일 아님)`}
+        </p>
         {/* 무장애 정보 (한국관광공사 무장애여행) */}
         {access?.has &&
           (() => {

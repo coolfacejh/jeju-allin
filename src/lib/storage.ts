@@ -117,17 +117,19 @@ export function saveProfile(profile: UserProfile): void {
 export function loadSavedIds(): number[] {
   try {
     const raw = localStorage.getItem(SAVED_KEY);
-    return raw ? (JSON.parse(raw) as number[]) : [];
+    const value: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(value) ? [...new Set(value.filter((id): id is number => Number.isSafeInteger(id) && id > 0))] : [];
   } catch {
     return [];
   }
 }
 
-export function saveSavedIds(ids: number[]): void {
+export function saveSavedIds(ids: number[]): boolean {
   try {
     localStorage.setItem(SAVED_KEY, JSON.stringify(ids));
+    return true;
   } catch {
-    /* storage unavailable */
+    return false;
   }
 }
 

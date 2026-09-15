@@ -1,17 +1,16 @@
 import type { Content } from '../types';
+import { DEFAULT_SCHEDULE, minutes, type ScheduleSettings } from './schedule';
 
 // P0: 담은 장소로 하루 동선 자동 생성 (MVP 단순안)
 // - 좌표(위경도) 기반 최근접(nearest-neighbor) 순서
-// - 이동시간은 직선거리 × 평균 렌터카 속도(40km/h)로 근사
+// - 자동차(40km/h)·도보(4km/h)는 직선거리 / 속도로 추정
 // - 숙소(stay)가 있으면 출발 기준점으로 사용
 // 2차에서 카카오/TMAP 경로 API로 실제 시간 대체 예정.
 
-const AVG_SPEED_KMH = 40;
-const START_HOUR = 10; // 10:00 출발
 
 export interface RouteLeg {
-  km: number;
-  minutes: number;
+  km: number | null;
+  minutes: number | null;
 }
 
 export interface RouteStop {
@@ -25,10 +24,13 @@ export interface RoutePlan {
   stops: RouteStop[];
   totalKm: number;
   totalTravelMin: number;
+  complete: boolean;
+  warnings: string[];
+  deadline: string;
 }
 
 function haversineKm(a: Content, b: Content): number {
-  if (a.lat == null || a.lng == null || b.lat == null || b.lng == null) return 0;
+  if (a.lat == null || a.lng == null || b.lat == null || b.lng == null) return Infinity;
   const R = 6371;
   const dLat = ((b.lat - a.lat) * Math.PI) / 180;
   const dLng = ((b.lng - a.lng) * Math.PI) / 180;
@@ -40,10 +42,11 @@ function haversineKm(a: Content, b: Content): number {
 }
 
 function fmt(totalMinutes: number): string {
-  const m = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
-  const hh = Math.floor(m / 60);
-  const mm = Math.round(m % 60);
-  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+  const rounded = Math.round(totalMinutes);
+  const m = ((rounded % 1440) + 1440) % 1440;
+  const day = Math.floor(rounded / 1440);
+  const prefix = day > 0 ? `+${day}일 ` : day < 0 ? '전날 ' : '';
+  return `${prefix}${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 }
 
 function defaultStay(item: Content): number {
@@ -90,37 +93,50 @@ export function chunkIntoDays(ordered: Content[], days: number): Content[][] {
   return buckets;
 }
 
-// 주어진 순서(재정렬 반영)로 타임라인 스케줄만 계산
-export function scheduleDay(ordered: Content[]): RoutePlan {
+// This estimates elapsed time, never actual road/transit travel or live opening hours.
+export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEFAULT_SCHEDULE, day = 0, nights = 0): RoutePlan {
+  const warnings: string[] = [];
   const stops: RouteStop[] = [];
-  let clock = START_HOUR * 60;
-  let totalKm = 0;
-  let totalTravelMin = 0;
-
+  const baseStart = minutes(settings.dayStart) ?? 600;
+  const baseEnd = minutes(settings.dayEnd) ?? 1080;
+  const arrival = day === 0 ? minutes(settings.arrival) : null;
+  const departure = day === nights ? minutes(settings.departure) : null;
+  let clock: number | null = Math.max(baseStart, arrival === null ? 0 : arrival + settings.arrivalBuffer);
+  const deadline = Math.min(baseEnd, departure === null ? 1440 : departure - settings.departureBuffer);
+  if (deadline <= clock) warnings.push('여행 가능한 시간이 없습니다. 도착·출발 시각과 확보시간을 조정해 주세요.');
+  let totalKm = 0, totalTravelMin = 0;
+  let complete = true;
   ordered.forEach((item, i) => {
     let leg: RouteLeg | null = null;
     if (i > 0) {
-      const km = haversineKm(ordered[i - 1], item);
-      const minutes = Math.round((km / AVG_SPEED_KMH) * 60);
-      leg = { km: Math.round(km * 10) / 10, minutes };
-      clock += minutes;
-      totalKm += km;
-      totalTravelMin += minutes;
+      const previous = ordered[i - 1];
+      const km = haversineKm(previous, item);
+      const ferry = /우도|마라도|가파도/.test(previous.name + item.name);
+      const unknown = !Number.isFinite(km) || ferry || settings.transport === 'transit';
+      const travel = unknown ? null : Math.ceil(km / (settings.transport === 'walk' ? 4 : 40) * 60);
+      leg = { km: Number.isFinite(km) ? Math.round(km * 10) / 10 : null, minutes: travel };
+      if (Number.isFinite(km)) totalKm += km;
+      if (travel === null) {
+        complete = false; clock = null;
+        warnings.push(`${previous.name} → ${item.name}: ${!Number.isFinite(km) ? '좌표 정보 없음' : ferry ? '배편 확인 필요' : '대중교통 시간표 확인 필요'}. 이후 도착 시각을 계산하지 않습니다.`);
+      } else {
+        totalTravelMin += travel;
+        if (clock !== null) clock += travel;
+      }
     }
+    const visit = settings.visits[item.id] ?? {};
+    const open = minutes(visit.open), close = minutes(visit.close);
+    if (open !== null && close !== null && close <= open) warnings.push(`${item.name}: 방문 가능 마감은 시작보다 늦어야 합니다. 자정을 넘는 영업은 별도 확인해 주세요.`);
+    if (clock !== null && open !== null) clock = Math.max(clock, open);
     const arrive = clock;
-    const stay = defaultStay(item);
-    clock += stay;
-    stops.push({ item, arrive: fmt(arrive), depart: fmt(clock), legFromPrev: leg });
+    if (clock !== null) clock += visit.durationMin ?? defaultStay(item);
+    if (clock !== null && close !== null && clock > close) warnings.push(`${item.name}: 입력한 방문 가능 마감 ${visit.close}를 넘습니다. 방문 순서나 체류시간을 바꿔 주세요.`);
+    if (clock !== null && clock > deadline) warnings.push(`${item.name}: 일정 종료 한도 ${fmt(deadline)}를 넘습니다. 다른 날로 옮기거나 체류시간을 줄여 주세요.`);
+    stops.push({ item, arrive: arrive === null ? '확인 필요' : fmt(arrive), depart: clock === null ? '확인 필요' : fmt(clock), legFromPrev: leg });
   });
-
-  return {
-    stops,
-    totalKm: Math.round(totalKm * 10) / 10,
-    totalTravelMin,
-  };
+  return { stops, totalKm: Math.round(totalKm * 10) / 10, totalTravelMin, complete, warnings, deadline: fmt(deadline) };
 }
 
-// 단일 일정: 최근접 정렬 + 스케줄 (하위 호환)
 export function planRoute(items: Content[]): RoutePlan {
   return scheduleDay(orderRoute(items));
 }

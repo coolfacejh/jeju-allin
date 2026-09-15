@@ -49,29 +49,23 @@ export function calculateCuration(
       // 1. 여행 유형 일치 (+40)
       if (item.tags.travelType.includes(profile.travelType)) {
         score += 40;
-        reasons.push(`${TRAVEL_TYPE_NAME[profile.travelType]} 여행 무드에 완벽 부합`);
+        reasons.push(`${TRAVEL_TYPE_NAME[profile.travelType]} 여행 유형 태그 일치`);
       }
 
       // 2. 동행 일치 (+25)
       if (item.tags.companion.includes(profile.companion)) {
         score += 25;
-        reasons.push(`${COMPANION_NAME[profile.companion]} 맞춤 편의 환경`);
+        reasons.push(`${COMPANION_NAME[profile.companion]} 동행 유형 태그 일치`);
       }
 
       // 3. 특별 케어 (+15 각)
       if (profile.hasChild && item.tags.hasChild) {
         score += 15;
-        const ageNote =
-          profile.childAge === 'infant'
-            ? '영유아(0~3세) 유모차·수유 편의'
-            : profile.childAge === 'elementary'
-              ? '초등 아이가 뛰어놀기 좋은 체험·안전 공간'
-              : '미취학(4~7세) 키즈존·안전 시설 구비';
-        reasons.push(ageNote);
+        reasons.push('아이 동반 관심 태그 일치 · 편의시설은 별도 확인');
       }
       if (profile.hasSenior && item.tags.hasSenior) {
         score += 15;
-        reasons.push('완만한 보행로 및 시니어 안락 동선');
+        reasons.push('어르신 동반 관심 태그 일치 · 이동 편의는 별도 확인');
       }
 
       // 4. 관심 테마 교집합 (개당 +10, 최대 +30)

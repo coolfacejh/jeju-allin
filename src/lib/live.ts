@@ -16,7 +16,7 @@ export function loadLiveCache(): Content[] | null {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const c = JSON.parse(raw) as Cache;
-    if (Date.now() - c.t < TTL && Array.isArray(c.items) && c.items.length) return c.items;
+    if (Date.now() - c.t < TTL && Array.isArray(c.items) && c.items.length) return c.items.map(it => ({ ...it, rating: 0, reviewCount: 0, reviews: undefined, provenance: { source: 'tourapi' as const, retrievedAt: new Date(c.t).toISOString() } }));
   } catch {
     /* ignore */
   }
@@ -36,6 +36,8 @@ export async function fetchLivePlaces(opts?: { pages?: number; force?: boolean }
   const json = await res.json();
   const items = ((json?.items ?? []) as Content[]).map((it) => ({
     ...it,
+    rating: 0, reviewCount: 0, reviews: undefined,
+    provenance: { source: 'tourapi' as const, retrievedAt: new Date().toISOString() },
     image: typeof it.image === 'string' ? it.image.replace(/^http:\/\//, 'https://') : it.image,
   }));
   try {

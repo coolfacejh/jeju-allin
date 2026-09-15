@@ -17,6 +17,11 @@ body {
 }
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  flex-shrink: 0;
+  pointer-events: none;
   font-weight: normal;
   font-style: normal;
   line-height: 1;

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
 import BottomNav from '../components/BottomNav';
 import PlaceMap from '../components/PlaceMap';
-import { CONTENTS } from '../data/contents';
+import { loadExplore, saveExplore } from '../lib/explore';
+import { loadPlaces, rememberPlaces } from '../lib/places';
 import { calculateCuration, TRAVEL_TYPE_NAME, THEME_NAME } from '../lib/curate';
 import { nightsLabel } from './Onboarding';
 import { loadProfile, loadSavedIds, saveSavedIds, loadWish, saveWish, loadReasonsOn, logEvent, loadMySpots, saveMySpots, type MySpot } from '../lib/storage';
@@ -38,16 +39,17 @@ export default function Home() {
   const navigate = useNavigate();
   const { t, lang } = useI18n();
   const profile = loadProfile();
-  const [tab, setTab] = useState<'all' | ContentType>('all');
-  const [sub, setSub] = useState<string>('all'); // 세부 카테고리
-  const [view, setView] = useState<'list' | 'map'>('list'); // 목록/지도
+  const [initialExplore] = useState(loadExplore);
+  const [tab, setTab] = useState<'all' | ContentType>(initialExplore.tab);
+  const [sub, setSub] = useState<string>(initialExplore.sub); // 세부 카테고리
+  const [view, setView] = useState<'list' | 'map'>(initialExplore.view); // 목록/지도
   const [mySpots, setMySpots] = useState<MySpot[]>(() => loadMySpots());
   const [addMode, setAddMode] = useState(false);
   const [pending, setPending] = useState<{ lat: number; lng: number } | null>(null);
   const [pendingName, setPendingName] = useState('');
-  const [mapOnlyBF, setMapOnlyBF] = useState(false); // 지도: 무장애만
-  const [region, setRegion] = useState<'all' | Region4>('all');
-  const [visibleCount, setVisibleCount] = useState(24); // 더보기 페이지네이션
+  const [mapOnlyBF, setMapOnlyBF] = useState(initialExplore.mapOnlyBF); // 지도: 무장애만
+  const [region, setRegion] = useState<'all' | Region4>(initialExplore.region);
+  const [visibleCount, setVisibleCount] = useState(initialExplore.visibleCount); // 더보기 페이지네이션
   const [saved, setSaved] = useState<number[]>(() => loadSavedIds());
   const [wish, setWish] = useState<string>(() => loadWish());
   const reasonsOn = loadReasonsOn(); // 실험: 추천 이유 표시 여부
@@ -58,13 +60,13 @@ export default function Home() {
   }, [reasonsOn]);
   const access = profile?.access;
   const hasAccessNeed = !!(access && (access.barrierFree || access.stroller || access.avoidNoKids));
-  const [accessOn, setAccessOn] = useState(true);
+  const [accessOn, setAccessOn] = useState(initialExplore.accessOn);
   const foodPref = profile?.foodPref;
   const hasFoodNeed = !!(foodPref && Object.values(foodPref).some(Boolean));
-  const [foodOn, setFoodOn] = useState(true);
+  const [foodOn, setFoodOn] = useState(initialExplore.foodOn);
   const pet = profile?.pet;
   const hasPetNeed = !!(pet && pet.withPet);
-  const [petOn, setPetOn] = useState(true);
+  const [petOn, setPetOn] = useState(initialExplore.petOn);
 
   // 실시간 관광 데이터 (Supabase 프록시 → TourAPI)
   const [live, setLive] = useState<Content[]>(() => loadLiveCache() ?? []);
@@ -107,16 +109,16 @@ export default function Home() {
   );
 
   const curated = useMemo(
-    () => (profile ? calculateCuration(CONTENTS, profile) : []),
-    [profile],
+    () => (profile ? calculateCuration(loadPlaces(liveAug), profile) : []),
+    [profile, liveAug],
   );
   // 카테고리·권역·검색 시 실시간 데이터까지 합친 전체 풀
   const pool = useMemo(
-    () => (profile ? calculateCuration([...CONTENTS, ...liveAug], profile) : []),
+    () => (profile ? calculateCuration(loadPlaces(liveAug), profile) : []),
     [profile, liveAug],
   );
 
-  if (!profile) return <Navigate to="/onboarding" replace />;
+
 
   const q = wish.trim().toLowerCase();
   function matchesWish(c: (typeof curated)[number]) {
@@ -130,7 +132,7 @@ export default function Home() {
     if (!accessOn || !access) return true;
     if (access.barrierFree && !c.accessibility?.barrierFree) return false;
     if (access.stroller && !c.accessibility?.strollerOK) return false;
-    if (access.avoidNoKids && c.accessibility?.noKidsZone) return false;
+    if (access.avoidNoKids && c.accessibility?.noKidsZone !== false) return false;
     return true;
   }
 
@@ -150,7 +152,7 @@ export default function Home() {
   function matchesPet(c: (typeof curated)[number]) {
     if (!petOn || !pet?.withPet) return true;
     if (!c.pet?.petFriendly) return false;
-    if (c.pet.sizeMax && SIZE_RANK[c.pet.sizeMax] < SIZE_RANK[pet.size]) return false;
+    if (!c.pet.sizeMax || SIZE_RANK[c.pet.sizeMax] < SIZE_RANK[pet.size]) return false;
     return true;
   }
 
@@ -193,13 +195,57 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, tab, sub, region, q, accessOn, foodOn, petOn, mapOnlyBF]);
 
-  // 탭이 바뀌면 세부 선택 초기화
-  useEffect(() => setSub('all'), [tab]);
-  // 필터가 바뀌면 더보기 개수 초기화
-  useEffect(() => setVisibleCount(24), [tab, sub, region, q, accessOn, foodOn, petOn]);
+  // Reset dependent filters only on an actual selection change, never on remount.
+  const previousFilters = useRef(JSON.stringify([tab, sub, region, q, accessOn, foodOn, petOn]));
+  useEffect(() => {
+    const signature = JSON.stringify([tab, sub, region, q, accessOn, foodOn, petOn]);
+    if (signature !== previousFilters.current) setVisibleCount(24);
+    previousFilters.current = signature;
+  }, [tab, sub, region, q, accessOn, foodOn, petOn]);
+  useEffect(() => {
+    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, foodOn, petOn });
+  }, [tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, foodOn, petOn]);
+
+  useLayoutEffect(() => {
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+    let restoring = true;
+    let frame = 0;
+    const target = initialExplore.scrollY;
+    const restore = () => {
+      if (!restoring) return;
+      window.scrollTo(0, target);
+      if (Math.abs(window.scrollY - target) <= 2) restoring = false;
+    };
+    // Retry if async data makes a long list tall enough to restore its position.
+    const observer = new ResizeObserver(() => { cancelAnimationFrame(frame); frame = requestAnimationFrame(restore); });
+    observer.observe(document.body);
+    frame = requestAnimationFrame(restore);
+    const stopRestoring = () => { restoring = false; };
+    const track = () => { if (!restoring) saveExplore({ scrollY: window.scrollY }); };
+    window.addEventListener('scroll', track, { passive: true });
+    window.addEventListener('wheel', stopRestoring, { passive: true });
+    window.addEventListener('touchstart', stopRestoring, { passive: true });
+    window.addEventListener('pointerdown', stopRestoring, { passive: true });
+    window.addEventListener('keydown', stopRestoring);
+    return () => {
+      observer.disconnect(); cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', track);
+      window.removeEventListener('wheel', stopRestoring);
+      window.removeEventListener('touchstart', stopRestoring);
+      window.removeEventListener('pointerdown', stopRestoring);
+      window.removeEventListener('keydown', stopRestoring);
+      window.history.scrollRestoration = previousRestoration;
+    };
+  }, [initialExplore]);
+
+  function openPlace(id: number) {
+    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, foodOn, petOn, scrollY: window.scrollY });
+    navigate(`/place/${id}`);
+  }
 
   const filterActive =
-    tab !== 'all' || sub !== 'all' || region !== 'all' || !!q || !accessOn || !foodOn || !petOn;
+    tab !== 'all' || sub !== 'all' || region !== 'all' || !!q || !accessOn || !foodOn || !petOn || mapOnlyBF;
   function resetFilters() {
     setTab('all');
     setSub('all');
@@ -209,6 +255,7 @@ export default function Home() {
     setAccessOn(true);
     setFoodOn(true);
     setPetOn(true);
+    setMapOnlyBF(false);
     setVisibleCount(24);
   }
 
@@ -234,16 +281,24 @@ export default function Home() {
   }
 
   function toggleSave(id: number) {
+    if (!saved.includes(id) && saved.length >= 100) { window.alert('한 여행에는 최대 100곳까지 담을 수 있어요.'); return; }
+    const place = pool.find(p => p.id === id);
+    if (place && !rememberPlaces([place])) {
+      window.alert('장소를 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.');
+      return;
+    }
     setSaved((prev) => {
       const adding = !prev.includes(id);
       const next = adding ? [...prev, id] : prev.filter((x) => x !== id);
-      saveSavedIds(next);
+      if (!saveSavedIds(next)) { window.alert('저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.'); return prev; }
       if (adding) {
         logEvent('save', { id, reasonsOn, ms: Date.now() - feedAt.current });
       }
       return next;
     });
   }
+
+  if (!profile) return <Navigate to="/onboarding" replace />;
 
   return (
     <div className="min-h-screen bg-surface font-sans text-ink">
@@ -407,7 +462,8 @@ export default function Home() {
           {TABS.map((tb) => (
             <button
               key={tb.key}
-              onClick={() => setTab(tb.key)}
+              aria-pressed={tab === tb.key}
+              onClick={() => { if (tab !== tb.key) { setTab(tb.key); setSub('all'); } }}
               className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                 tab === tb.key ? 'bg-primary text-white shadow-sm' : 'bg-white text-muted'
               }`}
@@ -465,6 +521,7 @@ export default function Home() {
             return (
               <button
                 key={r}
+                aria-pressed={on}
                 onClick={() => setRegion(r)}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                   on ? 'bg-tertiary text-white shadow-sm' : 'bg-white text-muted'
@@ -485,6 +542,7 @@ export default function Home() {
         {/* 목록 / 지도 전환 */}
         <div className="grid grid-cols-2 gap-1 p-1 rounded-full bg-surface-sub -mt-1">
           <button
+            aria-pressed={view === 'list'}
             onClick={() => setView('list')}
             className={`flex items-center justify-center gap-1 py-2 rounded-full text-sm font-bold transition-all ${
               view === 'list' ? 'bg-white text-primary shadow-sm' : 'text-muted'
@@ -493,6 +551,7 @@ export default function Home() {
             <Icon name="view_list" className="text-[18px]" /> {lang === 'en' ? 'List' : '목록'}
           </button>
           <button
+            aria-pressed={view === 'map'}
             onClick={() => setView('map')}
             className={`flex items-center justify-center gap-1 py-2 rounded-full text-sm font-bold transition-all ${
               view === 'map' ? 'bg-white text-primary shadow-sm' : 'text-muted'
@@ -584,7 +643,7 @@ export default function Home() {
             )}
             <PlaceMap
               places={mapList}
-              onOpen={(id) => navigate(`/place/${id}`)}
+              onOpen={openPlace}
               addMode={addMode}
               onPick={addMode ? pickSpot : undefined}
               mySpots={mySpots}
@@ -606,7 +665,7 @@ export default function Home() {
                     <span className="text-xs text-muted bg-surface-sub px-2 py-0.5 rounded-full">{list.length}{t('unit.places')}</span>
                   </div>
                   {list.map((c) => (
-                    <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => navigate(`/place/${c.id}`)} showReason={reasonsOn} />
+                    <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => openPlace(c.id)} showReason={reasonsOn} />
                   ))}
                 </section>
               );
@@ -615,7 +674,7 @@ export default function Home() {
         ) : (
           <section className="flex flex-col gap-5">
             {subFiltered.slice(0, visibleCount).map((c) => (
-              <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => navigate(`/place/${c.id}`)} showReason={reasonsOn} />
+              <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => openPlace(c.id)} showReason={reasonsOn} />
             ))}
             {subFiltered.length > visibleCount && (
               <button
@@ -703,10 +762,11 @@ function Card({
         )}
         <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md ${g.badge}`}>
           <Icon name={g.icon} className="text-[15px]" fill />
-          {item.matchScore}% {item.matchGrade === '적합' ? '찰떡 적합' : item.matchGrade === '높음' ? '취향 부합' : '참고'}
+          {item.matchScore}점 {item.matchGrade === '적합' ? '태그 일치' : item.matchGrade === '높음' ? '취향 부합' : '참고'}
         </div>
         <button
           onClick={stop(onToggle)}
+          aria-label={saved ? `${item.name} 담기 취소` : `${item.name} 담기`}
           className={`absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-90 ${
             saved ? 'text-accent' : 'text-muted'
           }`}
