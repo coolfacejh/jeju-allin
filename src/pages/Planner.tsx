@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
 import ScheduleForm from '../components/ScheduleForm';
 import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
-import { currentTrip, makeTrip, saveTrip } from '../lib/trip';
+import { currentTrip, makeTrip, saveTrip, saveTripSelection } from '../lib/trip';
 import { loadSavedIds } from '../lib/storage';
 import { scheduleDay } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
@@ -55,9 +55,10 @@ export default function Planner() {
   const navigate = useNavigate();
   const [initial] = useState(currentTrip);
   const profile = { nights: initial.nights, headcount: initial.headcount };
-  const items = initial.places;
   const days = initial.nights + 1;
   const [buckets, setBuckets] = useState<Content[][]>(() => initial.days.map(d => d.map(id => initial.places.find(p => p.id === id)!)));
+  const items = buckets.flat();
+  const [removed, setRemoved] = useState<{ item: Content; day: number; index: number; savedIndex: number } | null>(null);
   const [day, setDay] = useState(0);
   const { show, node: toast } = useToast();
   const { t } = useI18n();
@@ -71,6 +72,32 @@ export default function Planner() {
   useEffect(() => {
     setSaveFailed(!saveTrip(makeTrip(buckets, profile.nights, profile.headcount, notes, settings)));
   }, [buckets, notes, settings, profile.nights, profile.headcount]);
+
+  function excludePlace(id: number) {
+    const sourceDay = buckets.findIndex(bucket => bucket.some(place => place.id === id));
+    if (sourceDay < 0) return;
+    const index = buckets[sourceDay].findIndex(place => place.id === id);
+    const item = buckets[sourceDay][index];
+    const ids = loadSavedIds();
+    const next = buckets.map(bucket => bucket.filter(place => place.id !== id));
+    if (!saveTripSelection(makeTrip(next, profile.nights, profile.headcount, notes, settings), ids.filter(saved => saved !== id))) {
+      show('제외하지 못했어요. 저장 공간을 확인해 주세요.'); return;
+    }
+    setRemoved({ item, day: sourceDay, index, savedIndex: ids.indexOf(id) });
+    setBuckets(next);
+  }
+
+  function undoExclude() {
+    if (!removed) return;
+    const next = buckets.map(bucket => bucket.filter(place => place.id !== removed.item.id));
+    next[removed.day].splice(removed.index, 0, removed.item);
+    const ids = loadSavedIds().filter(id => id !== removed.item.id);
+    ids.splice(Math.max(0, removed.savedIndex), 0, removed.item.id);
+    if (!saveTripSelection(makeTrip(next, profile.nights, profile.headcount, notes, settings), ids)) {
+      show('되돌리지 못했어요. 저장 공간을 확인해 주세요.'); return;
+    }
+    setBuckets(next); setDay(removed.day); setRemoved(null);
+  }
 
   function moveDay(id: number, target: number) {
     setBuckets(previous => {
@@ -152,6 +179,10 @@ export default function Planner() {
       </header>
 
       <main className="max-w-md mx-auto pt-16 pb-16 px-4 flex flex-col gap-5">
+        {removed && <div role="status" className="mt-4 rounded-xl bg-primary-light p-4 text-sm flex items-center justify-between gap-3">
+          <span>{removed.item.name}을(를) 일정과 보관함에서 제외했어요.</span>
+          <button type="button" onClick={undoExclude} className="shrink-0 font-bold text-primary underline p-2">되돌리기</button>
+        </div>}
         {saveFailed && <p role="alert" className="mt-4 text-sm text-red-700">일정을 저장하지 못했어요. 입력값 범위와 브라우저 저장 공간을 확인해 주세요.</p>}
         {missing > 0 && <p role="alert" className="mt-4 text-sm text-amber-800">기존에 담은 {missing}곳의 정보를 찾을 수 없어요. 보관함에서 확인해 주세요.</p>}
         {items.length < 1 ? (
@@ -294,6 +325,9 @@ export default function Planner() {
                             {buckets.map((_, index) => <option key={index} value={index}>{index + 1}일차</option>)}
                           </select>
                         </label>}
+                        <button type="button" aria-label={`${s.item.name} 일정에서 제외`} onClick={() => excludePlace(s.item.id)} className="mt-3 min-h-10 px-3 py-2 rounded-lg border border-red-200 text-red-700 text-xs font-bold hover:bg-red-50">
+                          일정에서 제외
+                        </button>
                         <p className="text-xs text-primary font-bold mt-3">예상 방문 {s.arrive} ~ {s.depart}</p>
                         <details className="mt-2 text-xs">
                           <summary className="cursor-pointer text-primary py-2">직접 확인한 방문 시간 · 체류시간</summary>

@@ -73,3 +73,19 @@ export function currentTrip(): Trip {
   });
   return makeTrip(buckets, nights, headcount, stored.notes, stored.schedule);
 }
+
+// Persist the itinerary and saved IDs together; roll back if either write fails.
+export function saveTripSelection(trip: Trip, ids: number[]): boolean {
+  if (!validTrip(trip) || !ids.every(id => Number.isSafeInteger(id) && id > 0) || !trip.days.flat().every(id => ids.includes(id))) return false;
+  const keys = [TRIP_KEY, 'jeju_saved_trip_ids'];
+  const previous = new Map<string, string | null>();
+  try {
+    keys.forEach(key => previous.set(key, localStorage.getItem(key)));
+    localStorage.setItem(TRIP_KEY, JSON.stringify(trip));
+    localStorage.setItem(keys[1], JSON.stringify(ids));
+    return true;
+  } catch {
+    previous.forEach((value, key) => { try { if (value === null) localStorage.removeItem(key); else localStorage.setItem(key, value); } catch { /* best effort */ } });
+    return false;
+  }
+}
