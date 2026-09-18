@@ -8,7 +8,7 @@ import { loadPlaces, rememberPlaces } from '../lib/places';
 import { calculateCuration, TRAVEL_TYPE_NAME, THEME_NAME } from '../lib/curate';
 import { nightsLabel } from './Onboarding';
 import { loadProfile, loadSavedIds, saveSavedIds, loadWish, saveWish, loadReasonsOn, logEvent, loadMySpots, saveMySpots, type MySpot } from '../lib/storage';
-import { fetchLivePlaces, loadLiveCache, clearLiveCache, fetchBarrierFreeIds } from '../lib/live';
+import { fetchLivePlaces, loadLiveCache, fetchBarrierFreeIds } from '../lib/live';
 import { useI18n, LangToggle } from '../i18n';
 import { regionOf, REGION_LABEL, REGION_DESC, type Region4 } from '../lib/region';
 import { subcatOf, subcatChips } from '../lib/subcat';
@@ -82,7 +82,6 @@ export default function Home() {
   }, []);
   function refreshLive() {
     setLiveState('loading');
-    clearLiveCache();
     fetchLivePlaces({ force: true })
       .then((items) => { setLive(items); setLiveState('done'); })
       .catch(() => setLiveState('error'));
@@ -565,12 +564,12 @@ export default function Home() {
         <div className="flex items-center justify-between -mt-2 px-1">
           <span className="text-[11px] text-muted flex items-center gap-1">
             <Icon name="cloud" className="text-[14px]" />
-            {liveState === 'loading' && (lang === 'en' ? 'Loading live data…' : '실시간 관광정보 불러오는 중…')}
+            {liveState === 'loading' && (lang === 'en' ? 'Loading tourism information…' : '관광공사 정보 불러오는 중…')}
             {liveState === 'done' &&
               (lang === 'en'
-                ? `Korea Tourism live · ${live.length} places`
-                : `제주 관광정보 실시간 · ${live.length}곳`)}
-            {liveState === 'error' && (lang === 'en' ? 'Live unavailable · base data' : '실시간 연결 실패 · 기본 데이터')}
+                ? `Korea Tourism Organization · ${live.length} places`
+                : `관광공사 제주 정보 · ${live.length}곳`)}
+            {liveState === 'error' && (lang === 'en' ? 'Update failed · showing available data' : '갱신 실패 · 기존 정보를 표시합니다')}
           </span>
           <button
             onClick={refreshLive}
@@ -582,7 +581,7 @@ export default function Home() {
         </div>
         {!grouped && liveState === 'done' && (
           <p className="text-[11px] text-muted -mt-3 px-1">
-            {lang === 'en' ? 'Includes live Jeju tourism data.' : '실시간 제주 관광 데이터 포함 결과입니다.'}
+            {lang === 'en' ? 'Includes Korea Tourism Organization data.' : '한국관광공사 제주 관광정보를 포함한 결과입니다.'}
           </p>
         )}
 

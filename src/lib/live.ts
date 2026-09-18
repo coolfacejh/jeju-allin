@@ -9,7 +9,10 @@ const ANON =
 const CACHE_KEY = 'jeju_live_cache_v2'; // v2: 분류코드(cat1/2/3) 포함
 const TTL = 1000 * 60 * 60 * 24; // 24시간
 
-type Cache = { t: number; items: Content[] };
+// The current proxy supports cumulative page requests. Ten pages returned the
+// same 859 unique places as five on 2026-09-18; this is not a claim of full coverage.
+export const LIVE_PAGES = 10;
+type Cache = { t: number; items: Content[]; pages?: number };
 
 export function loadLiveCache(): Content[] | null {
   try {
@@ -24,24 +27,30 @@ export function loadLiveCache(): Content[] | null {
 }
 
 export async function fetchLivePlaces(opts?: { pages?: number; force?: boolean }): Promise<Content[]> {
+  const pages = opts?.pages ?? LIVE_PAGES;
   if (!opts?.force) {
     const cached = loadLiveCache();
-    if (cached) return cached;
+    try {
+      const meta = JSON.parse(localStorage.getItem(CACHE_KEY) ?? 'null') as Cache | null;
+      // Keep old cached places visible, but refresh incomplete catalogues immediately.
+      if (cached && (meta?.pages ?? 1) >= pages) return cached;
+    } catch { /* fetch a fresh catalogue */ }
   }
-  const pages = opts?.pages ?? 1;
   const res = await fetch(`${FN_URL}?pages=${pages}`, {
     headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
   });
   if (!res.ok) throw new Error(`live ${res.status}`);
   const json = await res.json();
-  const items = ((json?.items ?? []) as Content[]).map((it) => ({
+  if (!Array.isArray(json?.items) || !json.items.length) throw new Error('Empty tourism response');
+  const unique = [...new Map((json.items as Content[]).map(it => [it.id, it])).values()];
+  const items = unique.map((it) => ({
     ...it,
     rating: 0, reviewCount: 0, reviews: undefined,
     provenance: { source: 'tourapi' as const, retrievedAt: new Date().toISOString() },
     image: typeof it.image === 'string' ? it.image.replace(/^http:\/\//, 'https://') : it.image,
   }));
   try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), items }));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), items, pages }));
   } catch {
     /* ignore */
   }

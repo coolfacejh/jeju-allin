@@ -1,3 +1,4 @@
+import { fetchLivePlaces, loadLiveCache, LIVE_PAGES } from '../src/lib/live';
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { CONTENTS } from '../src/data/contents';
@@ -143,4 +144,38 @@ test('invalid imported travel settings are rejected', () => {
   for (const schedule of [ { ...DEFAULT_SCHEDULE, departureBuffer: -1 }, { ...DEFAULT_SCHEDULE, visits: { [a.id]: { durationMin: 0 } } }, { ...DEFAULT_SCHEDULE, transport: 'plane' }, { ...DEFAULT_SCHEDULE, visits: { 999999: { durationMin: 45 } } } ]) {
     assert.equal(validTrip({ ...trip, schedule }), false);
   }
+});
+
+
+test('expanded tourism fetch replaces legacy cache, deduplicates and reuses sufficient cache', async () => {
+  memory.set('jeju_live_cache_v2', JSON.stringify({ t: Date.now(), items: [external] }));
+  const originalFetch = globalThis.fetch;
+  const urls: string[] = [];
+  globalThis.fetch = (async (url: string | URL | Request) => {
+    urls.push(String(url));
+    return new Response(JSON.stringify({ items: [external, external, { ...external, id: 990002 }] }));
+  }) as typeof fetch;
+  try {
+    assert.equal((await fetchLivePlaces()).length, 2);
+    assert.ok(urls[0].endsWith(`pages=${LIVE_PAGES}`));
+    assert.equal((await fetchLivePlaces()).length, 2);
+    assert.equal(urls.length, 1);
+    await fetchLivePlaces({ force: true });
+    assert.equal(urls.length, 2);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('failed or empty catalogue refresh preserves existing cached places and saved trip', async () => {
+  memory.set('jeju_live_cache_v2', JSON.stringify({ t: Date.now(), items: [external] }));
+  rememberPlaces([external]); saveSavedIds([external.id]); saveProfile(profile);
+  const originalFetch = globalThis.fetch;
+  try {
+    globalThis.fetch = (async () => new Response(JSON.stringify({ items: [] }))) as typeof fetch;
+    await assert.rejects(fetchLivePlaces({ force: true }));
+    assert.equal(loadLiveCache()?.[0].id, external.id);
+    assert.deepEqual(currentTrip().days.flat(), [external.id]);
+    globalThis.fetch = (async () => { throw new Error('offline'); }) as typeof fetch;
+    await assert.rejects(fetchLivePlaces({ force: true }));
+    assert.equal(loadLiveCache()?.[0].id, external.id);
+  } finally { globalThis.fetch = originalFetch; }
 });
