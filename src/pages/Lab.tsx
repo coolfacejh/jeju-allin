@@ -48,7 +48,7 @@ export default function Lab() {
   return (
     <div className="min-h-screen bg-surface font-sans text-ink pb-10" key={tick}>
       <header className="fixed top-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-line">
-        <div className="max-w-md mx-auto h-16 px-4 flex items-center gap-2">
+        <div className="app-shell mx-auto h-16 px-4 flex items-center gap-2">
           <button
             onClick={() => navigate('/home')}
             className="w-10 h-10 rounded-full flex items-center justify-center text-muted hover:text-primary active:scale-95"
@@ -63,7 +63,7 @@ export default function Lab() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto pt-16 px-4 flex flex-col gap-4">
+      <main className="app-shell mx-auto pt-16 px-4 flex flex-col gap-4">
         <p className="text-sm text-sub mt-4">
           가설: <strong className="text-primary">“추천 이유가 있을 때 사용자가 더 빠르고 자신 있게 장소를 고른다.”</strong>
           아래 스위치로 이유 표시를 켜고/끄며 큐레이션을 사용해 보세요. 담기까지 걸린 시간이 자동 기록됩니다.

@@ -119,7 +119,7 @@ export default function Onboarding() {
   }
 
   return (
-    <main className="min-h-screen w-full max-w-md mx-auto px-4 pb-10 bg-surface text-ink font-sans">
+    <main className="min-h-screen w-full app-shell mx-auto px-4 pb-10 bg-surface text-ink font-sans">
       <div className="flex justify-between items-center pt-3">
         <button
           onClick={resetAll}
@@ -162,6 +162,7 @@ export default function Onboarding() {
         <p className="text-sm text-sub mt-1.5">{t('onb.sub')}</p>
       </div>
 
+      <div className="preferences-grid">
       {/* 여행 기간 · 인원 */}
       <section className="flex flex-col gap-3 mb-8 bg-white rounded-2xl shadow-card p-4">
         <div className="flex items-center gap-2">
@@ -391,6 +392,7 @@ export default function Onboarding() {
         </div>
       </Section>
 
+      </div>
       <div className="p-4 rounded-2xl bg-primary-light flex items-start gap-3 mt-4">
         <Icon name="auto_awesome" className="text-primary text-[20px] shrink-0 mt-0.5" />
         <div>

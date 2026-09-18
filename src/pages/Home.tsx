@@ -302,7 +302,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-surface font-sans text-ink">
       <header className="fixed top-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-line">
-        <div className="max-w-md mx-auto h-16 px-4 flex items-center justify-between">
+        <div className="app-shell mx-auto h-16 px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
               <Icon name="explore" className="text-[20px]" />
@@ -325,7 +325,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto pt-16 pb-28 px-4 flex flex-col gap-6">
+      <main className="app-shell mx-auto pt-16 pb-28 px-4 flex flex-col gap-6">
         {/* 취향 요약 */}
         <section className="flex flex-col gap-2 mt-4">
           <div className="bg-white rounded-xl p-4 shadow-card">
@@ -663,22 +663,24 @@ export default function Home() {
                     <h2 className="font-bold text-[18px]">{t(sec.tkey)}</h2>
                     <span className="text-xs text-muted bg-surface-sub px-2 py-0.5 rounded-full">{list.length}{t('unit.places')}</span>
                   </div>
+                  <div className="place-grid">
                   {list.map((c) => (
                     <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => openPlace(c.id)} showReason={reasonsOn} />
                   ))}
+                  </div>
                 </section>
               );
             })}
           </div>
         ) : (
-          <section className="flex flex-col gap-5">
+          <section className="place-grid">
             {subFiltered.slice(0, visibleCount).map((c) => (
               <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => openPlace(c.id)} showReason={reasonsOn} />
             ))}
             {subFiltered.length > visibleCount && (
               <button
                 onClick={() => setVisibleCount((n) => n + 24)}
-                className="mx-auto mt-1 flex items-center gap-1 px-5 py-2.5 rounded-full bg-white shadow-card text-primary text-sm font-bold active:scale-95"
+                className="grid-span-all mx-auto mt-1 flex items-center gap-1 px-5 py-2.5 rounded-full bg-white shadow-card text-primary text-sm font-bold active:scale-95"
               >
                 <Icon name="expand_more" className="text-[18px]" />
                 {lang === 'en'
@@ -687,7 +689,7 @@ export default function Home() {
               </button>
             )}
             {subFiltered.length === 0 && (
-              <div className="text-center py-10">
+              <div className="grid-span-all text-center py-10">
                 <p className="text-sm text-muted">{t('empty.cat')}</p>
               </div>
             )}

@@ -34,20 +34,20 @@ export default function SharedTrip() {
     }
   }
 
-  if (!data || !data.places.length) return <main className="max-w-md mx-auto p-8 text-center">
+  if (!data || !data.places.length) return <main className="app-shell mx-auto p-8 text-center">
     <h1 className="text-xl font-bold">공유 여행을 열 수 없어요</h1>
     <p className="my-4 text-sm">링크가 손상되었거나, 이전 링크에 장소 정보가 포함되지 않았습니다. 작성자에게 새 링크를 요청해 주세요.</p>
     <button onClick={() => navigate('/home')} className="underline">홈으로</button>
   </main>;
 
   return <div className="min-h-screen bg-surface text-ink pb-32">
-    <header className="bg-primary text-white px-4 py-8"><div className="max-w-md mx-auto">
+    <header className="bg-primary text-white px-4 py-8"><div className="app-shell mx-auto">
       <h1 className="text-2xl font-bold">함께 떠나요, 제주 여행</h1>
       <p className="mt-2">{nightsLabel(data.nights)} · {data.headcount}명 · {data.places.length}곳</p>
       {data.schedule && <p className="text-sm mt-2">{data.schedule.startDate || '시작일 미정'} · {TRANSPORT_LABEL[data.schedule.transport]} · 활동 {data.schedule.dayStart}~{data.schedule.dayEnd}</p>}
       <p className="text-xs mt-2">공유할 당시의 일정입니다. 장소 정보는 공유자가 전달했으며 운영 여부는 별도 확인이 필요합니다.</p>
     </div></header>
-    <main className="max-w-md mx-auto p-4 flex flex-col gap-5">
+    <main className="app-shell mx-auto p-4 place-grid">
       {data.days.map((ids, day) => <section key={day}>
         <h2 className="text-lg font-bold mb-2">{day + 1}일차 {dateForDay(data.schedule?.startDate, day)}</h2>
         {!ids.length && <p className="text-sm text-muted">자유 일정</p>}
@@ -58,13 +58,13 @@ export default function SharedTrip() {
           {data.notes[id] && <p className="text-sm mt-2 whitespace-pre-wrap">메모: {data.notes[id]}</p>}
         </article>; })}
       </section>)}
-      {error && <p role="alert" className="text-red-700">{error}</p>}
-      {confirm && <div role="alert" className="p-4 bg-amber-50 rounded-xl text-sm">현재 보관함과 일정이 이 여행으로 바뀝니다. 기존 일정이 필요하면 먼저 공유 링크를 보관해 주세요.
+      {error && <p className="grid-span-all text-red-700" role="alert">{error}</p>}
+      {confirm && <div role="alert" className="grid-span-all p-4 bg-amber-50 rounded-xl text-sm">현재 보관함과 일정이 이 여행으로 바뀝니다. 기존 일정이 필요하면 먼저 공유 링크를 보관해 주세요.
         <button onClick={() => setConfirm(false)} className="block underline mt-2">취소</button>
       </div>}
     </main>
     <footer className="fixed bottom-0 inset-x-0 p-4 bg-white border-t border-line">
-      <button onClick={importTrip} className="block max-w-md mx-auto w-full p-3 rounded-full bg-primary text-white font-bold">{confirm ? '현재 일정을 이 여행으로 바꾸기' : '이 일정을 내 여행으로 저장'}</button>
+      <button onClick={importTrip} className="block app-shell mx-auto w-full p-3 rounded-full bg-primary text-white font-bold">{confirm ? '현재 일정을 이 여행으로 바꾸기' : '이 일정을 내 여행으로 저장'}</button>
     </footer>
   </div>;
 }

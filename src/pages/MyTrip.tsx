@@ -69,7 +69,7 @@ export default function MyTrip() {
 
   return (
     <div className="min-h-screen bg-surface font-sans text-ink">
-      <main className="max-w-md mx-auto pt-6 pb-28 px-4 flex flex-col gap-6">
+      <main className="app-shell mx-auto pt-6 pb-28 px-4 flex flex-col gap-6">
         {missing.length > 0 && <div role="alert" className="p-4 rounded-xl bg-amber-50 text-sm">
           기존에 담은 {missing.length}곳은 정보가 없거나 샘플 목록에서 제외된 장소입니다.
           <button className="block underline mt-2" onClick={() => { const next = ids.filter(id => !missing.includes(id)); if (saveSavedIds(next)) setIds(next); else show('보관함 변경을 저장하지 못했어요.'); }}>찾을 수 없는 장소를 보관함에서 제거</button>
@@ -178,7 +178,7 @@ export default function MyTrip() {
             </button>
           </div>
         ) : (
-          <section className="flex flex-col gap-4">
+          <section className="place-grid">
             {visible.map((c) => (
               <article key={c.id} onClick={() => navigate(`/place/${c.id}`)} className="rounded-2xl bg-white overflow-hidden shadow-raised cursor-pointer active:scale-[0.99] transition-transform">
                 <div className="relative w-full h-40 bg-primary-light flex items-center justify-center text-5xl overflow-hidden">
@@ -216,7 +216,7 @@ export default function MyTrip() {
             ))}
 
             {/* 스마트 루트 안내 (상세) */}
-            <section className="rounded-2xl bg-surface-sub p-4 flex items-start gap-3">
+            <section className="grid-span-all rounded-2xl bg-surface-sub p-4 flex items-start gap-3">
               <Icon name="auto_awesome" className="text-primary text-[20px] shrink-0 mt-0.5" />
               <p className="text-xs text-sub leading-relaxed">
                 숙소를 기준으로 이동시간이 가장 짧은 순서의 하루 코스를 만들어 드려요. 여러 날 일정은 날짜별로 자동 분배됩니다. 위의

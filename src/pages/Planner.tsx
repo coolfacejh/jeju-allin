@@ -151,7 +151,7 @@ export default function Planner() {
   return (
     <div className="min-h-screen bg-surface font-sans text-ink">
       <header className="fixed top-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-line">
-        <div className="max-w-md mx-auto h-16 px-4 flex items-center gap-2">
+        <div className="app-shell mx-auto h-16 px-4 flex items-center gap-2">
           <button
             onClick={() => navigate('/my-trip')}
             className="w-10 h-10 rounded-full flex items-center justify-center text-muted hover:text-primary active:scale-95"
@@ -178,7 +178,7 @@ export default function Planner() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto pt-16 pb-16 px-4 flex flex-col gap-5">
+      <main className="app-shell mx-auto pt-16 pb-16 px-4 flex flex-col gap-5">
         {removed && <div role="status" className="mt-4 rounded-xl bg-primary-light p-4 text-sm flex items-center justify-between gap-3">
           <span>{removed.item.name}을(를) 일정과 보관함에서 제외했어요.</span>
           <button type="button" onClick={undoExclude} className="shrink-0 font-bold text-primary underline p-2">되돌리기</button>
@@ -239,9 +239,13 @@ export default function Planner() {
               </div>
             )}
 
+            <div className="planner-columns">
+            <div className="planner-map">
             {/* 미니 지도 */}
             {dayItems.length > 0 && <MiniMap stops={dayItems} />}
 
+            </div>
+            <div className="min-w-0">
             {/* 타임라인 (수동 재정렬) */}
             {dayItems.length === 0 ? (
               <p className="text-center text-sm text-muted py-8">이 날은 아직 비어 있어요.</p>
@@ -357,6 +361,8 @@ export default function Planner() {
               </section>
             )}
 
+            </div>
+            </div>
             <p className="text-[11px] text-muted text-center px-4">
               * 이동시간은 직선거리 기준 근사치입니다. ▲▼로 순서를 바꾸면 시간이 다시 계산됩니다.
             </p>

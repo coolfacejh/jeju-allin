@@ -12,7 +12,7 @@ export default function BottomNav({ savedCount = 0 }: { savedCount?: number }) {
   const { t } = useI18n();
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-t border-line shadow-[0_-4px_20px_rgba(30,41,59,0.05)]">
-      <div className="max-w-md mx-auto h-[4.25rem] px-4 grid grid-cols-3 items-center">
+      <div className="app-shell mx-auto h-[4.25rem] px-4 grid grid-cols-3 items-center">
         {items.map((it) => (
           <NavLink
             key={it.to}

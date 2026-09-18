@@ -74,7 +74,7 @@ export default function PlaceDetail() {
   return (
     <div className="min-h-screen bg-surface font-sans text-ink pb-10">
       {/* 히어로 */}
-      <div className="relative h-56 bg-gradient-to-br from-primary to-tertiary flex items-center justify-center text-7xl overflow-hidden">
+      <div className="app-shell mx-auto relative h-56 md:h-80 bg-gradient-to-br from-primary to-tertiary flex items-center justify-center text-7xl overflow-hidden">
         {/^https?:\/\//.test(base.image) ? (
           <img src={base.image} alt={base.name} className="w-full h-full object-cover" />
         ) : (
@@ -104,7 +104,7 @@ export default function PlaceDetail() {
         )}
       </div>
 
-      <main className="max-w-md mx-auto px-4 -mt-6 relative flex flex-col gap-4">
+      <main className="app-shell mx-auto px-4 -mt-6 relative flex flex-col gap-4">
         {/* 기본 정보 */}
         <section className="bg-white rounded-2xl shadow-card p-5 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
@@ -417,7 +417,7 @@ export default function PlaceDetail() {
 
       {/* 담기 CTA */}
       <div className="fixed bottom-0 inset-x-0 z-40 bg-surface/90 backdrop-blur-md border-t border-line">
-        <div className="max-w-md mx-auto px-4 py-3 flex gap-2">
+        <div className="app-shell mx-auto px-4 py-3 flex gap-2">
           <button
             onClick={() => navigate('/home')}
             className="w-14 h-12 rounded-full bg-white shadow-card text-muted flex items-center justify-center active:scale-95"
