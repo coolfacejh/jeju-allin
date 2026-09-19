@@ -680,10 +680,11 @@ export default function Home() {
                     <span className="text-xs text-muted bg-surface-sub px-2 py-0.5 rounded-full">{list.length}{t('unit.places')}</span>
                   </div>
                   <div className="place-grid">
-                  {list.map((c) => (
+                  {list.slice(0, 12).map((c) => (
                     <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => openPlace(c.id)} showReason={reasonsOn} />
                   ))}
                   </div>
+                  {list.length > 12 && <button type="button" onClick={() => { setTab(sec.key); setSub('all'); }} className="self-center rounded-full bg-white px-5 py-2 text-sm font-bold text-primary shadow-card">{lang === 'en' ? `View all (${list.length})` : `전체 보기 (${list.length}곳)`}</button>}
                 </section>
               );
             })}

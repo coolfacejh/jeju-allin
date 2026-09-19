@@ -1,7 +1,9 @@
 import type { Content } from '../types';
 const KEY = 'jeju_visitjeju_cache_v1';
 const TTL = 86400000;
+let sessionCache: {t:number;items:Content[]} | undefined;
 export function loadVisitCache(): Content[] {
+  if (sessionCache && Date.now()-sessionCache.t<TTL) return sessionCache.items;
   try {
     const c = JSON.parse(localStorage.getItem(KEY) ?? 'null');
     return c && Date.now()-c.t<TTL && Array.isArray(c.items) ? c.items : [];
@@ -31,7 +33,8 @@ export function fetchVisitPlaces(force = false): Promise<Content[]> {
     }
     const result = [...new Map(items.map(p=>[p.id,p])).values()];
     if (!result.length) throw new Error('visitjeju_empty');
-    try { localStorage.setItem(KEY, JSON.stringify({t:Date.now(),items:result})); } catch { /* current session remains usable */ }
+    sessionCache = {t:Date.now(),items:result};
+    try { localStorage.setItem(KEY, JSON.stringify(sessionCache)); } catch { /* current session remains usable */ }
     return result;
   })().finally(()=>{pending=undefined;});
   return pending;
