@@ -80,7 +80,7 @@ export interface WalkGuide {
 
 // 장소(콘텐츠) 정의
 export interface Content {
-  provenance?: { source: 'local' | 'tourapi' | 'shared'; retrievedAt?: string };
+  provenance?: { source: 'local' | 'tourapi' | 'visitjeju' | 'shared'; retrievedAt?: string; sourceId?: string };
   id: number;
   name: string;
   contentType: ContentType;

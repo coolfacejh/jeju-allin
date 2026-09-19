@@ -143,7 +143,7 @@ export default function PlaceDetail() {
           </div>
           {base.rating === 0 && (
             <p className="text-[11px] text-muted flex items-center gap-1 mt-1">
-              <Icon name="info" className="text-[13px]" /> {base.provenance?.source === 'tourapi' ? '출처: 한국관광공사 관광정보' : base.provenance?.source === 'shared' ? '출처: 공유자가 전달한 장소' : '출처: 앱 초기 수록 정보 · 현장 미검증'}
+              <Icon name="info" className="text-[13px]" /> {base.provenance?.source === 'tourapi' ? '출처: 한국관광공사 관광정보' : base.provenance?.source === 'visitjeju' ? '출처: 제주관광공사 비짓제주' : base.provenance?.source === 'shared' ? '출처: 공유자가 전달한 장소' : '출처: 앱 초기 수록 정보 · 현장 미검증'}
             </p>
           )}
         </section>

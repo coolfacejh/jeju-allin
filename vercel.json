@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/visitjeju.js": {
+      "maxDuration": 60
+    }
+  }
+}

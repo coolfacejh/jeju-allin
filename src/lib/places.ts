@@ -1,3 +1,4 @@
+import { loadVisitCache } from './visitjeju';
 import { CONTENTS } from '../data/contents';
 import { loadLiveCache } from './live';
 import type { Content } from '../types';
@@ -25,7 +26,7 @@ function snapshots(): Content[] {
 
 // Saved place snapshots have no cache expiry. Fresh API data takes precedence.
 export function loadPlaces(extra: Content[] = []): Content[] {
-  const all = [...CONTENTS, ...snapshots(), ...(loadLiveCache() ?? []), ...extra];
+  const all = [...CONTENTS, ...snapshots(), ...loadVisitCache(), ...(loadLiveCache() ?? []), ...extra];
   return [...new Map(all.filter(validPlace).map(p => [p.id, p])).values()];
 }
 

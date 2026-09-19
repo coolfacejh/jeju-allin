@@ -1,3 +1,4 @@
+import { uniqueCatalogue, fetchVisitPlaces, loadVisitCache } from '../src/lib/visitjeju';
 import { fetchLivePlaces, loadLiveCache, LIVE_PAGES } from '../src/lib/live';
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
@@ -178,4 +179,27 @@ test('failed or empty catalogue refresh preserves existing cached places and sav
     await assert.rejects(fetchLivePlaces({ force: true }));
     assert.equal(loadLiveCache()?.[0].id, external.id);
   } finally { globalThis.fetch = originalFetch; }
+});
+
+
+test('VisitJeju deduplication preserves distant branches and saved IDs', () => {
+  const visit:Content={...external,id:1000000000001,provenance:{source:'visitjeju'}};
+  const original:Content={...external,provenance:{source:'tourapi'}};
+  assert.equal(uniqueCatalogue([visit,original]).length,1);
+  assert.equal(uniqueCatalogue([visit,{...original,lat:33.9}]).length,2);
+  rememberPlaces([visit,original]);
+  assert.equal(resolvePlaces([visit.id,original.id]).length,2);
+  assert.equal(decodeTrip(encodeTrip(makeTrip([[visit]],0,2,{})))?.places[0].id,visit.id);
+});
+
+test('VisitJeju pagination caches only complete results and preserves cache on failure',async()=>{
+ const originalFetch=globalThis.fetch;
+ let calls=0;
+ globalThis.fetch=(async(input:string|URL|Request)=>{calls++;const page=Number(new URL(String(input),'https://local.invalid').searchParams.get('page'));return new Response(JSON.stringify({page,pageCount:3,items:[{...external,id:1000000000000+page,provenance:{source:'visitjeju'}}]}));}) as typeof fetch;
+ try {
+  assert.equal((await fetchVisitPlaces()).length,3);assert.equal(calls,3);
+  assert.equal((await fetchVisitPlaces()).length,3);assert.equal(calls,3);
+  globalThis.fetch=(async()=>{throw new Error('offline');}) as typeof fetch;
+  await assert.rejects(fetchVisitPlaces(true));assert.equal(loadVisitCache().length,3);
+ }finally{globalThis.fetch=originalFetch;}
 });
