@@ -1,3 +1,5 @@
+import AccessPanel from '../components/AccessPanel';
+import { tourAccessSource, readTourSources } from '../lib/accessStore';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import Icon from '../components/Icon';
@@ -28,14 +30,15 @@ export default function PlaceDetail() {
   const todayKey = new Date().toISOString().slice(0, 10);
   const [note, setNote] = useState<string>(() => loadWalkNotes()[todayKey] ?? '');
 
+  const tourId = base?.provenance?.source==='tourapi' ? placeId : Number(base?.accessSources?.find(s=>s.source==='tourapi')?.sourceId) || undefined;
   // 무장애 정보(배리어프리 서비스)
   const [access, setAccess] = useState<AccessDetail | null>(null);
   useEffect(() => {
     let alive = true;
-    if (base?.provenance?.source !== 'tourapi') return;
-    fetchAccessDetail(placeId).then((d) => { if (alive) setAccess(d); });
+    if (!tourId) return;
+    fetchAccessDetail(tourId).then((d) => { if (alive) setAccess(d); });
     return () => { alive = false; };
-  }, [placeId]);
+  }, [placeId, tourId]);
 
   if (!base) return <Navigate to="/home" replace />;
 
@@ -50,8 +53,8 @@ export default function PlaceDetail() {
 
   const a = base.accessibility;
   const accBadges: string[] = [];
-  if (a?.barrierFree) accBadges.push('♿ 무장애·휠체어');
-  if (a?.strollerOK) accBadges.push('🚼 유모차 진입 가능');
+  if (a?.barrierFree) accBadges.push('♿ 무장애 정보 등록');
+  if (a?.strollerOK) accBadges.push('🚼 유모차 정보 · 확인 필요');
   if (a?.elevator) accBadges.push('🛗 엘리베이터');
   if (a?.noKidsZone) accBadges.push('🚫 노키즈존');
 
@@ -151,6 +154,7 @@ export default function PlaceDetail() {
         <p className="text-xs text-muted px-2">운영시간·요금·편의시설은 방문 전 확인이 필요합니다.
           {base.provenance?.retrievedAt && ` 정보 수신: ${new Date(base.provenance.retrievedAt).toLocaleDateString('ko-KR')} (현장 확인일 아님)`}
         </p>
+        <AccessPanel place={access ? {...base,accessSources:[...(base.accessSources??[]).filter(s=>s.source!=='tourapi'),readTourSources()[tourId!] ?? tourAccessSource(tourId!,access)]}:base} />
         {/* 무장애 정보 (한국관광공사 무장애여행) */}
         {access?.has &&
           (() => {

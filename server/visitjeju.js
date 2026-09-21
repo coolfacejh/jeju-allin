@@ -13,7 +13,10 @@ export function normalizePlace(raw, retrievedAt) {
   const themes = [];
   const themeTags = { cafe: /카페/, oreum: /오름/, camping: /캠핑/, trekking: /트레킹|숲길|산책/, sunset: /일몰/, market: /시장/, cultural: /미술관|박물관|전시/, surf: /서핑/, animal: /동물/ };
   for (const [theme, pattern] of Object.entries(themeTags)) if (tags.some(t => pattern.test(t))) themes.push(theme);
+  const accessTags = clean(raw.alltag, 10000).split(',').map(x=>x.trim()).filter(x=>/장애인.*화장실|장애인.*주차|출입구|단차|경사로|이동로|관람로|승강기|엘리베이터/.test(x));
   return {
+    accessSources: [{source:'visitjeju',sourceId,receivedAt:retrievedAt,tags:accessTags}],
+    phone: clean(raw.phoneno, 80),
     id: 1000000000000 + Number.parseInt(createHash('sha256').update('visitjeju:'+sourceId).digest('hex').slice(0, 12), 16),
     name, contentType, region: clean(raw.roadaddress || raw.address || raw.region1cd?.label, 500),
     desc: clean(raw.introduction), image: /^https:\/\//.test(image) ? image : ({stay:'🏡',food:'🍊',activity:'🌊'})[contentType],
@@ -34,5 +37,5 @@ export async function fetchPage(page, key, fetcher = fetch) {
   if (Number(data.currentPage) !== page) throw new Error('upstream_page');
   const retrievedAt = new Date().toISOString();
   const items = data.items.map(x => normalizePlace(x, retrievedAt)).filter(Boolean);
-  return {items,page,pageCount,totalCount,received:data.items.length,skipped:data.items.length-items.length,retrievedAt};
+  return {accessCoverage:{withAlltag:data.items.filter(x=>typeof x.alltag==='string'&&x.alltag.trim()).length,withAccessTags:items.filter(x=>x.accessSources[0].tags.length).length},items,page,pageCount,totalCount,received:data.items.length,skipped:data.items.length-items.length,retrievedAt};
 }

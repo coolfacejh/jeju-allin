@@ -1,3 +1,5 @@
+import { AccessSummary } from '../components/AccessPanel';
+import { accessFit, accessRows, requiredAccess } from '../lib/access';
 import { fetchVisitPlaces, loadVisitCache, uniqueCatalogue } from '../lib/visitjeju';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -60,7 +62,8 @@ export default function Home() {
     logEvent('feed_view', { reasonsOn });
   }, [reasonsOn]);
   const access = profile?.access;
-  const hasAccessNeed = !!(access && (access.barrierFree || access.stroller || access.avoidNoKids));
+  const hasAccessNeed = !!(access && (access.barrierFree || access.stroller || access.avoidNoKids || requiredAccess(access).length));
+  const [confirmedOnly, setConfirmedOnly] = useState(initialExplore.confirmedOnly ?? profile?.access?.confirmedOnly ?? false);
   const [accessOn, setAccessOn] = useState(initialExplore.accessOn);
   const foodPref = profile?.foodPref;
   const hasFoodNeed = !!(foodPref && Object.values(foodPref).some(Boolean));
@@ -141,8 +144,7 @@ export default function Home() {
 
   function matchesAccess(c: (typeof curated)[number]) {
     if (!accessOn || !access) return true;
-    if (access.barrierFree && !c.accessibility?.barrierFree) return false;
-    if (access.stroller && !c.accessibility?.strollerOK) return false;
+    if (confirmedOnly && requiredAccess(access).length && accessFit(c,access)!=='met') return false;
     if (access.avoidNoKids && c.accessibility?.noKidsZone !== false) return false;
     return true;
   }
@@ -183,7 +185,7 @@ export default function Home() {
       matchesFood(c) &&
       matchesPet(c) &&
       matchesRegion(c),
-  );
+  ).sort((a,b)=>accessOn ? ({met:0,check:1,mismatch:2,none:3}[accessFit(a,access)]-({met:0,check:1,mismatch:2,none:3}[accessFit(b,access)])) : 0);
   // 세부 카테고리(2단계): 탭 선택 시 실제 존재하는 종류만 칩으로
   const subChips = tab !== 'all' ? subcatChips(filtered) : [];
   const subFiltered =
@@ -201,10 +203,10 @@ export default function Home() {
         matchesRegion(c),
     );
     let r = tab !== 'all' && sub !== 'all' ? pf.filter((c) => subcatOf(c) === sub) : pf;
-    if (mapOnlyBF) r = r.filter((c) => c.accessibility?.barrierFree);
+    if (mapOnlyBF) r = r.filter(c => accessRows(c).some(row=>row.state!=='unknown'));
     return r;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, tab, sub, region, q, accessOn, foodOn, petOn, mapOnlyBF]);
+  }, [pool, tab, sub, region, q, accessOn, confirmedOnly, foodOn, petOn, mapOnlyBF]);
 
   // Reset dependent filters only on an actual selection change, never on remount.
   const previousFilters = useRef(JSON.stringify([tab, sub, region, q, accessOn, foodOn, petOn]));
@@ -214,8 +216,8 @@ export default function Home() {
     previousFilters.current = signature;
   }, [tab, sub, region, q, accessOn, foodOn, petOn]);
   useEffect(() => {
-    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, foodOn, petOn });
-  }, [tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, foodOn, petOn]);
+    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, foodOn, petOn });
+  }, [tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, foodOn, petOn]);
 
   useLayoutEffect(() => {
     const previousRestoration = window.history.scrollRestoration;
@@ -251,12 +253,12 @@ export default function Home() {
   }, [initialExplore]);
 
   function openPlace(id: number) {
-    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, foodOn, petOn, scrollY: window.scrollY });
+    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, foodOn, petOn, scrollY: window.scrollY });
     navigate(`/place/${id}`);
   }
 
   const filterActive =
-    tab !== 'all' || sub !== 'all' || region !== 'all' || !!q || !accessOn || !foodOn || !petOn || mapOnlyBF;
+    tab !== 'all' || sub !== 'all' || region !== 'all' || !!q || !accessOn || !foodOn || !petOn || mapOnlyBF || confirmedOnly;
   function resetFilters() {
     setTab('all');
     setSub('all');
@@ -264,6 +266,7 @@ export default function Home() {
     setWish('');
     saveWish('');
     setAccessOn(true);
+    setConfirmedOnly(false);
     setFoodOn(true);
     setPetOn(true);
     setMapOnlyBF(false);
@@ -404,6 +407,7 @@ export default function Home() {
           )}
         </div>
 
+        {hasAccessNeed && <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={confirmedOnly} onChange={e=>{setConfirmedOnly(e.target.checked);setAccessOn(true);}}/>필수 조건이 확인된 곳만 표시</label>}
         {/* 접근성(여행 약자) 필터 */}
         {hasAccessNeed && (
           <button
@@ -414,7 +418,7 @@ export default function Home() {
           >
             <span className="flex items-center gap-2 text-sm font-bold">
               <Icon name="accessible" className="text-[18px]" />
-              {t('home.access.only')}
+              접근성 조건 우선 보기
             </span>
             <span className={`text-[11px] px-2 py-0.5 rounded-full ${accessOn ? 'bg-white/20' : 'bg-surface-sub'}`}>
               {[access?.barrierFree && '무장애', access?.stroller && '유모차', access?.avoidNoKids && '노키즈존 제외']
@@ -617,7 +621,7 @@ export default function Home() {
                   }`}
                 >
                   <Icon name="accessible" className="text-[14px]" />
-                  {lang === 'en' ? 'Barrier-free' : '무장애만'}
+                  {lang === 'en' ? 'Access information' : '접근성 정보 있는 곳'}
                 </button>
               </div>
               <button
@@ -722,8 +726,8 @@ export default function Home() {
 function AccessBadges({ item }: { item: CuratedContent }) {
   const a = item.accessibility;
   const badges: { label: string }[] = [];
-  if (a?.barrierFree) badges.push({ label: '♿ 무장애' });
-  if (a?.strollerOK) badges.push({ label: '🚼 유모차 OK' });
+  if (a?.barrierFree) badges.push({ label: '♿ 무장애 정보 등록' });
+  if (a?.strollerOK) badges.push({ label: '🚼 유모차 정보' });
   if (a?.elevator) badges.push({ label: '🛗 엘리베이터' });
   if (a?.noKidsZone) badges.push({ label: '🚫 노키즈존' });
   if (item.pet?.petFriendly) badges.push({ label: '🐕 반려견' });
@@ -817,6 +821,7 @@ function Card({
         </div>
 
         <AccessBadges item={item} />
+        <AccessSummary place={item} access={loadProfile()?.access} />
 
         {showReason && item.reasons.length > 0 && (
           <div className="bg-surface rounded-xl p-3 flex flex-col gap-1.5">

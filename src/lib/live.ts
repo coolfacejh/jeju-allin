@@ -1,3 +1,4 @@
+import { saveTourSource } from './accessStore';
 import type { Content } from '../types';
 
 // Supabase Edge Function(프록시) 호출 → 실시간 제주 관광 데이터.
@@ -116,7 +117,9 @@ export async function fetchAccessDetail(contentId: number): Promise<AccessDetail
       headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
     });
     if (!res.ok) return null;
-    return (await res.json()) as AccessDetail;
+    const detail = (await res.json()) as AccessDetail;
+    saveTourSource(contentId, detail);
+    return detail;
   } catch {
     return null;
   }

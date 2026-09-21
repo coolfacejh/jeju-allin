@@ -1,3 +1,4 @@
+import { accessRows, accessFit, linkAccessSources, mergeAccessSources } from '../src/lib/access';
 import { uniqueCatalogue, fetchVisitPlaces, loadVisitCache } from '../src/lib/visitjeju';
 import { fetchLivePlaces, loadLiveCache, LIVE_PAGES } from '../src/lib/live';
 import { test, beforeEach } from 'node:test';
@@ -202,4 +203,34 @@ test('VisitJeju pagination caches only complete results and preserves cache on f
   globalThis.fetch=(async()=>{throw new Error('offline');}) as typeof fetch;
   await assert.rejects(fetchVisitPlaces(true));assert.equal(loadVisitCache().length,3);
  }finally{globalThis.fetch=originalFetch;}
+});
+
+
+const accessPlace=(tags:string[]):Content=>({...external,provenance:{source:'visitjeju'},accessSources:[{source:'visitjeju',sourceId:'TEST',receivedAt:'2026-09-19',tags}]});
+test('accessibility presence, absence, qualification and missing information stay distinct',()=>{
+ const p=accessPlace(['주출입구 단차 없음','장애인 화장실 없음','장애인 전용 주차구역','경사로 있음 (가파름)','유모차 대여']);
+ const rows=Object.fromEntries(accessRows(p).map(r=>[r.key,r.state]));
+ assert.equal(rows.stepFree,'available');assert.equal(rows.restroom,'unavailable');assert.equal(rows.parking,'available');assert.equal(rows.ramp,'conditional');assert.equal(rows.route,'unknown');assert.equal(rows.elevator,'unknown');
+});
+test('required access distinguishes unknown from mismatch, legacy registration is not proof',()=>{
+ const need={barrierFree:false,stroller:false,avoidNoKids:false,required:['restroom'] as const};
+ const access={...need,required:[...need.required]};
+ assert.equal(accessFit(accessPlace(['장애인 화장실']),access),'met');
+ assert.equal(accessFit(accessPlace(['장애인 화장실 없음']),access),'mismatch');
+ assert.equal(accessFit(accessPlace(['화장실','주차장']),access),'check');
+ assert.equal(accessFit({...external,accessibility:{barrierFree:true}}, {...access,barrierFree:true}),'check');
+});
+test('different official sources retain contradictory evidence and nearby aliases keep IDs',()=>{
+ const p=accessPlace(['장애인 화장실']);const q:Content={...external,id:100,provenance:{source:'tourapi'},accessSources:[{source:'tourapi',sourceId:'100',receivedAt:'2026-09-19',fields:{restroom:'없음'}}]};
+ const linked=linkAccessSources([p,q]);assert.equal(linked.length,2);assert.deepEqual(linked.map(x=>x.id),[p.id,q.id]);
+ assert.equal(accessRows(linked[0]).find(r=>r.key==='restroom')?.state,'conflict');
+ assert.equal(accessRows(linked[1]).find(r=>r.key==='restroom')?.evidence.length,2);
+ assert.equal(accessRows(linkAccessSources([p,{...q,lat:33.9}])[0]).find(r=>r.key==='restroom')?.state,'available');
+});
+test('source refresh supersedes older evidence and sharing does not certify facilities',()=>{
+ const p=accessPlace(['장애인 화장실']);
+ assert.deepEqual(mergeAccessSources(p.accessSources,[{...p.accessSources![0],receivedAt:'2026-09-20',tags:['장애인 화장실 없음']}])[0].tags,['장애인 화장실 없음']);
+ const shared=decodeTrip(encodeTrip(makeTrip([[p]],0,2,{})))!;
+ assert.equal(shared.places[0].accessSources,undefined);
+ assert.ok(accessRows(shared.places[0]).every(r=>r.state==='unknown'));
 });

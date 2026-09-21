@@ -1,3 +1,5 @@
+import { ACCESS_LABELS } from '../lib/access';
+import type { AccessKey } from '../types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
@@ -51,6 +53,8 @@ export default function Onboarding() {
   const [themes, setThemes] = useState<ThemeKey[]>(existing?.themes ?? []);
   const [nights, setNights] = useState<number>(existing?.nights ?? 1);
   const [headcount, setHeadcount] = useState<number>(existing?.headcount ?? 2);
+  const [required, setRequired] = useState<AccessKey[]>(existing?.access?.required ?? []);
+  const [confirmedOnly, setConfirmedOnly] = useState(existing?.access?.confirmedOnly ?? false);
   const [barrierFree, setBarrierFree] = useState<boolean>(existing?.access?.barrierFree ?? false);
   const [strollerNeed, setStrollerNeed] = useState<boolean>(existing?.access?.stroller ?? false);
   const [avoidNoKids, setAvoidNoKids] = useState<boolean>(existing?.access?.avoidNoKids ?? false);
@@ -76,6 +80,8 @@ export default function Onboarding() {
     setThemes([]);
     setNights(1);
     setHeadcount(2);
+    setRequired([]);
+    setConfirmedOnly(false);
     setBarrierFree(false);
     setStrollerNeed(false);
     setAvoidNoKids(false);
@@ -110,7 +116,7 @@ export default function Onboarding() {
       themes,
       nights,
       headcount,
-      access: { barrierFree, stroller: strollerNeed, avoidNoKids },
+      access: { barrierFree, stroller: strollerNeed, avoidNoKids, required, confirmedOnly },
       foodPref: food,
       pet: { withPet, size: petSize },
       createdAt: new Date().toISOString(),
@@ -297,8 +303,14 @@ export default function Onboarding() {
           <Icon name="accessible" className="text-[16px]" />
           <span className="text-xs font-bold">{t('onb.mobility')}</span>
         </div>
-        <CareRow icon="accessible" label="무장애 · 휠체어 접근" desc="경사 완만, 휠체어 진입 가능한 곳만" checked={barrierFree} onToggle={() => setBarrierFree((v) => !v)} />
-        <CareRow icon="stroller" label="유모차 진입 필요" desc="유모차로 다니기 편한 동선" checked={strollerNeed} onToggle={() => setStrollerNeed((v) => !v)} />
+        <CareRow icon="accessible" label="무장애 · 휠체어 접근" desc="출입구와 내부 이동로 정보를 우선 확인합니다" checked={barrierFree} onToggle={() => setBarrierFree((v) => !v)} />
+        <CareRow icon="stroller" label="유모차 진입 필요" desc="단차와 내부 이동로 정보를 확인합니다" checked={strollerNeed} onToggle={() => setStrollerNeed((v) => !v)} />
+        <fieldset className="mt-3 rounded-xl bg-white p-3">
+          <legend className="text-sm font-bold">꼭 필요한 접근성 조건</legend>
+          <div className="grid grid-cols-2 gap-3">{(Object.keys(ACCESS_LABELS) as AccessKey[]).map(key=><label key={key} className="flex items-center gap-2 text-xs"><input type="checkbox" checked={required.includes(key)} onChange={()=>setRequired(v=>v.includes(key)?v.filter(k=>k!==key):[...v,key])}/>{ACCESS_LABELS[key]}</label>)}</div>
+          <label className="flex items-center gap-2 text-xs mt-4"><input type="checkbox" checked={confirmedOnly} onChange={e=>setConfirmedOnly(e.target.checked)}/>필수 조건이 확인된 곳만 표시</label>
+          <p className="text-xs text-muted mt-2">기본 설정에서는 정보가 부족한 장소도 ‘확인 필요’로 표시합니다.</p>
+        </fieldset>
         <CareRow icon="block" label="노키즈존 제외" desc="아이 입장 가능한 곳만 추천" checked={avoidNoKids} onToggle={() => setAvoidNoKids((v) => !v)} />
       </Section>
 

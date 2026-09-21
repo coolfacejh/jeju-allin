@@ -1,3 +1,4 @@
+import { accessRows } from '../lib/access';
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -178,6 +179,7 @@ export default function PlaceMap({
       return (
         `<div style="font-weight:700;font-size:13px;margin-bottom:2px">${name}</div>` +
         `<div style="font-size:11px;color:#64748b;margin-bottom:6px">${region}</div>` +
+        `<div style="font-size:11px;margin-bottom:6px">접근성 정보 ${accessRows(p).filter(r=>r.state!=='unknown').length}/6항목 · 상세 조건 확인</div>` +
         `<button data-id="${p.id}" class="jmap-open" style="background:#0A6E6D;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">상세 보기</button>`
       );
     };

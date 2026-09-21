@@ -15,3 +15,9 @@ test('handler rejects invalid requests before touching provider',async()=>{
  await handler({method:'GET',url:'/api/visitjeju?page=999'},res);assert.equal(res.statusCode,400);
  await handler({method:'POST',url:'/api/visitjeju'},res);assert.equal(res.statusCode,405);
 });
+
+test('alltag facilities retain original evidence without promoting ordinary parking or stroller rental',()=>{
+ const p=normalizePlace({...raw,alltag:'주차장,장애인 전용 주차구역,장애인 화장실 없음,유모차 대여,주출입구 단차 없음'},'now');
+ assert.deepEqual(p.accessSources[0].tags,['장애인 전용 주차구역','장애인 화장실 없음','주출입구 단차 없음']);
+ assert.equal(p.accessSources[0].checkedAt,undefined);
+});

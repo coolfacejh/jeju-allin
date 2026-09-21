@@ -8,6 +8,7 @@ export interface ExploreState {
   visibleCount: number;
   mapOnlyBF: boolean;
   accessOn: boolean;
+  confirmedOnly?: boolean;
   foodOn: boolean;
   petOn: boolean;
   scrollY: number;
@@ -26,6 +27,7 @@ export function loadExplore(): ExploreState {
       region: ['all', 'north', 'east', 'south', 'west'].includes(s.region) ? s.region : 'all',
       visibleCount: Number.isInteger(s.visibleCount) && s.visibleCount >= 24 && s.visibleCount <= 10000 ? s.visibleCount : 24,
       mapOnlyBF: s.mapOnlyBF === true, accessOn: s.accessOn !== false, foodOn: s.foodOn !== false, petOn: s.petOn !== false,
+      confirmedOnly: typeof s.confirmedOnly === 'boolean' ? s.confirmedOnly : undefined,
       scrollY: Number.isFinite(s.scrollY) && s.scrollY >= 0 ? Math.min(s.scrollY, 1000000) : 0,
     };
   } catch { return { ...defaults }; }
