@@ -88,6 +88,7 @@ export interface AccessSource {
 export interface Content {
   accessSources?: AccessSource[];
   phone?: string;
+  providerCategory?: string;
   provenance?: { source: 'local' | 'tourapi' | 'visitjeju' | 'shared'; retrievedAt?: string; sourceId?: string };
   id: number;
   name: string;

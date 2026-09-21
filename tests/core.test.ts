@@ -1,3 +1,4 @@
+import { subcatOf } from '../src/lib/subcat';
 import { accessRows, accessFit, linkAccessSources, mergeAccessSources } from '../src/lib/access';
 import { uniqueCatalogue, fetchVisitPlaces, loadVisitCache } from '../src/lib/visitjeju';
 import { fetchLivePlaces, loadLiveCache, LIVE_PAGES } from '../src/lib/live';
@@ -233,4 +234,21 @@ test('source refresh supersedes older evidence and sharing does not certify faci
  const shared=decodeTrip(encodeTrip(makeTrip([[p]],0,2,{})))!;
  assert.equal(shared.places[0].accessSources,undefined);
  assert.ok(accessRows(shared.places[0]).every(r=>r.state==='unknown'));
+});
+
+
+test('VisitJeju golf courses classify without TourAPI codes including names without golf',()=>{
+ for(const name of ['핀크스골프클럽','중문CC','해비치 컨트리클럽 제주','클럽나인브릿지','아난티 클럽 제주'])
+  assert.equal(subcatOf({contentType:'activity',name,hashtags:['골프'],desc:'제주의 골프장'}),'골프',name);
+ assert.equal(subcatOf({contentType:'activity',cat1:'A03',cat3:'A03020700',name:'시험 CC'}),'골프');
+});
+test('golf stores, events, accommodation and small-course activities are not full golf courses',()=>{
+ const check=(name:string,expected:string)=>assert.equal(subcatOf({contentType:'activity',name,hashtags:['골프']}),expected,name);
+ check('라온CC골프연습장','골프연습장');check('디아넥스 파크골프','파크·미니골프');check('제주 미니골프','파크·미니골프');
+ check('말본골프 서귀포점','자연·명소');
+ assert.equal(subcatOf({contentType:'activity',name:'말본골프 서귀포점',providerCategory:'쇼핑',hashtags:['골프']}),'쇼핑');
+ check('제주 골프웨어 매장','쇼핑');check('제주 골프 마스터스','축제·공연');
+ assert.equal(subcatOf({contentType:'stay',name:'테디밸리 골프앤리조트',hashtags:['골프']}),'호텔·리조트');
+ assert.equal(subcatOf({contentType:'food',name:'미니골프카페',hashtags:['골프']}),'카페·찻집');
+ assert.equal(subcatOf({contentType:'activity',name:'골프 입문 이야기',hashtags:['골프']}),'자연·명소');
 });

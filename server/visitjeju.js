@@ -17,6 +17,7 @@ export function normalizePlace(raw, retrievedAt) {
   return {
     accessSources: [{source:'visitjeju',sourceId,receivedAt:retrievedAt,tags:accessTags}],
     phone: clean(raw.phoneno, 80),
+    providerCategory: category,
     id: 1000000000000 + Number.parseInt(createHash('sha256').update('visitjeju:'+sourceId).digest('hex').slice(0, 12), 16),
     name, contentType, region: clean(raw.roadaddress || raw.address || raw.region1cd?.label, 500),
     desc: clean(raw.introduction), image: /^https:\/\//.test(image) ? image : ({stay:'🏡',food:'🍊',activity:'🌊'})[contentType],

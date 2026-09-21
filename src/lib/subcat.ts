@@ -9,6 +9,9 @@ type AnyPlace = {
   cat2?: string;
   cat3?: string;
   name?: string;
+  desc?: string;
+  hashtags?: string[];
+  providerCategory?: string;
   tags?: { themes?: string[] };
 };
 
@@ -71,6 +74,21 @@ export function subcatOf(p: AnyPlace): string {
     return '펜션·독채';
   }
 
+  // Preserve provider categories before applying cross-provider golf rules.
+  if (ctid === '38' || c1 === 'A04' || /쇼핑/.test(p.providerCategory || '')) return '쇼핑';
+  if (ctid === '15' || /축제|행사/.test(p.providerCategory || '')) return '축제·공연';
+  if (ctid === '14') return '문화·전시';
+  const golfTag = (p.hashtags || []).some(t => /^(골프|golf)$/i.test(t.trim()));
+  const golfContext = /골프|컨트리클럽|country\s*club|golf|[CG]C(?:$|\s)/i.test(name) || golfTag || c3 === 'A03020700';
+  if (golfContext) {
+    if (/웨어|용품|골프채|골프숍|골프샵/.test(name)) return '쇼핑';
+    if (/대회|마스터스|페스티벌|박람회|홀인런/.test(name)) return '축제·공연';
+    if (/박물관|전시관/.test(name)) return '문화·전시';
+    if (/파크\s*골프|미니\s*골프|그라운드\s*골프/.test(name)) return '파크·미니골프';
+    if (/연습장|스크린\s*골프|골프\s*연습/.test(name)) return '골프연습장';
+    if (c3 === 'A03020700' || /골프(?:장|클럽|리조트|앤리조트)|컨트리\s*클럽|country\s*club|golf\s*club|[CG]C(?:$|[\s"'])/i.test(name)
+      || (golfTag && /골프장|골프코스|골프\s*코스/.test(p.desc || '') && !/인근|근처|주변/.test(p.desc || ''))) return '골프';
+  }
   // activity
   if (ctid === '28' || c1 === 'A03') {
     if (LEISURE_CAT3[c3]) return LEISURE_CAT3[c3];
@@ -81,7 +99,6 @@ export function subcatOf(p: AnyPlace): string {
     if (/패러|글라이딩/.test(name)) return '패러글라이딩';
     if (/승마/.test(name)) return '승마';
     if (/카트/.test(name)) return '카트';
-    if (/골프/.test(name)) return '골프';
     if (/낚시/.test(name)) return '낚시';
     if (/캠핑|글램핑/.test(name)) return '캠핑';
     if (/트레킹|올레|둘레/.test(name)) return '트레킹';
