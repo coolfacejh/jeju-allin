@@ -1,3 +1,5 @@
+import { OLLE_COURSES } from '../src/data/olle';
+import { ollePlace, ollePlaceId, filterOlle } from '../src/lib/olle';
 import { subcatOf } from '../src/lib/subcat';
 import { accessRows, accessFit, linkAccessSources, mergeAccessSources } from '../src/lib/access';
 import { uniqueCatalogue, fetchVisitPlaces, loadVisitCache } from '../src/lib/visitjeju';
@@ -251,4 +253,37 @@ test('golf stores, events, accommodation and small-course activities are not ful
  assert.equal(subcatOf({contentType:'stay',name:'테디밸리 골프앤리조트',hashtags:['골프']}),'호텔·리조트');
  assert.equal(subcatOf({contentType:'food',name:'미니골프카페',hashtags:['골프']}),'카페·찻집');
  assert.equal(subcatOf({contentType:'activity',name:'골프 입문 이야기',hashtags:['골프']}),'자연·명소');
+});
+
+
+test('Olle catalogue distinguishes alternatives and filters by full upper duration', () => {
+  assert.equal(OLLE_COURSES.length, 29);
+  assert.equal(new Set(OLLE_COURSES.map(ollePlaceId)).size, 29);
+  for (const c of OLLE_COURSES) {
+    assert.ok(c.distanceKm > 0 && c.hours[0] <= c.hours[1]);
+    assert.ok(c.start.lat > 33 && c.end.lat < 34.1);
+  }
+  const f = { query: '', region: '', difficulty: '', time: 'short', island: false };
+  assert.ok(filterOlle(OLLE_COURSES, f).every(c => c.hours[1] <= 4));
+  assert.equal(filterOlle(OLLE_COURSES, { ...f, time: '', island: true }).length, 4);
+  assert.deepEqual(filterOlle(OLLE_COURSES, { ...f, time: '', query: '3-' }).map(c => c.code), ['3-A', '3-B']);
+});
+
+test('Olle walking time survives storage and sharing without pretending it is a point route', () => {
+  const c = OLLE_COURSES.find(c => c.slug === '03_A')!;
+  const p = ollePlace(c, 60);
+  assert.equal(p.avgStayMinutes, 480);
+  assert.equal(p.lat, undefined);
+  rememberPlaces([p]); saveSavedIds([p.id]);
+  const trip = currentTrip();
+  const decoded = decodeTrip(encodeTrip(trip));
+  assert.ok(decoded);
+  assert.equal(decoded!.places[0].avgStayMinutes, 480);
+  const plan = scheduleDay([p], { ...DEFAULT_SCHEDULE, dayStart: '10:00', dayEnd: '17:00' });
+  assert.equal(plan.stops[0].depart, '18:00');
+  assert.equal(plan.complete, false);
+  assert.ok(plan.warnings.some(w => w.includes('종점 이후')));
+  assert.ok(plan.warnings.some(w => w.includes('일정 종료 한도')));
+  const multi = scheduleDay([p, external]);
+  assert.equal(multi.stops[1].arrive, '확인 필요');
 });

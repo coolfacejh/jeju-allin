@@ -5,6 +5,7 @@ import { useI18n } from '../i18n';
 const items = [
   { to: '/onboarding', key: 'nav.taste', icon: 'tune' },
   { to: '/home', key: 'nav.curation', icon: 'explore' },
+  { to: '/olle', key: '올레길', icon: 'hiking' },
   { to: '/my-trip', key: 'nav.mytrip', icon: 'favorite' },
 ];
 
@@ -12,7 +13,7 @@ export default function BottomNav({ savedCount = 0 }: { savedCount?: number }) {
   const { t } = useI18n();
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-t border-line shadow-[0_-4px_20px_rgba(30,41,59,0.05)]">
-      <div className="app-shell mx-auto h-[4.25rem] px-4 grid grid-cols-3 items-center">
+      <div className="app-shell mx-auto h-[4.25rem] px-4 grid grid-cols-4 items-center">
         {items.map((it) => (
           <NavLink
             key={it.to}
@@ -31,7 +32,7 @@ export default function BottomNav({ savedCount = 0 }: { savedCount?: number }) {
                 </span>
               )}
             </div>
-            <span className="text-[10px] tracking-wide">{t(it.key)}</span>
+            <span className="text-[10px] tracking-wide">{it.to === '/olle' ? '올레길' : t(it.key)}</span>
           </NavLink>
         ))}
       </div>

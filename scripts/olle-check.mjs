@@ -1,0 +1,62 @@
+import { createServer } from 'node:http';
+import { readFile, mkdir } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { pathToFileURL } from 'node:url';
+const { chromium } = await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE).href);
+const html = await readFile('dist/index.html');
+const server = createServer((req,res) => { res.setHeader('Content-Type','text/html; charset=utf-8'); res.end(html); });
+await new Promise(r => server.listen(0,'127.0.0.1',r));
+const origin = process.env.OLLE_BASE_URL || `http://127.0.0.1:${server.address().port}`;
+const browser = await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true});
+await mkdir('output/verification',{recursive:true});
+try {
+  for (const width of [390,1440]) {
+    const ctx = await browser.newContext({viewport:{width,height:950}});
+    await ctx.route('**/*', r => new URL(r.request().url()).origin === origin ? r.continue() : r.fulfill({status:200,body:''}));
+    await ctx.addInitScript(() => {
+      if (!localStorage.getItem('jeju_allin_profile')) localStorage.setItem('jeju_allin_profile',JSON.stringify({travelType:'healing',companion:'solo',hasChild:false,hasSenior:false,themes:['trekking'],nights:2,headcount:1,createdAt:''}));
+    });
+    const p = await ctx.newPage(); const errors=[]; p.on('pageerror',e=>errors.push(e.message));
+    await p.goto(origin+'/#/olle');
+    await p.locator('[data-olle-card]').last().waitFor();
+    assert.equal(await p.locator('[data-olle-card]').count(),29);
+    await p.getByLabel('섬 코스만 보기').check();
+    assert.equal(await p.locator('[data-olle-card]').count(),4);
+    await p.getByRole('button',{name:'필터 초기화'}).click();
+    await p.getByLabel('코스 검색').fill('3-');
+    assert.equal(await p.locator('[data-olle-card]').count(),2);
+    await p.locator('[data-olle-card]').filter({hasText:'3-A코스'}).click();
+    await p.getByRole('heading',{name:'내 일정에 담기',exact:true}).waitFor();
+    assert.ok((await p.locator('body').innerText()).includes('450분'));
+    await p.getByLabel('여행 날짜').selectOption('1');
+    await p.getByLabel('추가 여유 시간').selectOption('60');
+    await p.getByRole('button',{name:'이 코스 일정에 담기'}).click();
+    assert.ok((await p.getByRole('status').innerText()).includes('2일차에 480분'));
+    let trip = await p.evaluate(() => JSON.parse(localStorage.getItem('jeju_trip_v2')));
+    assert.deepEqual(trip.days, [[],[900000000033],[]]);
+    assert.equal(trip.schedule.visits['900000000033'].durationMin,480);
+    await p.reload();
+    assert.equal(await p.getByLabel('추가 여유 시간').inputValue(),'60');
+    await p.getByRole('button',{name:'담은 코스 일정 업데이트'}).click();
+    trip = await p.evaluate(() => JSON.parse(localStorage.getItem('jeju_trip_v2')));
+    assert.equal(trip.days.flat().length,1);
+    await p.getByRole('link',{name:'← 올레길 목록'}).click();
+    assert.equal(await p.getByLabel('코스 검색').inputValue(),'3-');
+    await p.getByRole('button',{name:'필터 초기화'}).click();
+    await p.screenshot({path:`output/verification/olle-list-${width}.png`,fullPage:false});
+    assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await p.goto(origin+'/#/olle/01');
+    await p.getByRole('heading',{name:'접근성 · 구간별 확인'}).waitFor();
+    assert.ok((await p.locator('body').innerText()).includes('4.6km'));
+    assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await p.screenshot({path:`output/verification/olle-detail-${width}.png`,fullPage:false});
+    await p.goto(origin+'/#/place/900000000033');
+    await p.waitForURL('**/#/olle/03_A');
+    await p.goto(origin+'/#/planner');
+    await p.getByRole('button',{name:/^2일차/}).click();
+    assert.ok((await p.locator('body').innerText()).includes('제주올레 3-A코스'));
+    assert.deepEqual(errors,[]);
+    console.log(`${width}: 29 routes, filters, detail, day selection, duration persistence, duplicate prevention, saved-detail redirect, planner and layout passed`);
+    await ctx.close();
+  }
+} finally { await browser.close(); server.close(); }

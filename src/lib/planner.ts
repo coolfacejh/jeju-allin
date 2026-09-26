@@ -1,3 +1,4 @@
+import { courseForPlace } from './olle';
 import type { Content } from '../types';
 import { DEFAULT_SCHEDULE, minutes, type ScheduleSettings } from './schedule';
 
@@ -123,6 +124,11 @@ export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEF
         totalTravelMin += travel;
         if (clock !== null) clock += travel;
       }
+    }
+    const course = courseForPlace(item.id);
+    if (course) {
+      complete = false;
+      warnings.push(`${item.name}: 공식 도보 ${course.hours.join('~')}시간. 계획 시간에 출발점까지·종점 이후의 이동 및 배편은 포함되지 않습니다. 코스 상세에서 확인해 주세요.`);
     }
     const visit = settings.visits[item.id] ?? {};
     const open = minutes(visit.open), close = minutes(visit.close);

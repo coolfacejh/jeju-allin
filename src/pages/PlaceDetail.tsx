@@ -1,3 +1,4 @@
+import { courseForPlace } from '../lib/olle';
 import AccessPanel from '../components/AccessPanel';
 import { tourAccessSource, readTourSources } from '../lib/accessStore';
 import { useEffect, useMemo, useState } from 'react';
@@ -40,6 +41,8 @@ export default function PlaceDetail() {
     return () => { alive = false; };
   }, [placeId, tourId]);
 
+  const olle = courseForPlace(placeId);
+  if (olle) return <Navigate to={`/olle/${olle.slug}`} replace />;
   if (!base) return <Navigate to="/home" replace />;
 
   function toggleSave() {
