@@ -31,7 +31,7 @@ try {
     await p.getByLabel('여행 날짜').selectOption('1');
     await p.getByLabel('추가 여유 시간').selectOption('60');
     await p.getByRole('button',{name:'이 코스 일정에 담기'}).click();
-    assert.ok((await p.getByRole('status').innerText()).includes('2일차에 480분'));
+    assert.ok((await p.getByRole('status').filter({hasText:'2일차에'}).innerText()).includes('2일차에 480분'));
     let trip = await p.evaluate(() => JSON.parse(localStorage.getItem('jeju_trip_v2')));
     assert.deepEqual(trip.days, [[],[900000000033],[]]);
     assert.equal(trip.schedule.visits['900000000033'].durationMin,480);
@@ -48,6 +48,10 @@ try {
     await p.goto(origin+'/#/olle/01');
     await p.getByRole('heading',{name:'접근성 · 구간별 확인'}).waitFor();
     assert.ok((await p.locator('body').innerText()).includes('4.6km'));
+    await p.getByText('지도 배경을 모두 불러오지 못했어요.',{exact:false}).waitFor();
+    await p.getByRole('button',{name:'지도 다시 불러오기'}).click();
+    await p.getByText('지도 배경을 모두 불러오지 못했어요.',{exact:false}).waitFor();
+    assert.equal(await p.locator('.leaflet-container').count(),1);
     assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await p.screenshot({path:`output/verification/olle-detail-${width}.png`,fullPage:false});
     await p.goto(origin+'/#/place/900000000033');

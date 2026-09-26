@@ -11,15 +11,27 @@ import { DEFAULT_SCHEDULE } from '../lib/schedule';
 
 function Endpoints({ course: c }: { course: OlleCourse }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   useEffect(() => {
     if (!ref.current) return;
+    setStatus('loading');
     const map = L.map(ref.current, { scrollWheelZoom: false });
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri', maxZoom: 19 }).addTo(map);
+    let failed = false;
+    const timer = window.setTimeout(() => setStatus('error'), 12000);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri', maxZoom: 19 })
+      .on('tileload', () => { window.clearTimeout(timer); if (!failed) setStatus('ready'); })
+      .on('tileerror', () => { failed = true; window.clearTimeout(timer); setStatus('error'); }).addTo(map);
     [c.start,c.end].forEach((p,i) => L.marker([p.lat,p.lng], { icon: L.divIcon({ className: '', html: `<span style="display:block;background:${i ? '#dc713d' : '#007e80'};color:white;border:2px solid white;border-radius:20px;width:42px;text-align:center;padding:5px;font-size:12px">${i ? '도착' : '출발'}</span>`, iconSize: [42,32] }) }).addTo(map).bindTooltip(`${i ? '도착' : '출발'}: ${p.name}`));
     map.fitBounds(L.latLngBounds([[c.start.lat,c.start.lng],[c.end.lat,c.end.lng]]).pad(0.3), { maxZoom: 13 });
-    return () => { map.remove(); };
-  }, [c]);
-  return <div ref={ref} role="img" aria-label="공식 출발·도착 위치 지도. 실제 걷는 경로는 공식 지도에서 확인" className="h-64 md:h-80 rounded-xl relative z-0" />;
+    const resize = new ResizeObserver(() => map.invalidateSize({ pan: false }));
+    resize.observe(ref.current);
+    return () => { window.clearTimeout(timer); resize.disconnect(); map.remove(); };
+  }, [c, attempt]);
+  return <div className="space-y-2"><div ref={ref} role="img" aria-label="공식 출발·도착 위치 지도. 실제 걷는 경로는 공식 지도에서 확인" className="h-64 md:h-80 rounded-xl relative z-0" />
+    {status !== 'ready' && <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{status === 'loading' ? '지도를 불러오는 중입니다…' : '지도 배경을 모두 불러오지 못했어요. 인터넷 연결을 확인하거나 아래 길찾기·공식 지도 링크를 이용해 주세요.'}</p>}
+    <button type="button" className="text-sm text-primary underline py-2" onClick={() => setAttempt(n => n+1)}>지도 다시 불러오기</button>
+  </div>;
 }
 const mapUrl = (p: OlleCourse['start']) => `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
 export default function OlleDetail() {
