@@ -14,7 +14,7 @@ function Endpoints({ course: c }: { course: OlleCourse }) {
   useEffect(() => {
     if (!ref.current) return;
     const map = L.map(ref.current, { scrollWheelZoom: false });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19 }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri', maxZoom: 19 }).addTo(map);
     [c.start,c.end].forEach((p,i) => L.marker([p.lat,p.lng], { icon: L.divIcon({ className: '', html: `<span style="display:block;background:${i ? '#dc713d' : '#007e80'};color:white;border:2px solid white;border-radius:20px;width:42px;text-align:center;padding:5px;font-size:12px">${i ? '도착' : '출발'}</span>`, iconSize: [42,32] }) }).addTo(map).bindTooltip(`${i ? '도착' : '출발'}: ${p.name}`));
     map.fitBounds(L.latLngBounds([[c.start.lat,c.start.lng],[c.end.lat,c.end.lng]]).pad(0.3), { maxZoom: 13 });
     return () => { map.remove(); };
