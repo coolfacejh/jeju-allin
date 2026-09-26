@@ -1,3 +1,5 @@
+import { olleSegmentFacts, olleSegmentId, olleSegmentPlace, isOlleSegment } from '../src/lib/olle';
+import { saveOlleVisit } from '../src/lib/olleTrip';
 import { OLLE_COURSES } from '../src/data/olle';
 import { ollePlace, ollePlaceId, filterOlle } from '../src/lib/olle';
 import { subcatOf } from '../src/lib/subcat';
@@ -286,4 +288,45 @@ test('Olle walking time survives storage and sharing without pretending it is a 
   assert.ok(plan.warnings.some(w => w.includes('일정 종료 한도')));
   const multi = scheduleDay([p, external]);
   assert.equal(multi.stops[1].arrive, '확인 필요');
+});
+
+
+test('Olle access segments have separate stable IDs and never inherit full-course times or facility claims', () => {
+  const courses = OLLE_COURSES.filter(c => c.accessSegment);
+  assert.equal(courses.length, 10);
+  for (const c of courses) {
+    assert.ok(olleSegmentFacts(c));
+    assert.notEqual(olleSegmentId(c), ollePlaceId(c));
+    assert.ok(isOlleSegment(olleSegmentId(c)));
+    const p = olleSegmentPlace(c, 125);
+    assert.equal(p.avgStayMinutes, 125);
+    assert.equal(p.lat, undefined);
+    assert.equal(p.accessibility, undefined);
+    assert.equal(p.accessSources, undefined);
+    const plan = scheduleDay([p]);
+    assert.ok(plan.warnings.some(w => w.includes('공식 소요시간 아님')));
+    assert.ok(!plan.warnings.some(w => w.includes('공식 도보')));
+  }
+  for (const duration of [0,-1,1.5,NaN,1441]) assert.throws(() => olleSegmentPlace(courses[0], duration));
+  assert.throws(() => olleSegmentPlace(OLLE_COURSES.find(c => !c.accessSegment)!,120));
+});
+
+test('saving only an Olle segment preserves dates, order, notes and portable user duration', () => {
+  saveProfile(profile);
+  const c = OLLE_COURSES[0], segment = olleSegmentPlace(c,120);
+  assert.equal(saveOlleVisit(segment,1),null);
+  assert.deepEqual(currentTrip().days,[[],[segment.id],[]]);
+  const t = currentTrip(); t.notes[segment.id]='휴식 포함'; saveTrip(t);
+  assert.equal(saveOlleVisit(external, 1), '계획 시간은 1~1440분 사이로 입력해 주세요.');
+  assert.equal(saveOlleVisit({...external, avgStayMinutes:60},1),null);
+  assert.equal(saveOlleVisit(olleSegmentPlace(c,150),1),null);
+  assert.deepEqual(currentTrip().days[1],[segment.id,external.id]);
+  assert.equal(currentTrip().notes[segment.id],'휴식 포함');
+  const shared = decodeTrip(encodeTrip(currentTrip()))!;
+  assert.equal(shared.schedule!.visits[segment.id].durationMin,150);
+  assert.ok(shared.places[0].name.includes('일부 구간'));
+  assert.equal(saveOlleVisit(olleSegmentPlace(c,150),2),null);
+  assert.deepEqual(currentTrip().days,[[],[external.id],[segment.id]]);
+  assert.ok(!currentTrip().days.flat().includes(ollePlaceId(c)));
+  assert.equal(saveOlleVisit(segment,9),'여행 날짜가 바뀌었어요. 화면을 다시 열고 날짜를 선택해 주세요.');
 });

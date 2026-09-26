@@ -7,7 +7,7 @@ export function ollePlaceId(c: OlleCourse): number {
   return 900_000_000_000 + Number(main) * 10 + ({ A: 3, B: 4 }[branch] ?? Number(branch || 0));
 }
 export function courseForPlace(id: number): OlleCourse | undefined {
-  return OLLE_COURSES.find(c => ollePlaceId(c) === id);
+  return OLLE_COURSES.find(c => ollePlaceId(c) === id || (!!c.accessSegment && olleSegmentId(c) === id));
 }
 export const olleSourceUrl = (c: OlleCourse) => `https://www.jejuolle.org/trail#/road/${c.slug}`;
 export function olleDuration(c: OlleCourse, rest = 30): number {
@@ -27,4 +27,22 @@ export function filterOlle(courses: OlleCourse[], f: OlleFilters): OlleCourse[] 
   return courses.filter(c => (!q || `${c.code} ${c.name} ${c.region}`.toLowerCase().includes(q))
     && (!f.region || c.region === f.region) && (!f.difficulty || c.difficulty === f.difficulty)
     && (!f.island || !!c.island) && (!f.time || (f.time === 'short' ? c.hours[1] <= 4 : f.time === 'medium' ? c.hours[1] > 4 && c.hours[1] <= 6 : c.hours[1] > 6)));
+}
+
+export const olleSegmentId = (c: OlleCourse): number => ollePlaceId(c) + 10_000;
+export function isOlleSegment(id: number): boolean {
+  return OLLE_COURSES.some(c => !!c.accessSegment && olleSegmentId(c) === id);
+}
+export function olleSegmentFacts(c: OlleCourse) {
+  const match = c.accessSegment?.segment.match(/^([\d.]+)km\s*\/\s*(.+?)\s*~\s*(.+)$/i);
+  if (!match) return null;
+  return { distanceKm: Number(match[1]), start: match[2].trim(), end: match[3].trim() };
+}
+export function olleSegmentPlace(c: OlleCourse, duration: number): Content {
+  const facts = olleSegmentFacts(c);
+  if (!facts || !Number.isInteger(duration) || duration < 1 || duration > 1440) throw new Error('구간과 계획 시간(1~1440분)을 확인해 주세요.');
+  return { ...ollePlace(c, 0), id: olleSegmentId(c),
+    name: `제주올레 ${c.code}코스 일부 구간 · ${facts.start} → ${facts.end} (${facts.distanceKm}km)`,
+    desc: `공식 휠체어 안내 구간. 이용 조건과 현장 상태는 별도 확인 필요. 사용자 계획 ${duration}분(휴식 포함), 공식 소요시간 아님. 구간 전후 이동 별도.`,
+    avgStayMinutes: duration, provenance: { source: 'local', sourceId: `olle:${c.slug}:access-segment` } };
 }

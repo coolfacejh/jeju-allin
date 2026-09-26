@@ -1,5 +1,6 @@
+import OlleAccessCard from '../components/OlleAccessCard';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import BottomNav from '../components/BottomNav';
 import { OLLE_COURSES, OLLE_CHECKED_AT, type OlleCourse } from '../data/olle';
@@ -40,6 +41,8 @@ export default function OlleDetail() {
   return c ? <Detail key={c.slug} course={c} /> : <main className="app-shell mx-auto p-8"><h1>코스를 찾을 수 없어요.</h1><Link className="underline" to="/olle">올레길 목록으로</Link></main>;
 }
 function Detail({ course: c }: { course: OlleCourse }) {
+  const location = useLocation();
+  useEffect(() => { if (new URLSearchParams(location.search).get('segment') === '1') document.getElementById('olle-access')?.scrollIntoView(); }, [location.search]);
   const trip = currentTrip();
   const id = ollePlaceId(c);
   const [saved, setSaved] = useState(() => loadSavedIds().includes(id));
@@ -50,6 +53,7 @@ function Detail({ course: c }: { course: OlleCourse }) {
   });
   const [day, setDay] = useState(() => Math.max(0, trip.days.findIndex(d => d.includes(id))));
   const [message, setMessage] = useState('');
+  const [, refreshSaved] = useState(0);
   const duration = olleDuration(c, rest);
   function add() {
     const latest = currentTrip();
@@ -73,7 +77,7 @@ function Detail({ course: c }: { course: OlleCourse }) {
     <div className="grid lg:grid-cols-2 gap-5 items-start">
       <div className="space-y-5">
         <section className="bg-white rounded-2xl border border-line p-5 space-y-4"><h2 className="text-lg font-bold">코스와 지도</h2><Endpoints course={c} /><dl className="text-sm space-y-3"><div><dt className="text-muted">출발</dt><dd>{c.start.name} <a className="text-primary underline ml-2" href={mapUrl(c.start)} target="_blank" rel="noreferrer">출발점 길찾기</a></dd></div><div><dt className="text-muted">도착</dt><dd>{c.end.name} <a className="text-primary underline ml-2" href={mapUrl(c.end)} target="_blank" rel="noreferrer">도착점 위치</a></dd></div></dl><p className="text-xs text-muted">표시는 공식 출발·도착 좌표입니다. 실제 걷는 경로와 경유지·스탬프 위치는 공식 상세 지도에서 확인해 주세요.</p><a className="block text-primary font-bold underline" href={olleSourceUrl(c)} target="_blank" rel="noreferrer">공식 코스 지도·경유지·스탬프 확인 ↗</a></section>
-        <section className="bg-white rounded-2xl border border-line p-5 space-y-3"><h2 className="text-lg font-bold">접근성 · 구간별 확인</h2>{c.accessSegment ? <><p className="text-sm font-bold text-primary">공식 휠체어 안내 구간</p><p>{c.accessSegment.segment}</p><p className="text-sm">구간 시작: {c.accessSegment.startAddress}</p><p className="text-sm text-sub">이 안내는 위 구간에 한정됩니다. 아래 일정 담기는 전체 코스 기준이며, 일부 구간만의 일정은 아직 지원하지 않습니다.</p></> : <p className="text-sm">이 앱에서 확인한 휠체어 이용 구간 정보가 없습니다. 공식 안내에서 별도 확인해 주세요.</p>}<p className="text-sm text-sub">전체 코스의 휠체어·유모차 이용 가능 여부, 경사·단차, 접근 가능한 화장실은 별도 확인이 필요합니다. 현장 확인일은 미확인입니다.</p></section>
+        <OlleAccessCard course={c} onSaved={() => refreshSaved(n => n+1)} />
       </div>
       <div className="space-y-5">
         <section className="bg-white rounded-2xl border border-line p-5 space-y-4"><h2 className="text-lg font-bold">내 일정에 담기</h2><p className="text-sm text-sub">전체 코스의 공식 소요시간 상한 {c.hours[1]}시간을 기준으로 여유 시간을 더합니다. 걷는 속도·식사·휴식에 맞게 조정하세요.</p><div className="grid grid-cols-2 gap-3"><label className="text-sm">여행 날짜<select value={day} onChange={e => setDay(Number(e.target.value))} className="block w-full p-3 border border-line rounded-xl mt-1">{trip.days.map((_,i) => <option key={i} value={i}>{i+1}일차</option>)}</select></label><label className="text-sm">추가 여유 시간<select value={rest} onChange={e => setRest(Number(e.target.value))} className="block w-full p-3 border border-line rounded-xl mt-1">{[0,30,60,90,120].map(n => <option key={n} value={n}>{n}분</option>)}</select></label></div><p className="bg-surface-sub p-3 rounded-xl font-bold">계획 시간: {Math.floor(duration/60)}시간 {duration%60 ? `${duration%60}분` : ''} <span className="text-sm font-normal">({duration}분)</span></p><p className="text-sm text-sub">숙소에서 출발점까지, 종점에서 다음 장소까지의 이동과 배편은 포함되지 않습니다.</p><button className="w-full bg-primary text-white p-3 rounded-xl font-bold" onClick={add}>{saved ? '담은 코스 일정 업데이트' : '이 코스 일정에 담기'}</button><p role="status" className="text-sm text-primary">{message}</p>{saved && <Link to="/my-trip" className="block text-center underline text-primary">담은 일정 확인</Link>}</section>

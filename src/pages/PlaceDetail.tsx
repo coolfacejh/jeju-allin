@@ -1,4 +1,4 @@
-import { courseForPlace } from '../lib/olle';
+import { courseForPlace, isOlleSegment } from '../lib/olle';
 import AccessPanel from '../components/AccessPanel';
 import { tourAccessSource, readTourSources } from '../lib/accessStore';
 import { useEffect, useMemo, useState } from 'react';
@@ -42,7 +42,7 @@ export default function PlaceDetail() {
   }, [placeId, tourId]);
 
   const olle = courseForPlace(placeId);
-  if (olle) return <Navigate to={`/olle/${olle.slug}`} replace />;
+  if (olle) return <Navigate to={`/olle/${olle.slug}${isOlleSegment(placeId) ? "?segment=1" : ""}`} replace />;
   if (!base) return <Navigate to="/home" replace />;
 
   function toggleSave() {
