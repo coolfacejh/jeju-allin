@@ -1,3 +1,4 @@
+import { BASEMAP_URL, BASEMAP_OPTIONS } from '../lib/mapTiles';
 import { accessRows } from '../lib/access';
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
@@ -91,10 +92,7 @@ export default function PlaceMap({
       maxBounds: JEJU_BOUNDS,
       maxBoundsViscosity: 0.8,
     });
-    L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 19, attribution: '&copy; Esri' },
-    ).addTo(map);
+    L.tileLayer(BASEMAP_URL, BASEMAP_OPTIONS).addTo(map);
 
     const cluster = L.markerClusterGroup({
       maxClusterRadius: 48,
@@ -250,7 +248,7 @@ export default function PlaceMap({
           <span className="flex items-center gap-1"><i className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: COLOR.food }} /> 먹거리</span>
           <span className="flex items-center gap-1"><i className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: COLOR.activity }} /> 즐길거리</span>
         </div>
-        <span className="text-[10px] text-muted">확대하면 장소 이름이 표시됩니다</span>
+        <span className="text-[10px] text-muted">확대 시 배경은 확대 표시됩니다 · 장소 이름 확인 가능</span>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { BASEMAP_URL, BASEMAP_OPTIONS } from '../lib/mapTiles';
 import OlleAccessCard from '../components/OlleAccessCard';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
@@ -20,7 +21,7 @@ function Endpoints({ course: c }: { course: OlleCourse }) {
     const map = L.map(ref.current, { scrollWheelZoom: false });
     let failed = false;
     const timer = window.setTimeout(() => setStatus('error'), 12000);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri', maxZoom: 19 })
+    L.tileLayer(BASEMAP_URL, BASEMAP_OPTIONS)
       .on('tileload', () => { window.clearTimeout(timer); if (!failed) setStatus('ready'); })
       .on('tileerror', () => { failed = true; window.clearTimeout(timer); setStatus('error'); }).addTo(map);
     [c.start,c.end].forEach((p,i) => L.marker([p.lat,p.lng], { icon: L.divIcon({ className: '', html: `<span style="display:block;background:${i ? '#dc713d' : '#007e80'};color:white;border:2px solid white;border-radius:20px;width:42px;text-align:center;padding:5px;font-size:12px">${i ? '도착' : '출발'}</span>`, iconSize: [42,32] }) }).addTo(map).bindTooltip(`${i ? '도착' : '출발'}: ${p.name}`));
