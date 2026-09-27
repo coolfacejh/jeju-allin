@@ -1,3 +1,4 @@
+import { AccessGuideLink } from '../components/AccessPictograms';
 import { AccessSummary } from '../components/AccessPanel';
 import { accessFit, accessRows, requiredAccess } from '../lib/access';
 import { fetchVisitPlaces, loadVisitCache, uniqueCatalogue } from '../lib/visitjeju';
@@ -341,6 +342,7 @@ export default function Home() {
       </header>
 
       <main className="app-shell mx-auto pt-16 pb-28 px-4 flex flex-col gap-6">
+        <AccessGuideLink />
         {/* 취향 요약 */}
         <section className="flex flex-col gap-2 mt-4">
           <div className="bg-white rounded-xl p-4 shadow-card">

@@ -1,3 +1,4 @@
+import { AccessGuideLink } from './AccessPictograms';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { OLLE_CHECKED_AT, type OlleCourse } from '../data/olle';
@@ -28,6 +29,7 @@ export default function OlleAccessCard({ course: c, onSaved }: { course: OlleCou
   }
   return <section id="olle-access" className="bg-white rounded-2xl border border-line p-5 space-y-4 scroll-mt-6">
     <h2 className="text-lg font-bold">접근성 · 구간별 확인</h2>
+    <AccessGuideLink />
     {facts && c.accessSegment ? <>
       <div className="rounded-xl border border-teal-200 bg-teal-50 p-4 space-y-3">
         <p className="font-bold text-primary">공식 휠체어 안내 구간 · {facts.distanceKm}km</p>

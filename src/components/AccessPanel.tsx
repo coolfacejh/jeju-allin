@@ -1,3 +1,4 @@
+import AccessPictograms from './AccessPictograms';
 import { ACCESS_LABELS, accessRows, accessFit, accessSourceUrl, STATE_LABELS } from '../lib/access';
 import type { Content, UserProfile } from '../types';
 export function AccessSummary({place,access}:{place:Content;access?:UserProfile['access']}) {
@@ -9,6 +10,7 @@ export default function AccessPanel({place}:{place:Content}) {
  return <section className="rounded-2xl bg-white shadow-card p-5" aria-label="접근성 상세 정보">
   <h2 className="font-bold text-lg">방문 전 접근성 확인</h2>
   <p className="text-xs text-muted mt-2 mb-4">제공기관의 설명을 정리한 정보입니다. 시설 등록은 모든 구간의 이용 가능을 보장하지 않습니다. 정보가 없으면 이용 불가로 판단하지 않습니다.</p>
+  <AccessPictograms place={place} />
   <div className="grid md:grid-cols-2 gap-3">
    {rows.map(row=><div key={row.key} className="rounded-xl border border-line p-3 min-w-0">
     <div className="flex flex-wrap justify-between gap-2"><b className="text-sm">{ACCESS_LABELS[row.key]}</b><span className={`text-xs ${row.state==='available'?'text-primary':row.state==='unknown'?'text-muted':'text-amber-800'}`}>{STATE_LABELS[row.state]}</span></div>

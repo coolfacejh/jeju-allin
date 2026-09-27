@@ -1,3 +1,4 @@
+import { confirmedPictograms } from '../src/lib/accessPictograms';
 import { olleSegmentFacts, olleSegmentId, olleSegmentPlace, isOlleSegment } from '../src/lib/olle';
 import { saveOlleVisit } from '../src/lib/olleTrip';
 import { OLLE_COURSES } from '../src/data/olle';
@@ -329,4 +330,16 @@ test('saving only an Olle segment preserves dates, order, notes and portable use
   assert.deepEqual(currentTrip().days,[[],[external.id],[segment.id]]);
   assert.ok(!currentTrip().days.flat().includes(ollePlaceId(c)));
   assert.equal(saveOlleVisit(segment,9),'여행 날짜가 바뀌었어요. 화면을 다시 열고 날짜를 선택해 주세요.');
+});
+
+
+test('pictograms only represent equivalent confirmed facilities, never inferred grades', () => {
+ assert.deepEqual(confirmedPictograms(accessPlace(['장애인 전용 주차구역','장애인 화장실','승강기'])).map(p=>p.pictogram.id),[14,12,16]);
+ assert.deepEqual(confirmedPictograms(accessPlace(['주차장','화장실','경사로','단차 없음'])),[]);
+ assert.deepEqual(confirmedPictograms(accessPlace(['장애인 화장실 도움 필요','승강기 없음'])),[]);
+ const shared={...accessPlace(['장애인 화장실']),provenance:{source:'shared' as const}};
+ assert.deepEqual(confirmedPictograms(shared),[]);
+ const conflict=accessPlace(['장애인 화장실']);
+ conflict.accessSources!.push({source:'tourapi',sourceId:'X',receivedAt:'2026-09-27',fields:{restroom:'없음'}});
+ assert.deepEqual(confirmedPictograms(conflict),[]);
 });

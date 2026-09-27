@@ -1,3 +1,4 @@
+import AccessGuide from './pages/AccessGuide';
 import Olle from './pages/Olle';
 import OlleDetail from './pages/OlleDetail';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -15,6 +16,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Navigate to={loadProfile() ? '/home' : '/onboarding'} replace />} />
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/access-guide" element={<AccessGuide />} />
       <Route path="/olle" element={<Olle />} />
       <Route path="/olle/:slug" element={<OlleDetail />} />
       <Route path="/home" element={<Home />} />
