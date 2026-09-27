@@ -150,3 +150,11 @@ Windows에서 npm 캐시 권한 오류가 있으면 `npm install --cache .npm-ca
 - 검증: `npm test`, `npm run build`, `scripts/pictogram-check.mjs` (PLAYWRIGHT_MODULE, CHROME_PATH 설정). 선택 환경변수 PICTOGRAM_BASE_URL로 배포 사이트를 검사할 수 있습니다. 브라우저 검사는 외부 관광 API를 대체하며, 390/1440px에서 이미지 37개·검색·분류·근거 연결·진입 경로를 검사합니다.
 
 2026-09-27 상세 표시 수정: 장소 상세의 6개 접근성 항목에 아이콘을 직접 배치하고 있음/없음/조건부/미확인 상태를 병기합니다. 출입구·경사로·이동로는 등급을 의미하지 않는 자체 항목 아이콘이며 주차·화장실·승강기는 이지제주 픽토그램입니다. 홈의 별도 자료 배너와 상세의 중복 시설 띠는 제거했습니다.
+
+
+### 주변 공중화장실 (2026-09-28)
+- 제주시 공식 공중화장실 CSV https://www.data.go.kr/data/15110521/fileData.do (기준일 2025-12-31) 503건 수록. 좌표 유효 486건만 근거리 검색에 사용합니다. 서귀포시 자료는 미포함입니다.
+- 행정안전부 전국 원본 다운로드는 이번 작업에서 403으로 실패하여 제주시 별도 공식 자료를 사용했습니다. 매 접속마다 다운로드하지 않는 배포 시점 스냅샷입니다. 재수집: 공식 CSV를 받은 뒤 `python scripts/import-restrooms.py <CSV 경로>`를 실행하고 검사·빌드·배포합니다.
+- 장소 상세에서 반경 1/3/5/10km 직선거리순, 장애인용 대변기 양수 시설 필터, 기저귀교환대, 개방시간, 출처/기준일, 전화·지도·길찾기 제공. 내부시설로 합치지 않으며 영업중/무장애 경로를 추정하지 않습니다. 좌표 누락/검색 결과 없음은 별도로 안내합니다.
+- EasyJeju 조사 연동은 자료 제공 대기입니다. `RestroomAccessSurvey`는 검토한 restroomId와 sourceUrl, checkedAt, receivedAt, entrance, step, route를 별도로 보존합니다. 자동 명칭 매칭 없이 검토된 시설 ID에만 연결하며 현재 조사 배열은 비어 있습니다. API 키나 제휴 자료를 확보한 것으로 표시하지 않습니다.
+- 검증: npm test (43), npm run build, scripts/restroom-check.mjs (390/1440px). RESTROOM_BASE_URL로 실제 배포 확인 가능. 관광 API는 테스트에서 대체하되 화장실은 실제 수록 공식 데이터로 검사합니다.

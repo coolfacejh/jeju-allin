@@ -1,3 +1,4 @@
+import NearbyRestrooms from '../components/NearbyRestrooms';
 import { courseForPlace, isOlleSegment } from '../lib/olle';
 import AccessPanel from '../components/AccessPanel';
 import { tourAccessSource, readTourSources } from '../lib/accessStore';
@@ -158,6 +159,7 @@ export default function PlaceDetail() {
           {base.provenance?.retrievedAt && ` 정보 수신: ${new Date(base.provenance.retrievedAt).toLocaleDateString('ko-KR')} (현장 확인일 아님)`}
         </p>
         <AccessPanel place={access ? {...base,accessSources:[...(base.accessSources??[]).filter(s=>s.source!=='tourapi'),readTourSources()[tourId!] ?? tourAccessSource(tourId!,access)]}:base} />
+        <NearbyRestrooms key={base.id} place={base} />
         {/* 무장애 정보 (한국관광공사 무장애여행) */}
         {access?.has &&
           (() => {

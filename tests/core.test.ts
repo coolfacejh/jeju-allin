@@ -1,3 +1,4 @@
+import { nearbyRestrooms, accessibleToilet, RESTROOM_CATALOGUE } from '../src/lib/restrooms';
 import { confirmedPictograms } from '../src/lib/accessPictograms';
 import { olleSegmentFacts, olleSegmentId, olleSegmentPlace, isOlleSegment } from '../src/lib/olle';
 import { saveOlleVisit } from '../src/lib/olleTrip';
@@ -342,4 +343,15 @@ test('pictograms only represent equivalent confirmed facilities, never inferred 
  const conflict=accessPlace(['장애인 화장실']);
  conflict.accessSources!.push({source:'tourapi',sourceId:'X',receivedAt:'2026-09-27',fields:{restroom:'없음'}});
  assert.deepEqual(confirmedPictograms(conflict),[]);
+});
+
+
+test('nearby toilets use valid coordinates, radius and explicit disabled counts without altering place evidence',()=>{
+ const p=RESTROOM_CATALOGUE.items[0];
+ const fixtures=[{...p,id:'near',lat:33.5,lng:126.5,maleAccessible:1,femaleAccessible:null},{...p,id:'unknown',lat:33.5001,lng:126.5,maleAccessible:null,femaleAccessible:null},{...p,id:'zero',lat:33.501,lng:126.5,maleAccessible:0,femaleAccessible:0},{...p,id:'far',lat:33.8,lng:126.5},{...p,id:'bad',lat:0,lng:0}];
+ assert.deepEqual(nearbyRestrooms(33.5,126.5,1,false,fixtures).map(p=>p.id),['near','unknown','zero']);
+ assert.deepEqual(nearbyRestrooms(33.5,126.5,1,true,fixtures).map(p=>p.id),['near']);
+ assert.equal(accessibleToilet(fixtures[1]),'unknown');assert.equal(accessibleToilet(fixtures[2]),'unavailable');
+ assert.deepEqual(nearbyRestrooms(undefined,126.5),[]);assert.deepEqual(nearbyRestrooms(0,0),[]);
+ assert.ok(RESTROOM_CATALOGUE.items.length===503 && RESTROOM_CATALOGUE.items.every(p=>p.address.startsWith('제주특별자치도')&&p.sourceUrl.startsWith('https://www.data.go.kr/')));
 });
