@@ -29,11 +29,16 @@ try {
   await p.getByRole('button',{name:'전체',exact:true}).click();
   await p.getByPlaceholder('예: 화장실, 경사로, 대여').fill('경사로');assert.equal(await p.locator('[data-pictogram]').count(),3);
   await p.getByPlaceholder('예: 화장실, 경사로, 대여').fill('존재하지않는항목');assert.equal(await p.locator('[data-pictogram]').count(),0);
-  await p.goto(origin+'/#/place/990001');await p.getByText('제공 자료에 ‘있음’으로 표시된 시설',{exact:true}).waitFor();
-  assert.equal(await p.getByText('자료상 있음 · 이용 조건 확인',{exact:true}).count(),3);
-  await p.goto(origin+'/#/place/990002');await p.getByRole('link',{name:/무장애 관광자료 · 픽토그램/}).waitFor();
-  assert.equal(await p.getByText('자료상 있음 · 이용 조건 확인',{exact:true}).count(),0);
-  await p.goto(origin+'/#/home');await p.getByRole('link',{name:/무장애 관광자료 · 픽토그램/}).click();await p.getByRole('heading',{name:'무장애 관광자료',exact:true}).waitFor();
-  assert.deepEqual(errors,[]);console.log(`${width}: 37 images, groups/search, evidence-only facilities, home entry, no overflow/errors PASS`);await ctx.close();
+  await p.goto(origin+'/#/place/990001');await p.locator('[data-access-row]').last().waitFor();
+  assert.equal(await p.locator('[data-access-icon]').count(),6);
+  assert.equal(await p.locator('[data-access-state="available"]').count(),3);
+  await p.locator('[aria-label="접근성 상세 정보"]').scrollIntoViewIfNeeded();
+  await p.screenshot({path:`output/verification/place-icons-${width}.png`});
+  assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  await p.goto(origin+'/#/place/990002');await p.locator('[data-access-row]').last().waitFor();
+  assert.equal(await p.locator('[data-access-icon]').count(),6);
+  assert.equal(await p.locator('[data-access-state="unknown"]').count(),6);
+  await p.getByRole('link',{name:'픽토그램 뜻 보기',exact:true}).click();await p.getByRole('heading',{name:'무장애 관광자료',exact:true}).waitFor();
+  assert.deepEqual(errors,[]);console.log(`${width}: 37 images, groups/search, evidence-only facilities, place entry, no overflow/errors PASS`);await ctx.close();
  }
 }finally{await browser.close();server.close();}
