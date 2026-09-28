@@ -37,7 +37,7 @@ export interface UserProfile {
   themes: ThemeKey[];
   nights: number; // 숙박 일수 (0 = 당일치기, 1 = 1박2일 ...)
   headcount: number; // 여행 인원수 (1 이상)
-  access?: { barrierFree: boolean; stroller: boolean; avoidNoKids: boolean; required?: AccessKey[]; confirmedOnly?: boolean }; // 접근성 조건
+  access?: { barrierFree: boolean; stroller: boolean; avoidNoKids: boolean; required?: AccessKey[]; confirmedOnly?: boolean; filterVersion?: number }; // 접근성 조건
   foodPref?: { halal: boolean; vegetarian: boolean; vegan: boolean; noSeafood: boolean; noPork: boolean }; // 식단·회피음식
   pet?: { withPet: boolean; size: PetSize }; // 반려견 동반
   createdAt: string;

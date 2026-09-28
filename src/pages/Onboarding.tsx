@@ -1,5 +1,6 @@
 import { AccessCategoryIcon } from '../components/AccessPictograms';
-import { ACCESS_LABELS } from '../lib/access';
+import { saveExplore } from '../lib/explore';
+import { ACCESS_LABELS, confirmedAccessDefault } from '../lib/access';
 import type { AccessKey } from '../types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -55,7 +56,7 @@ export default function Onboarding() {
   const [nights, setNights] = useState<number>(existing?.nights ?? 1);
   const [headcount, setHeadcount] = useState<number>(existing?.headcount ?? 2);
   const [required, setRequired] = useState<AccessKey[]>(existing?.access?.required ?? []);
-  const [confirmedOnly, setConfirmedOnly] = useState(existing?.access?.confirmedOnly ?? false);
+  const [confirmedOnly, setConfirmedOnly] = useState(confirmedAccessDefault(existing?.access));
   const [barrierFree, setBarrierFree] = useState<boolean>(existing?.access?.barrierFree ?? false);
   const [strollerNeed, setStrollerNeed] = useState<boolean>(existing?.access?.stroller ?? false);
   const [avoidNoKids, setAvoidNoKids] = useState<boolean>(existing?.access?.avoidNoKids ?? false);
@@ -82,7 +83,7 @@ export default function Onboarding() {
     setNights(1);
     setHeadcount(2);
     setRequired([]);
-    setConfirmedOnly(false);
+    setConfirmedOnly(true);
     setBarrierFree(false);
     setStrollerNeed(false);
     setAvoidNoKids(false);
@@ -114,11 +115,12 @@ export default function Onboarding() {
       themes,
       nights,
       headcount,
-      access: { barrierFree, stroller: strollerNeed, avoidNoKids, required, confirmedOnly },
+      access: { barrierFree, stroller: strollerNeed, avoidNoKids, required, confirmedOnly, filterVersion: 2 },
       foodPref: food,
       pet: { withPet, size: petSize },
       createdAt: new Date().toISOString(),
     });
+    saveExplore({accessOn:true,confirmedOnly,filterVersion:2,scrollY:0,visibleCount:24});
     navigate('/home');
   }
 
@@ -152,7 +154,7 @@ export default function Onboarding() {
         <div className="grid sm:grid-cols-2 gap-3">{(Object.keys(ACCESS_LABELS) as AccessKey[]).map(key=><button type="button" key={key} aria-pressed={selected.includes(key)} onClick={()=>toggleRequired(key)} className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left min-h-[92px] ${selected.includes(key)?'border-primary bg-primary-light':'border-line bg-white'}`}>
          <AccessCategoryIcon kind={key} state={selected.includes(key)?'available':'unknown'} /><span className="flex-1"><span className="block font-bold text-sm">{ACCESS_LABELS[key]}</span><span className="block text-xs text-sub mt-1">{{stepFree:'입구의 턱·계단 정보',ramp:'다른 진입 경로 정보',route:'실내 이동 공간 정보',restroom:'장애인 화장실 시설 정보',parking:'전용 주차구역 정보',elevator:'층간 이동 시설 정보'}[key]}</span></span><span aria-hidden="true" className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${selected.includes(key)?'bg-primary text-white border-primary':'border-line'}`}>{selected.includes(key)?'✓':''}</span>
         </button>)}</div>
-        <fieldset className="mt-6 border-t border-line pt-4 space-y-3"><legend className="font-bold text-sm pt-5">정보가 부족한 장소도 보여드릴까요?</legend><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={!confirmedOnly} onChange={()=>setConfirmedOnly(false)} /><span>정보가 부족한 곳도 함께 보기<span className="block text-xs text-sub mt-1">확인이 필요한 항목을 구분해 표시합니다.</span></span></label><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={confirmedOnly} onChange={()=>setConfirmedOnly(true)} /><span>선택 조건이 자료상 확인된 곳만 보기<span className="block text-xs text-sub mt-1">검색 결과가 줄어들 수 있습니다.</span></span></label></fieldset>
+        <fieldset className="mt-6 border-t border-line pt-4 space-y-3"><legend className="font-bold text-sm pt-5">정보가 부족한 장소도 보여드릴까요?</legend><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={!confirmedOnly} onChange={()=>setConfirmedOnly(false)} /><span>정보가 부족한 곳도 함께 보기<span className="block text-xs text-sub mt-1">미확인·조건부 장소를 포함합니다. 시설이 없다고 확인된 곳은 제외합니다.</span></span></label><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={confirmedOnly} onChange={()=>setConfirmedOnly(true)} /><span>선택 조건이 자료상 확인된 곳만 보기<span className="block text-xs text-sub mt-1">선택한 시설이 모두 ‘있음’인 장소만 표시합니다. 기본 검색 방식입니다.</span></span></label></fieldset>
         <p className="mt-4 text-xs text-muted leading-relaxed">아이콘은 원하는 조건을 뜻합니다. 자료상 시설 등록은 현장 이용 가능을 보장하지 않으므로 상세 설명과 이용 조건을 함께 확인하세요.</p>
        </section>
        <aside className="lg:sticky lg:top-4 rounded-3xl bg-white border border-line p-5 space-y-4" aria-label="선택 조건 요약"><p className="font-bold">이번 여행에서 확인할 조건</p><div className="flex flex-wrap gap-2" aria-live="polite">{selected.length?selected.map(k=><span key={k} className="bg-primary-light text-primary rounded-lg px-3 py-2 text-sm">{ACCESS_LABELS[k]}</span>):<p className="text-sm text-sub">아직 선택한 조건이 없어요.<br />먼저 장소를 둘러봐도 좋습니다.</p>}</div><p className="text-xs text-sub">{confirmedOnly?'선택 조건이 자료상 확인된 곳만':'정보가 부족한 장소도 함께 표시'}</p><button type="button" onClick={submit} className="hidden lg:block bg-primary text-white rounded-xl w-full py-4 font-bold">이 조건으로 장소 살펴보기 →</button><p className="text-xs text-muted">기간과 취향은 아래에서 추가할 수 있어요. 나중에 언제든 변경할 수 있습니다.</p></aside>

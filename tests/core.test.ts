@@ -1,3 +1,4 @@
+import { matchesAccessRequirements, confirmedAccessDefault } from '../src/lib/access';
 import { nearbyRestrooms, addressRestrooms, accessibleToilet, RESTROOM_CATALOGUE } from '../src/lib/restrooms';
 import { confirmedPictograms } from '../src/lib/accessPictograms';
 import { olleSegmentFacts, olleSegmentId, olleSegmentPlace, isOlleSegment } from '../src/lib/olle';
@@ -381,4 +382,19 @@ test('VisitJeju publishes first page before completion and shares a single fetch
   const later:number[]=[];const two=fetchVisitPlaces(false,p=>later.push(p.loaded));assert.equal(one,two);assert.deepEqual(later,[1]);
   release();await one;assert.equal(calls,3);assert.deepEqual(progress,[1,3]);assert.deepEqual(later,[1,3]);
  }finally{release();globalThis.fetch=original;}
+});
+
+test('required facilities use AND matching and exclude negative evidence even in expanded mode',()=>{
+ const needs:UserProfile['access']={barrierFree:false,stroller:false,avoidNoKids:false,required:['parking','elevator']};
+ const both=accessPlace(['장애인 주차장','승강기']);
+ const partial=accessPlace(['장애인 주차장']);
+ const absent=accessPlace(['장애인 주차장','승강기 없음']);
+ const conditional=accessPlace(['장애인 주차장','승강기 도움 필요']);
+ assert.equal(matchesAccessRequirements(both,needs),true);
+ for(const p of [partial,absent,conditional,external])assert.equal(matchesAccessRequirements(p,needs),false);
+ assert.equal(matchesAccessRequirements(partial,needs,false),true);
+ assert.equal(matchesAccessRequirements(absent,needs,false),false);
+ assert.equal(confirmedAccessDefault({...needs,confirmedOnly:false}),true);
+ assert.equal(confirmedAccessDefault({...needs,confirmedOnly:false,filterVersion:2}),false);
+ assert.equal(matchesAccessRequirements(external),true);
 });

@@ -65,3 +65,12 @@ export function linkAccessSources(places:Content[]):Content[] {
  }
  return result;
 }
+
+// Missing evidence may be included only by explicit choice; negative evidence never matches.
+export function matchesAccessRequirements(place:Content,access?:UserProfile['access'],confirmedOnly=true):boolean {
+ const fit=accessFit(place,access);
+ return fit==='none'||fit==='met'||(!confirmedOnly&&fit==='check');
+}
+export function confirmedAccessDefault(access?:UserProfile['access']):boolean {
+ return access?.filterVersion===2 ? access.confirmedOnly!==false : true;
+}

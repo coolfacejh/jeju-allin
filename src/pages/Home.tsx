@@ -1,6 +1,6 @@
 
 import { AccessSummary } from '../components/AccessPanel';
-import { accessFit, accessRows, requiredAccess } from '../lib/access';
+import { accessFit, accessRows, requiredAccess, matchesAccessRequirements, confirmedAccessDefault, ACCESS_LABELS } from '../lib/access';
 import { fetchVisitPlaces, loadVisitCache, uniqueCatalogue } from '../lib/visitjeju';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -64,7 +64,7 @@ export default function Home() {
   }, [reasonsOn]);
   const access = profile?.access;
   const hasAccessNeed = !!(access && (access.barrierFree || access.stroller || access.avoidNoKids || requiredAccess(access).length));
-  const [confirmedOnly, setConfirmedOnly] = useState(initialExplore.confirmedOnly ?? profile?.access?.confirmedOnly ?? false);
+  const [confirmedOnly, setConfirmedOnly] = useState(initialExplore.confirmedOnly ?? confirmedAccessDefault(profile?.access));
   const [accessOn, setAccessOn] = useState(initialExplore.accessOn);
   const foodPref = profile?.foodPref;
   const hasFoodNeed = !!(foodPref && Object.values(foodPref).some(Boolean));
@@ -143,7 +143,7 @@ export default function Home() {
 
   function matchesAccess(c: (typeof curated)[number]) {
     if (!accessOn || !access) return true;
-    if (confirmedOnly && requiredAccess(access).length && accessFit(c,access)!=='met') return false;
+    if (!matchesAccessRequirements(c,access,confirmedOnly)) return false;
     if (access.avoidNoKids && c.accessibility?.noKidsZone !== false) return false;
     return true;
   }
@@ -215,7 +215,7 @@ export default function Home() {
     previousFilters.current = signature;
   }, [tab, sub, region, q, accessOn, foodOn, petOn]);
   useEffect(() => {
-    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, foodOn, petOn });
+    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, filterVersion:2, foodOn, petOn });
   }, [tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, foodOn, petOn]);
 
   useLayoutEffect(() => {
@@ -252,7 +252,7 @@ export default function Home() {
   }, [initialExplore]);
 
   function openPlace(id: number) {
-    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, foodOn, petOn, scrollY: window.scrollY });
+    saveExplore({ tab, sub, view, region, visibleCount, mapOnlyBF, accessOn, confirmedOnly, filterVersion:2, foodOn, petOn, scrollY: window.scrollY });
     navigate(`/place/${id}`);
   }
 
@@ -265,7 +265,7 @@ export default function Home() {
     setWish('');
     saveWish('');
     setAccessOn(true);
-    setConfirmedOnly(false);
+    setConfirmedOnly(true);
     setFoodOn(true);
     setPetOn(true);
     setMapOnlyBF(false);
@@ -407,6 +407,11 @@ export default function Home() {
           )}
         </div>
 
+        {requiredAccess(access).length>0 && <div className="rounded-xl bg-primary-light p-3 text-sm" role="status">
+          <p className="font-bold">선택 시설: {requiredAccess(access).map(k=>ACCESS_LABELS[k]).join(' · ')}</p>
+          <p>{!accessOn?'시설 조건 적용이 꺼져 있어 전체 장소를 표시합니다.':confirmedOnly?'선택한 시설이 모두 있음으로 확인된 장소만 표시합니다.':'미확인·조건부 장소도 포함합니다. 시설 없음은 제외합니다.'}</p>
+          {accessOn && subFiltered.length===0 && <p className="mt-1">현재 불러온 자료에서 조건에 맞는 장소가 없습니다. 자료 수신 중이면 결과가 추가될 수 있습니다.</p>}
+        </div>}
         {hasAccessNeed && <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={confirmedOnly} onChange={e=>{setConfirmedOnly(e.target.checked);setAccessOn(true);}}/>필수 조건이 확인된 곳만 표시</label>}
         {/* 접근성(여행 약자) 필터 */}
         {hasAccessNeed && (
