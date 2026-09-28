@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (!key) return res.status(503).json({error:'not_configured'});
   try {
     const data = await fetchPage(Number(raw), key);
-    res.setHeader('Cache-Control','public, max-age=0, s-maxage=86400');
+    res.setHeader('Cache-Control','public, max-age=300, s-maxage=86400, stale-while-revalidate=3600');
     return res.status(200).json(data);
   } catch {
     // Never expose upstream request URLs, credentials or raw exception messages.

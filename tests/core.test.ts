@@ -370,3 +370,15 @@ test('accessibility-only profiles never invent travel-type or companion preferen
  const results=calculateCuration(CONTENTS,{...profile,travelType:null,companion:null,hasChild:false,hasSenior:false,themes:[]});
  assert.ok(results.every(p=>p.matchScore===0&&p.reasons.length===0));
 });
+
+test('VisitJeju publishes first page before completion and shares a single fetch with later subscribers',async()=>{
+ const original=globalThis.fetch;let release!:()=>void;const gate=new Promise<void>(r=>{release=r;});let first!:()=>void;const ready=new Promise<void>(r=>{first=r;});let calls=0;
+ globalThis.fetch=(async(input:string|URL|Request)=>{calls++;const n=Number(new URL(String(input),'https://local.invalid').searchParams.get('page'));if(n>1)await gate;return new Response(JSON.stringify({page:n,pageCount:3,items:[{...external,id:880000+n}]}));}) as typeof fetch;
+ try{
+  const progress:number[]=[];let finished=false;
+  const one=fetchVisitPlaces(true,p=>{progress.push(p.loaded);first();});one.then(()=>{finished=true;});
+  await ready;assert.equal(finished,false);assert.deepEqual(progress,[1]);
+  const later:number[]=[];const two=fetchVisitPlaces(false,p=>later.push(p.loaded));assert.equal(one,two);assert.deepEqual(later,[1]);
+  release();await one;assert.equal(calls,3);assert.deepEqual(progress,[1,3]);assert.deepEqual(later,[1,3]);
+ }finally{release();globalThis.fetch=original;}
+});

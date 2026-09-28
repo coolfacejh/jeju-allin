@@ -42,7 +42,7 @@ const GRADE_STYLE: Record<string, { badge: string; icon: string }> = {
 export default function Home() {
   const navigate = useNavigate();
   const { t, lang } = useI18n();
-  const profile = loadProfile();
+  const [profile] = useState(loadProfile);
   const [initialExplore] = useState(loadExplore);
   const [tab, setTab] = useState<'all' | ContentType>(initialExplore.tab);
   const [sub, setSub] = useState<string>(initialExplore.sub); // 세부 카테고리
@@ -94,14 +94,15 @@ export default function Home() {
 
   const [visit, setVisit] = useState<Content[]>(loadVisitCache);
   const [visitState, setVisitState] = useState('loading');
+  const [visitProgress,setVisitProgress]=useState('');
   useEffect(() => {
     let alive = true;
-    fetchVisitPlaces().then(items => { if(alive) {setVisit(items);setVisitState('done');} }).catch(()=>{if(alive)setVisitState('error');});
+    fetchVisitPlaces(false,p=>{if(alive){setVisit(p.items);setVisitProgress(`${p.loaded}/${p.total}페이지`);}}).then(items => { if(alive) {setVisit(items);setVisitState('done');} }).catch(()=>{if(alive)setVisitState('error');});
     return ()=>{alive=false;};
   }, []);
   function refreshVisit() {
     setVisitState('loading');
-    fetchVisitPlaces(true).then(items=>{setVisit(items);setVisitState('done');}).catch(()=>setVisitState('error'));
+    fetchVisitPlaces(true,p=>{setVisit(p.items);setVisitProgress(`${p.loaded}/${p.total}페이지`);}).then(items=>{setVisit(items);setVisitState('done');}).catch(()=>setVisitState('error'));
   }
   // 무장애 등록 장소 id (배리어프리 서비스)
   const [bfIds, setBfIds] = useState<Set<number>>(new Set());
@@ -128,10 +129,7 @@ export default function Home() {
     [profile, liveAug, visit],
   );
   // 카테고리·권역·검색 시 실시간 데이터까지 합친 전체 풀
-  const pool = useMemo(
-    () => (profile ? calculateCuration(uniqueCatalogue(loadPlaces([...visit, ...liveAug])), profile) : []),
-    [profile, liveAug, visit],
-  );
+  const pool = curated;
 
 
 
@@ -604,7 +602,7 @@ export default function Home() {
         )}
 
         <div className="flex items-center justify-between text-xs text-muted gap-3" role="status">
-          <span>{visitState === 'loading' ? '비짓제주 관광정보 불러오는 중…' : visitState === 'done' ? `제주관광공사 비짓제주 · ${visit.length}곳 · 목록의 중복 장소는 통합 표시` : `비짓제주 갱신 실패 · ${visit.length ? '기존 정보 유지' : '다시 시도해 주세요'}`}</span>
+          <span>{visitState === 'loading' ? `비짓제주 ${visit.length ? `${visit.length}곳 먼저 표시 · 나머지 갱신 중` : '첫 관광정보 불러오는 중'} ${visitProgress}` : visitState === 'done' ? `제주관광공사 비짓제주 · ${visit.length}곳 · 목록의 중복 장소는 통합 표시` : `비짓제주 갱신 실패 · ${visit.length ? '기존 정보 유지' : '다시 시도해 주세요'}`}</span>
           <button type="button" className="shrink-0 text-primary underline" onClick={refreshVisit} disabled={visitState==='loading'}>다시 불러오기</button>
         </div>
         {/* 지도 보기 */}
