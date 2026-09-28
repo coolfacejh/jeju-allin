@@ -158,6 +158,9 @@ export default function PlaceMap({
     return () => {
       clearTimeout(resizeTimer);
       rememberView();
+      refreshRef.current = () => {};
+      labelRef.current = null;
+      map.off();
       map.remove();
       mapRef.current = null;
     };
@@ -204,15 +207,17 @@ export default function PlaceMap({
     }
     cluster.addLayers(clusterMarkers);
     spotsRef.current = spots;
-    setTimeout(() => refreshRef.current(), 150);
+    const labelTimer = setTimeout(() => refreshRef.current(), 150);
 
-    map.on('popupopen', (e: L.PopupEvent) => {
+    const onPopup = (e: L.PopupEvent) => {
       const node = (e.popup as unknown as { _contentNode?: HTMLElement })._contentNode;
       const openBtn = node?.querySelector('.jmap-open') as HTMLElement | null;
       if (openBtn) openBtn.onclick = () => onOpenRef.current(Number(openBtn.getAttribute('data-id')));
       const delBtn = node?.querySelector('.jmap-del') as HTMLElement | null;
       if (delBtn) delBtn.onclick = () => onDelRef.current?.(Number(delBtn.getAttribute('data-id')));
-    });
+    };
+    map.on('popupopen', onPopup);
+    return () => {clearTimeout(labelTimer);map.off('popupopen',onPopup);};
   }, [places]);
 
   // 내 스팟 마커 렌더
