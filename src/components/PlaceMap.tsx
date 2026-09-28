@@ -89,6 +89,7 @@ export default function PlaceMap({
       center: [33.38, 126.53],
       zoom: 10,
       minZoom: 9,
+      zoomAnimation: false,
       maxBounds: JEJU_BOUNDS,
       maxBoundsViscosity: 0.8,
     });
@@ -148,7 +149,7 @@ export default function PlaceMap({
 
     const viewport = loadMapViewport();
     if (viewport) map.setView([viewport.lat, viewport.lng], viewport.zoom, { animate: false });
-    else map.fitBounds(JEJU_BOUNDS, { padding: [10, 10] });
+    else map.fitBounds(JEJU_BOUNDS, { padding: [10, 10], animate: false });
     const rememberView = () => {
       const center = map.getCenter();
       saveMapViewport({ lat: center.lat, lng: center.lng, zoom: map.getZoom() });
