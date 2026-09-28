@@ -1,4 +1,4 @@
-import { nearbyRestrooms, accessibleToilet, RESTROOM_CATALOGUE } from '../src/lib/restrooms';
+import { nearbyRestrooms, addressRestrooms, accessibleToilet, RESTROOM_CATALOGUE } from '../src/lib/restrooms';
 import { confirmedPictograms } from '../src/lib/accessPictograms';
 import { olleSegmentFacts, olleSegmentId, olleSegmentPlace, isOlleSegment } from '../src/lib/olle';
 import { saveOlleVisit } from '../src/lib/olleTrip';
@@ -353,5 +353,15 @@ test('nearby toilets use valid coordinates, radius and explicit disabled counts 
  assert.deepEqual(nearbyRestrooms(33.5,126.5,1,true,fixtures).map(p=>p.id),['near']);
  assert.equal(accessibleToilet(fixtures[1]),'unknown');assert.equal(accessibleToilet(fixtures[2]),'unavailable');
  assert.deepEqual(nearbyRestrooms(undefined,126.5),[]);assert.deepEqual(nearbyRestrooms(0,0),[]);
- assert.ok(RESTROOM_CATALOGUE.items.length===503 && RESTROOM_CATALOGUE.items.every(p=>p.address.startsWith('제주특별자치도')&&p.sourceUrl.startsWith('https://www.data.go.kr/')));
+ assert.ok(RESTROOM_CATALOGUE.items.length===906 && RESTROOM_CATALOGUE.items.every(p=>p.address.startsWith('제주특별자치도')&&(/^https:\/\/(www.data.go.kr|www.seogwipo.go.kr)\//).test(p.sourceUrl)));
+});
+
+test('Seogwipo official records remain searchable without fabricated coordinates or counts',()=>{
+ const all=addressRestrooms('',false,'서귀포시');assert.equal(all.length,403);
+ assert.equal(addressRestrooms('',true,'서귀포시').length,223);
+ assert.ok(addressRestrooms('성산').length>0);
+ assert.ok(all.every(p=>p.lat===null&&p.lng===null&&p.maleAccessible===null&&p.femaleAccessible===null));
+ assert.equal(new Set(all.map(p=>p.id)).size,403);
+ assert.equal(all.filter(p=>p.name==='서귀포자연휴양림').length,6);
+ assert.equal(all.filter(p=>p.name==='서귀포자연휴양림'&&accessibleToilet(p)==='available').length,1);
 });
