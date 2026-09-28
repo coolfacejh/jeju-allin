@@ -47,13 +47,13 @@ export function calculateCuration(
       const reasons: string[] = [];
 
       // 1. 여행 유형 일치 (+40)
-      if (item.tags.travelType.includes(profile.travelType)) {
+      if (profile.travelType && item.tags.travelType.includes(profile.travelType)) {
         score += 40;
         reasons.push(`${TRAVEL_TYPE_NAME[profile.travelType]} 여행 유형 태그 일치`);
       }
 
       // 2. 동행 일치 (+25)
-      if (item.tags.companion.includes(profile.companion)) {
+      if (profile.companion && item.tags.companion.includes(profile.companion)) {
         score += 25;
         reasons.push(`${COMPANION_NAME[profile.companion]} 동행 유형 태그 일치`);
       }

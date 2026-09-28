@@ -365,3 +365,8 @@ test('Seogwipo official records remain searchable without fabricated coordinates
  assert.equal(all.filter(p=>p.name==='서귀포자연휴양림').length,6);
  assert.equal(all.filter(p=>p.name==='서귀포자연휴양림'&&accessibleToilet(p)==='available').length,1);
 });
+
+test('accessibility-only profiles never invent travel-type or companion preferences',()=>{
+ const results=calculateCuration(CONTENTS,{...profile,travelType:null,companion:null,hasChild:false,hasSenior:false,themes:[]});
+ assert.ok(results.every(p=>p.matchScore===0&&p.reasons.length===0));
+});

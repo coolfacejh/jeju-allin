@@ -360,7 +360,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
               <Chip accent>📅 {nightsLabel(profile.nights ?? 1)} · {profile.headcount ?? 2}명</Chip>
-              <Chip>🌿 {TRAVEL_TYPE_NAME[profile.travelType]}</Chip>
+              <Chip>🌿 {profile.travelType?TRAVEL_TYPE_NAME[profile.travelType]:'여행 취향 미선택'}</Chip>
               {profile.hasChild && <Chip accent>👶 아이 동반</Chip>}
               {profile.hasSenior && <Chip accent>🧓 시니어 동반</Chip>}
               {profile.themes.slice(0, 3).map((t) => (

@@ -17,7 +17,7 @@ type Dict = Record<string, string>;
 const ko: Dict = {
   'nav.curation': '큐레이션',
   'nav.mytrip': '내 여행',
-  'nav.taste': '취향 설정',
+  'nav.taste': '여행 조건',
   // Home
   'home.feed': '큐레이션 피드',
   'home.profile': '내 여행 취향 프로필',
@@ -96,7 +96,7 @@ const ko: Dict = {
 const en: Dict = {
   'nav.curation': 'Curation',
   'nav.mytrip': 'My Trip',
-  'nav.taste': 'Taste',
+  'nav.taste': 'Travel needs',
   'home.feed': 'Curation Feed',
   'home.profile': 'Your travel taste profile',
   'home.reset': 'Reset taste',

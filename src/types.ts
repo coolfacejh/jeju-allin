@@ -29,8 +29,8 @@ export type ThemeKey =
 
 // 사용자 취향 프로필 (온보딩 결과)
 export interface UserProfile {
-  travelType: TravelType;
-  companion: Companion;
+  travelType: TravelType | null;
+  companion: Companion | null;
   hasChild: boolean;
   childAge?: 'infant' | 'preschool' | 'elementary'; // 영유아·미취학·초등
   hasSenior: boolean;

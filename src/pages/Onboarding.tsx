@@ -1,3 +1,4 @@
+import { AccessCategoryIcon } from '../components/AccessPictograms';
 import { ACCESS_LABELS } from '../lib/access';
 import type { AccessKey } from '../types';
 import { useState } from 'react';
@@ -91,11 +92,8 @@ export default function Onboarding() {
     setConfirmReset(false);
   }
 
-  const valid = travelType !== null && companion !== null;
-  let pct = 25;
-  if (travelType) pct += 35;
-  if (companion) pct += 30;
-  if (themes.length > 0) pct += 10;
+  const selected = [...new Set([...required,...(barrierFree||strollerNeed?['stepFree','route'] as AccessKey[]:[])])];
+  const toggleRequired=(key:AccessKey)=>{setRequired(selected.includes(key)?selected.filter(k=>k!==key):[...selected,key]);setBarrierFree(false);setStrollerNeed(false);};
 
   function toggleTheme(t: ThemeKey) {
     setThemes((prev) => {
@@ -106,10 +104,10 @@ export default function Onboarding() {
   }
 
   function submit() {
-    if (!valid) return;
+
     saveProfile({
-      travelType: travelType!,
-      companion: companion!,
+      travelType,
+      companion,
       hasChild,
       childAge: hasChild ? childAge : undefined,
       hasSenior,
@@ -134,41 +132,34 @@ export default function Onboarding() {
           }`}
         >
           <Icon name="restart_alt" className="text-[16px]" />
-          {confirmReset ? '정말 초기화?' : '취향 초기화'}
+          {confirmReset ? '정말 초기화?' : '선택 조건 초기화'}
         </button>
         <LangToggle />
       </div>
-      {/* 헤더 */}
-      <div className="relative w-full rounded-2xl overflow-hidden bg-primary-light shadow-card mb-5 mt-3">
-        <div className="h-40 w-full bg-gradient-to-br from-primary to-tertiary flex items-center justify-center text-white text-5xl">
-          🌊🍊
-        </div>
-        <div className="absolute top-3 left-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md shadow-sm">
-          <Icon name="spa" className="text-accent text-[16px]" fill />
-          <span className="text-[10px] font-bold text-accent uppercase tracking-wider">
-            Jeju Taste Journey
-          </span>
-        </div>
+      <header className="mt-4 mb-6 rounded-3xl bg-primary text-white px-5 py-6 md:px-10 md:py-10 relative overflow-hidden">
+        <p className="text-sm font-bold tracking-wide text-white/90">JEJU ALL-IN · 제주 무장애 여행</p>
+        <h1 className="text-[25px] md:text-4xl font-extrabold leading-tight mt-4 break-keep">내게 필요한 조건부터,<br />제주 여행을 시작하세요.</h1>
+        <p className="text-sm md:text-base text-white/90 mt-4 leading-relaxed">출입구, 이동로, 화장실 정보를 확인하고<br className="md:hidden" /> 나와 동행자에게 맞는 여행을 준비하세요.</p>
+        <div className="flex flex-wrap gap-2 mt-5 text-xs"><span className="border border-white/30 rounded-full px-3 py-2">시설 정보와 출처 확인</span><span className="border border-white/30 rounded-full px-3 py-2">주변 공중화장실 찾기</span><span className="border border-white/30 rounded-full px-3 py-2">내 여행 일정에 담기</span></div>
+      </header>
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-6 items-start">
+       <section aria-label="여행 접근성 조건" className="bg-white rounded-3xl border border-line p-5 md:p-6">
+        <p className="text-primary text-xs font-bold">먼저, 편하게 여행할 수 있는 환경을 골라 주세요</p>
+        <h2 className="text-xl md:text-2xl font-bold mt-2">어떤 환경이 필요한가요?</h2>
+        <p className="text-sm text-sub mt-2 mb-5">본인과 동행자에게 필요한 조건을 모두 선택하세요. 선택 없이 둘러볼 수도 있습니다.</p>
+        <div className="flex flex-wrap gap-2 mb-4"><button type="button" aria-pressed={barrierFree} onClick={()=>{setBarrierFree(v=>!v);}} className="border border-line rounded-full px-4 py-2 text-sm">♿ 휠체어 접근 {barrierFree?'✓':''}</button><button type="button" aria-pressed={strollerNeed} onClick={()=>setStrollerNeed(v=>!v)} className="border border-line rounded-full px-4 py-2 text-sm">유모차 진입 {strollerNeed?'✓':''}</button></div>
+        <p className="text-xs text-muted mb-4">빠른 선택은 출입구·이동로 조건을 추가합니다. 아래에서 개별 변경할 수 있어요.</p>
+        <div className="grid sm:grid-cols-2 gap-3">{(Object.keys(ACCESS_LABELS) as AccessKey[]).map(key=><button type="button" key={key} aria-pressed={selected.includes(key)} onClick={()=>toggleRequired(key)} className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left min-h-[92px] ${selected.includes(key)?'border-primary bg-primary-light':'border-line bg-white'}`}>
+         <AccessCategoryIcon kind={key} state={selected.includes(key)?'available':'unknown'} /><span className="flex-1"><span className="block font-bold text-sm">{ACCESS_LABELS[key]}</span><span className="block text-xs text-sub mt-1">{{stepFree:'입구의 턱·계단 정보',ramp:'다른 진입 경로 정보',route:'실내 이동 공간 정보',restroom:'장애인 화장실 시설 정보',parking:'전용 주차구역 정보',elevator:'층간 이동 시설 정보'}[key]}</span></span><span aria-hidden="true" className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${selected.includes(key)?'bg-primary text-white border-primary':'border-line'}`}>{selected.includes(key)?'✓':''}</span>
+        </button>)}</div>
+        <fieldset className="mt-6 border-t border-line pt-4 space-y-3"><legend className="font-bold text-sm pt-5">정보가 부족한 장소도 보여드릴까요?</legend><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={!confirmedOnly} onChange={()=>setConfirmedOnly(false)} /><span>정보가 부족한 곳도 함께 보기<span className="block text-xs text-sub mt-1">확인이 필요한 항목을 구분해 표시합니다.</span></span></label><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={confirmedOnly} onChange={()=>setConfirmedOnly(true)} /><span>선택 조건이 자료상 확인된 곳만 보기<span className="block text-xs text-sub mt-1">검색 결과가 줄어들 수 있습니다.</span></span></label></fieldset>
+        <p className="mt-4 text-xs text-muted leading-relaxed">아이콘은 원하는 조건을 뜻합니다. 자료상 시설 등록은 현장 이용 가능을 보장하지 않으므로 상세 설명과 이용 조건을 함께 확인하세요.</p>
+       </section>
+       <aside className="lg:sticky lg:top-4 rounded-3xl bg-white border border-line p-5 space-y-4" aria-label="선택 조건 요약"><p className="font-bold">이번 여행에서 확인할 조건</p><div className="flex flex-wrap gap-2" aria-live="polite">{selected.length?selected.map(k=><span key={k} className="bg-primary-light text-primary rounded-lg px-3 py-2 text-sm">{ACCESS_LABELS[k]}</span>):<p className="text-sm text-sub">아직 선택한 조건이 없어요.<br />먼저 장소를 둘러봐도 좋습니다.</p>}</div><p className="text-xs text-sub">{confirmedOnly?'선택 조건이 자료상 확인된 곳만':'정보가 부족한 장소도 함께 표시'}</p><button type="button" onClick={submit} className="hidden lg:block bg-primary text-white rounded-xl w-full py-4 font-bold">이 조건으로 장소 살펴보기 →</button><p className="text-xs text-muted">기간과 취향은 아래에서 추가할 수 있어요. 나중에 언제든 변경할 수 있습니다.</p></aside>
       </div>
+      <details className="mt-6 rounded-2xl border border-line bg-white p-5"><summary className="font-bold text-lg cursor-pointer">여행 기본정보 · 기간과 인원</summary><p className="text-sm text-sub my-3">일정을 위한 기본값은 {nightsLabel(nights)}, {headcount}명입니다. 필요할 때 변경하세요.</p>
+      <div className="preferences-grid mt-4">
 
-      <div className="mb-5">
-        <div className="flex items-center gap-1.5 mb-2">
-          <div className="h-1.5 flex-1 rounded-full bg-primary" />
-          <div className={`h-1.5 flex-1 rounded-full ${travelType ? 'bg-primary' : 'bg-line'}`} />
-          <div className={`h-1.5 flex-1 rounded-full ${themes.length ? 'bg-primary' : 'bg-line'}`} />
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-primary">{t('onb.progress')}</span>
-          <span className="text-xs text-muted">{Math.min(pct, 100)}% {t('onb.done')}</span>
-        </div>
-        <h1 className="text-[26px] leading-8 font-extrabold mt-1">
-          {t('onb.title1')}<br />
-          <span className="text-primary">{t('onb.title2')}</span>
-        </h1>
-        <p className="text-sm text-sub mt-1.5">{t('onb.sub')}</p>
-      </div>
-
-      <div className="preferences-grid">
       {/* 여행 기간 · 인원 */}
       <section className="flex flex-col gap-3 mb-8 bg-white rounded-2xl shadow-card p-4">
         <div className="flex items-center gap-2">
@@ -223,35 +214,8 @@ export default function Onboarding() {
         </div>
       </section>
 
-      {/* Q1 여행 유형 */}
-      <Section num="1" title={t('onb.q1')} required>
-        <div className="grid grid-cols-1 gap-2.5">
-          {TRAVEL_TYPES.map((t) => (
-            <button
-              key={t.value}
-              onClick={() => setTravelType(t.value)}
-              className={`flex items-center gap-3.5 p-3.5 rounded-2xl bg-white shadow-card text-left transition-all ${
-                travelType === t.value ? 'ring-2 ring-primary' : 'hover:shadow-raised'
-              }`}
-            >
-              <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-                  travelType === t.value ? 'bg-primary text-white' : 'bg-primary-light text-primary'
-                }`}
-              >
-                <Icon name={t.icon} className="text-[24px]" />
-              </div>
-              <div>
-                <div className="font-bold text-[15px]">{t.title}</div>
-                <div className="text-xs text-muted">{t.desc}</div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </Section>
-
       {/* Q2 동행 */}
-      <Section num="2" title={t('onb.q2')} required>
+      <Section num="2" title={t('onb.q2')}>
         <div className="grid grid-cols-2 gap-2.5">
           {COMPANIONS.map((c) => (
             <button
@@ -277,7 +241,7 @@ export default function Onboarding() {
 
       {/* Q3 특별 케어 */}
       <Section num="3" title={t('onb.q3')}>
-        <p className="text-xs text-muted mb-1">동선 난이도와 편의시설(유모차, 무장애길)을 배려해 드립니다.</p>
+        <p className="text-xs text-muted mb-1">동행자 정보를 추가할 수 있습니다. 실제 이동 조건은 장소별 안내를 확인하세요.</p>
         <CareRow icon="child_friendly" label="아이 · 어린이 동반" desc="유모차 진입 · 키즈존 중심" checked={hasChild} onToggle={() => setHasChild((v) => !v)} />
         {hasChild && (
           <div className="flex gap-2 ml-1">
@@ -299,19 +263,36 @@ export default function Onboarding() {
           </div>
         )}
         <CareRow icon="elderly" label="부모님 · 시니어 동반" desc="완만한 보행로 · 안락 동선" checked={hasSenior} onToggle={() => setHasSenior((v) => !v)} />
-        <div className="flex items-center gap-1.5 mt-3 mb-1 text-primary">
-          <Icon name="accessible" className="text-[16px]" />
-          <span className="text-xs font-bold">{t('onb.mobility')}</span>
-        </div>
-        <CareRow icon="accessible" label="무장애 · 휠체어 접근" desc="출입구와 내부 이동로 정보를 우선 확인합니다" checked={barrierFree} onToggle={() => setBarrierFree((v) => !v)} />
-        <CareRow icon="stroller" label="유모차 진입 필요" desc="단차와 내부 이동로 정보를 확인합니다" checked={strollerNeed} onToggle={() => setStrollerNeed((v) => !v)} />
-        <fieldset className="mt-3 rounded-xl bg-white p-3">
-          <legend className="text-sm font-bold">꼭 필요한 접근성 조건</legend>
-          <div className="grid grid-cols-2 gap-3">{(Object.keys(ACCESS_LABELS) as AccessKey[]).map(key=><label key={key} className="flex items-center gap-2 text-xs"><input type="checkbox" checked={required.includes(key)} onChange={()=>setRequired(v=>v.includes(key)?v.filter(k=>k!==key):[...v,key])}/>{ACCESS_LABELS[key]}</label>)}</div>
-          <label className="flex items-center gap-2 text-xs mt-4"><input type="checkbox" checked={confirmedOnly} onChange={e=>setConfirmedOnly(e.target.checked)}/>필수 조건이 확인된 곳만 표시</label>
-          <p className="text-xs text-muted mt-2">기본 설정에서는 정보가 부족한 장소도 ‘확인 필요’로 표시합니다.</p>
-        </fieldset>
         <CareRow icon="block" label="노키즈존 제외" desc="아이 입장 가능한 곳만 추천" checked={avoidNoKids} onToggle={() => setAvoidNoKids((v) => !v)} />
+      </Section>
+
+      </div></details>
+      <details className="mt-4 rounded-2xl border border-line bg-white p-5"><summary className="font-bold text-lg cursor-pointer">여행 취향 더하기 · 선택사항</summary><p className="text-sm text-sub my-3">좋아하는 여행, 음식, 동반 반려동물과 관심 테마를 추가하세요.</p><div className="preferences-grid mt-4">
+      {/* Q1 여행 유형 */}
+      <Section num="1" title={t('onb.q1')}>
+        <div className="grid grid-cols-1 gap-2.5">
+          {TRAVEL_TYPES.map((t) => (
+            <button
+              key={t.value}
+              onClick={() => setTravelType(t.value)}
+              className={`flex items-center gap-3.5 p-3.5 rounded-2xl bg-white shadow-card text-left transition-all ${
+                travelType === t.value ? 'ring-2 ring-primary' : 'hover:shadow-raised'
+              }`}
+            >
+              <div
+                className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+                  travelType === t.value ? 'bg-primary text-white' : 'bg-primary-light text-primary'
+                }`}
+              >
+                <Icon name={t.icon} className="text-[24px]" />
+              </div>
+              <div>
+                <div className="font-bold text-[15px]">{t.title}</div>
+                <div className="text-xs text-muted">{t.desc}</div>
+              </div>
+            </button>
+          ))}
+        </div>
       </Section>
 
       {/* 식단 · 회피음식 */}
@@ -404,26 +385,15 @@ export default function Onboarding() {
         </div>
       </Section>
 
-      </div>
-      <div className="p-4 rounded-2xl bg-primary-light flex items-start gap-3 mt-4">
-        <Icon name="auto_awesome" className="text-primary text-[20px] shrink-0 mt-0.5" />
-        <div>
-          <div className="text-xs font-bold text-primary">제주올인 AI 큐레이터 팁</div>
-          <p className="text-xs text-sub mt-0.5">
-            취향 데이터는 광고·협찬 없이 오직 매칭 지수만으로 계산되어, 숨은 비경까지 안내합니다.
-          </p>
-        </div>
-      </div>
-
-      <div className="sticky bottom-2 z-30 pt-3 mt-2">
+      </div></details>
+      <p className="text-xs text-sub mt-5">접근성 정보는 장소 상세에서 출처와 확인 필요 항목을 함께 볼 수 있습니다. 선택한 조건은 이 브라우저에 저장됩니다.</p>
+      <div className="sticky bottom-2 z-30 lg:hidden pt-3 mt-2">
         <button
           onClick={submit}
-          disabled={!valid}
-          className={`w-full h-14 rounded-full flex items-center justify-center gap-2 font-bold text-[16px] shadow-raised transition-all active:scale-95 ${
-            valid ? 'bg-primary text-white' : 'bg-primary/40 text-white cursor-not-allowed'
-          }`}
+
+          className={`w-full h-14 rounded-full flex items-center justify-center gap-2 font-bold text-[16px] shadow-raised transition-all active:scale-95 bg-primary text-white`}
         >
-          {t('onb.cta')}
+          이 조건으로 장소 살펴보기
           <Icon name="arrow_forward" className="text-[20px]" />
         </button>
         <div className="flex items-center justify-center gap-1.5 mt-2 text-muted">
@@ -485,6 +455,7 @@ function CareRow({
 }) {
   return (
     <button
+      aria-pressed={checked}
       onClick={onToggle}
       className="flex items-center justify-between p-3.5 rounded-2xl bg-white shadow-card mt-1 text-left transition-all hover:shadow-raised w-full"
     >
