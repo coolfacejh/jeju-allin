@@ -22,6 +22,7 @@ export function addBasemap(map:L.Map,onStatus:(s:MapStatus)=>void=()=>{}) {
  let alive=true,layer:ReturnType<typeof maplibreGL>|undefined;
  const controller=new AbortController();
  const timer=setTimeout(()=>{if(alive)onStatus('error');},20000);
+ map.getContainer().dataset.basemap='loading';
  onStatus('loading');
  map.setMaxZoom(19);
  map.attributionControl?.addAttribution(ATTRIBUTION);

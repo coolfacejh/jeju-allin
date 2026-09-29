@@ -219,7 +219,7 @@ export default function MyTrip() {
             <section className="grid-span-all rounded-2xl bg-surface-sub p-4 flex items-start gap-3">
               <Icon name="auto_awesome" className="text-primary text-[20px] shrink-0 mt-0.5" />
               <p className="text-xs text-sub leading-relaxed">
-                숙소는 하루 마지막에, 식당은 점심·저녁 시간대에 배치하고 이동거리도 함께 고려합니다. 새 일정은 날짜별로 분배하며 기존 일정은 날짜를 유지하고 순서를 다시 추천합니다. 위의
+                숙소는 하루 마지막에, 식당은 점심·저녁 시간대에 배치하고 이동거리도 함께 고려합니다. 새 일정은 날짜별로 분배하며 다시 추천하면 가까운 권역끼리 날짜도 새로 배정합니다. 메모와 방문 시간 설정은 유지합니다. 위의
                 <strong className="text-primary"> ‘AI 스마트 루트 만들기’</strong>를 눌러보세요.
               </p>
             </section>

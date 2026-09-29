@@ -1,3 +1,4 @@
+import RouteMap from '../components/RouteMap';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../components/Icon';
@@ -5,7 +6,7 @@ import ScheduleForm from '../components/ScheduleForm';
 import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
 import { currentTrip, makeTrip, saveTrip, saveTripSelection } from '../lib/trip';
 import { loadSavedIds } from '../lib/storage';
-import { scheduleDay, orderRoute } from '../lib/planner';
+import { scheduleDay, orderRoute, recommendDays } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
 import { kakaoRouteUrl } from '../lib/maps';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
@@ -58,7 +59,7 @@ export default function Planner() {
     const trip=currentTrip();
     if(!location.state?.smartRoute)return trip;
     const schedule={...(trip.schedule??DEFAULT_SCHEDULE),mealAware:true};
-    return makeTrip(trip.days.map((ids,i)=>orderRoute(ids.map(id=>trip.places.find(p=>p.id===id)!),schedule,i,trip.nights)),trip.nights,trip.headcount,trip.notes,schedule);
+    return makeTrip(recommendDays(trip.places,trip.nights+1,schedule),trip.nights,trip.headcount,trip.notes,schedule);
   });
   useEffect(()=>{if(location.state?.smartRoute)navigate(location.pathname,{replace:true,state:null});},[]);
   const profile = { nights: initial.nights, headcount: initial.headcount };
@@ -75,6 +76,7 @@ export default function Planner() {
     setSettings(previous => ({ ...previous, visits: { ...previous.visits, [id]: { ...previous.visits[id], ...patch } } }));
   }
   const [saveFailed, setSaveFailed] = useState(false);
+  const [beforeRegroup,setBeforeRegroup]=useState<Content[][]|null>(null);
   const missing = loadSavedIds().filter(id => !items.some(p => p.id === id)).length;
   useEffect(() => {
     setSaveFailed(!saveTrip(makeTrip(buckets, profile.nights, profile.headcount, notes, settings)));
@@ -199,6 +201,9 @@ export default function Planner() {
             <ScheduleForm value={settings} onChange={setSettings} />
             <div className="rounded-xl bg-primary-light p-4 text-sm space-y-2">
               <p>스마트루트: 숙소는 마지막 · 점심 12~14시 · 저녁 18~20시. 카페는 식사와 구분합니다. 이동시간은 추정치이며 영업시간은 별도 확인이 필요합니다.</p>
+              <button type="button" className="block font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setBeforeRegroup(buckets);setSettings(next);setBuckets(recommendDays(items,days,next));setDay(0);show('날짜별 장소를 가까운 권역끼리 다시 묶었어요. 메모와 방문 설정은 유지했습니다.');}}>권역별로 날짜까지 다시 추천</button>
+              {beforeRegroup&&<button type="button" className="block text-primary underline" onClick={()=>{setBuckets(beforeRegroup);setBeforeRegroup(null);setDay(0);}}>날짜 재배정 되돌리기</button>}
+              <p className="text-xs text-sub">동·서부를 오간다면 위 버튼으로 날짜 배정까지 바꿔 주세요. 아래 버튼은 현재 날짜 안의 순서만 바꿉니다.</p>
               <button type="button" className="font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setSettings(next);setBuckets(prev=>prev.map((b,i)=>orderRoute(b,next,i,profile.nights)));show('날짜와 메모는 유지하고 숙소·식사 시간 기준으로 재정렬했어요.');}}>숙소·식사 시간 기준으로 다시 추천</button>
             </div>
             {/* 요약 */}
@@ -253,7 +258,7 @@ export default function Planner() {
             <div className="planner-columns">
             <div className="planner-map">
             {/* 미니 지도 */}
-            {dayItems.length > 0 && <MiniMap stops={dayItems} />}
+            {dayItems.length > 0 && <RouteMap stops={dayItems} />}
 
             </div>
             <div className="min-w-0">
@@ -382,44 +387,6 @@ export default function Planner() {
         )}
       </main>
       {toast}
-    </div>
-  );
-}
-
-function MiniMap({ stops }: { stops: Content[] }) {
-  const pts = stops.filter((s) => s.lat != null && s.lng != null);
-  if (pts.length === 0) return null;
-  const W = 300, H = 170, PAD = 24;
-  const lats = pts.map((p) => p.lat!);
-  const lngs = pts.map((p) => p.lng!);
-  let minLat = Math.min(...lats), maxLat = Math.max(...lats);
-  let minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
-  // 단일 지점/직선 방지용 최소 폭
-  if (maxLat - minLat < 0.02) { minLat -= 0.02; maxLat += 0.02; }
-  if (maxLng - minLng < 0.02) { minLng -= 0.02; maxLng += 0.02; }
-  const x = (lng: number) => PAD + ((lng - minLng) / (maxLng - minLng)) * (W - 2 * PAD);
-  const y = (lat: number) => PAD + ((maxLat - lat) / (maxLat - minLat)) * (H - 2 * PAD); // 위도 위쪽이 북
-  const coords = pts.map((p) => ({ cx: x(p.lng!), cy: y(p.lat!) }));
-  const path = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.cx.toFixed(1)} ${c.cy.toFixed(1)}`).join(' ');
-
-  return (
-    <div className="bg-white rounded-2xl shadow-card p-3">
-      <div className="flex items-center gap-1 mb-2 text-primary">
-        <Icon name="map" className="text-[16px]" />
-        <span className="text-[11px] font-bold">이동 경로 미리보기</span>
-      </div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full rounded-xl bg-primary-light/40">
-        <path d={path} fill="none" stroke="#0A6E6D" strokeWidth="2" strokeDasharray="4 3" strokeLinecap="round" />
-        {coords.map((c, i) => (
-          <g key={i}>
-            <circle cx={c.cx} cy={c.cy} r="11" fill="#0A6E6D" />
-            <text x={c.cx} y={c.cy + 4} textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">
-              {i + 1}
-            </text>
-          </g>
-        ))}
-      </svg>
-      <p className="text-[10px] text-muted mt-1 text-center">위치를 단순화한 개념도입니다(실제 지도 아님).</p>
     </div>
   );
 }

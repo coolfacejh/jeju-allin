@@ -422,3 +422,17 @@ test('smart route distinguishes cafes, late arrival, unknown transport and expli
  const days=recommendDays([hotel,meal,cafe,...[713,714,715].map(id=>routePlace(id,'activity','관광'))],2);
  assert.equal(days[0].at(-1)?.id,hotel.id);assert.equal(new Set(days.flat().map(p=>p.id)).size,6);
 });
+
+test('geographic days keep eastern and western meals with nearby sights and lodging',()=>{
+ const make=(id:number,side:string,type:Content['contentType']):Content=>({...routePlace(id,type,side+id),lat:33.4,lng:side==='동'?126.9:126.2});
+ const places=[make(801,'동','activity'),make(802,'서','activity'),make(803,'서','food'),make(804,'동','food'),make(805,'동','activity'),make(806,'서','activity'),make(807,'서','stay')];
+ const days=recommendDays(places,2);
+ assert.equal(days[0].at(-1)?.id,807);
+ for(const day of days)assert.equal(new Set(day.map(p=>p.name[0])).size,1);
+ assert.equal(new Set(days.flat().map(p=>p.id)).size,places.length);
+ const mixed=orderRoute(places);let crossings=0;for(let i=1;i<mixed.length;i++)if(mixed[i].name[0]!==mixed[i-1].name[0])crossings++;
+ assert.ok(crossings<=1);assert.equal(mixed.at(-1)?.id,807);
+ assert.ok(scheduleDay(mixed).warnings.some(w=>w.includes('장거리')));
+ const unknown={...make(808,'동','food'),lat:undefined,lng:undefined};
+ assert.equal(recommendDays([...places,unknown],3).flat().length,8);
+});

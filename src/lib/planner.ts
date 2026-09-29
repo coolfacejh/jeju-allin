@@ -86,12 +86,52 @@ export function orderRoute(items:Content[],settings:ScheduleSettings=DEFAULT_SCH
   ordered.push(pick);
   if(isMealStop(pick)){meals.splice(meals.indexOf(pick),1);eaten++;}else activities.splice(activities.indexOf(pick),1);
  }
+ // Reject a meal-driven detour when a geographical order is substantially shorter.
+ const located=items.filter(p=>p.contentType!=='stay');
+ if(located.every(p=>Number.isFinite(haversineKm(p,p)))&&located.length>1){
+  const length=(route:Content[])=>route.slice(1).reduce((sum,p,i)=>sum+haversineKm(route[i],p),0);
+  let best=[...ordered,...stays];
+  for(const startPlace of located){
+   const route=[startPlace],remaining=located.filter(p=>p.id!==startPlace.id);
+   while(remaining.length){const prev=route[route.length-1];let index=0;remaining.forEach((p,i)=>{if(haversineKm(prev,p)<haversineKm(prev,remaining[index]))index=i;});route.push(remaining.splice(index,1)[0]);}
+   const candidate=[...route,...stays];
+   if(length(candidate)<length(best))best=candidate;
+  }
+  const original=length([...ordered,...stays]),shorter=length(best);
+  if(original-shorter>12 && original>shorter*1.2)return best;
+ }
  return [...ordered,...stays];
 }
 export function recommendDays(items:Content[],days:number,settings:ScheduleSettings=DEFAULT_SCHEDULE):Content[][] {
- const count=Math.max(1,days),buckets=chunkIntoDays(orderRoute(items.filter(p=>p.contentType!=='stay'&&!isMealStop(p)),settings),count);
- items.filter(isMealStop).forEach((p,i)=>buckets[i%count].push(p));
- items.filter(p=>p.contentType==='stay').forEach((p,i)=>buckets[Math.min(i,Math.max(0,count-2))].push(p));
+ const count=Math.max(1,days);
+ const located=items.filter(p=>p.contentType!=='stay'&&Number.isFinite(haversineKm(p,p)));
+ const groups:Content[][]=located.length?[located]:[];
+ // Split the widest group along its farthest pair; meals participate in the same clustering.
+ while(groups.length<count){
+  let groupIndex=-1,diameter=-1,seeds:[Content,Content]|undefined;
+  groups.forEach((g,index)=>{for(let i=0;i<g.length;i++)for(let j=i+1;j<g.length;j++){
+   const distance=haversineKm(g[i],g[j]);if(distance>diameter){diameter=distance;groupIndex=index;seeds=[g[i],g[j]];}
+  }});
+  if(groupIndex<0||!seeds)break;
+  const [left,right]=seeds,group=groups[groupIndex];
+  const first=group.filter(p=>p.id===left.id||(p.id!==right.id&&haversineKm(p,left)<=haversineKm(p,right)));
+  const ids=new Set(first.map(p=>p.id)),second=group.filter(p=>!ids.has(p.id));
+  groups.splice(groupIndex,1,first,second);
+ }
+ const buckets=groups;
+ while(buckets.length<count)buckets.push([]);
+ items.filter(p=>p.contentType!=='stay'&&!Number.isFinite(haversineKm(p,p))).forEach(p=>{
+  const index=buckets.reduce((best,b,i)=>b.length<buckets[best].length?i:best,0);buckets[index].push(p);
+ });
+ // Prefer a nearby day's lodging, without duplicating a saved place across dates.
+ items.filter(p=>p.contentType==='stay').forEach((p,stayIndex)=>{
+  const score=(b:Content[])=>{const distances=b.filter(q=>q.contentType!=='stay').map(q=>haversineKm(p,q)).filter(Number.isFinite);return distances.length?distances.reduce((a,b)=>a+b,0)/distances.length:Infinity;};
+  const target=Math.min(stayIndex,Math.max(0,count-2));
+  let best=target;
+  for(let i=target;i<count;i++)if(score(buckets[i])<score(buckets[best]))best=i;
+  [buckets[target],buckets[best]]=[buckets[best],buckets[target]];
+  buckets[target].push(p);
+ });
  return buckets.map((b,i)=>orderRoute(b,settings,i,count-1));
 }
 
@@ -134,6 +174,7 @@ export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEF
       const travel = unknown ? null : Math.ceil(km / (settings.transport === 'walk' ? 4 : 40) * 60);
       leg = { km: Number.isFinite(km) ? Math.round(km * 10) / 10 : null, minutes: travel };
       if (Number.isFinite(km)) totalKm += km;
+      if(km>=30&&Number.isFinite(km))warnings.push(`${previous.name} → ${item.name}: 직선 ${Math.round(km)}km의 장거리 이동입니다. 권역별 날짜 재추천이나 다른 날로 이동을 권합니다.`);
       if (travel === null) {
         complete = false; clock = null;
         warnings.push(`${previous.name} → ${item.name}: ${!Number.isFinite(km) ? '좌표 정보 없음' : ferry ? '배편 확인 필요' : '대중교통 시간표 확인 필요'}. 이후 도착 시각을 계산하지 않습니다.`);
