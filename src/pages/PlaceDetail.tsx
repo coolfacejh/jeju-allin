@@ -1,3 +1,4 @@
+import PlaceGallery from '../components/PlaceGallery';
 import NearbyRestrooms from '../components/NearbyRestrooms';
 import { courseForPlace, isOlleSegment } from '../lib/olle';
 import AccessPanel from '../components/AccessPanel';
@@ -81,12 +82,8 @@ export default function PlaceDetail() {
   return (
     <div className="min-h-screen bg-surface font-sans text-ink pb-10">
       {/* 히어로 */}
-      <div className="app-shell mx-auto relative h-56 md:h-80 bg-gradient-to-br from-primary to-tertiary flex items-center justify-center text-7xl overflow-hidden">
-        {/^https?:\/\//.test(base.image) ? (
-          <img src={base.image} alt={base.name} className="w-full h-full object-cover" />
-        ) : (
-          base.image
-        )}
+      <div className="app-shell mx-auto relative bg-slate-900">
+        <PlaceGallery key={base.id} place={base} />
         <button
           onClick={() => navigate(-1)}
           className="absolute top-4 left-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-ink active:scale-95 shadow-sm"
@@ -104,14 +101,14 @@ export default function PlaceDetail() {
           <Icon name="favorite" className="text-[20px]" fill={saved} />
         </button>
         {curated && (
-          <div className="absolute bottom-3 left-4 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-md">
+          <div className="absolute top-16 left-4 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-md">
             <Icon name="spa" className="text-[15px]" fill />
             {curated.matchScore}점 {curated.matchGrade}
           </div>
         )}
       </div>
 
-      <main className="app-shell mx-auto px-4 -mt-6 relative flex flex-col gap-4">
+      <main className="app-shell mx-auto px-4 mt-4 relative flex flex-col gap-4">
         {/* 기본 정보 */}
         <section className="bg-white rounded-2xl shadow-card p-5 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">

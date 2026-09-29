@@ -8,7 +8,7 @@ export function normalizePlace(raw, retrievedAt) {
   const latitude = Number(raw.latitude), longitude = Number(raw.longitude);
   const located = latitude >= 33 && latitude <= 34 && longitude >= 126 && longitude <= 127.1;
   const photo = raw.repPhoto?.photoid;
-  const image = clean(photo?.thumbnailpath || photo?.imgpath, 2000).replace(/^http:\/\//, 'https://');
+  const image = clean(photo?.imgpath || photo?.thumbnailpath, 2000).replace(/^http:\/\//, 'https://');
   const tags = clean(raw.tag, 1000).split(',').map(x => x.trim()).filter(Boolean);
   const themes = [];
   const themeTags = { cafe: /카페/, oreum: /오름/, camping: /캠핑/, trekking: /트레킹|숲길|산책/, sunset: /일몰/, market: /시장/, cultural: /미술관|박물관|전시/, surf: /서핑/, animal: /동물/ };

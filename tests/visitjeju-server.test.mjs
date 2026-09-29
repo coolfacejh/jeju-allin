@@ -1,3 +1,4 @@
+import {extractPhotos,fetchPlacePhotos} from '../server/placePhotos.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizePlace, fetchPage } from '../server/visitjeju.js';
@@ -20,4 +21,14 @@ test('alltag facilities retain original evidence without promoting ordinary park
  const p=normalizePlace({...raw,alltag:'주차장,장애인 전용 주차구역,장애인 화장실 없음,유모차 대여,주출입구 단차 없음'},'now');
  assert.deepEqual(p.accessSources[0].tags,['장애인 전용 주차구역','장애인 화장실 없음','주출입구 단차 없음']);
  assert.equal(p.accessSources[0].checkedAt,undefined);
+});
+
+test('photo source selects full size and excludes reviews, unrelated hosts and duplicates',async()=>{
+ const p=normalizePlace({...raw,repPhoto:{photoid:{imgpath:'https://example.com/full.jpg',thumbnailpath:'https://example.com/small.jpg'}}},'now');
+ assert.equal(p.image,'https://example.com/full.jpg');
+ const url='https://api.cdn.visitjeju.net/photomng/imgpath/a.webp';
+ const html=`<img src="${url}" alt="장소 이미지 1/2"><img src="${url}" class="gallery-image"><img src="https://evil.test/a" class="gallery-image"><img src="${url}2" alt="리뷰사진1">`;
+ assert.equal(extractPhotos(html).length,1);
+ await assert.rejects(fetchPlacePhotos('https://evil.test'));
+ const result=await fetchPlacePhotos('CNTS_000000000018332',async()=>new Response(html));assert.equal(result.photos.length,1);
 });
