@@ -26,9 +26,9 @@ try {
   assert.equal(profile.travelType,null);assert.equal(profile.companion,null);assert.deepEqual(profile.access.required,['restroom']);
   await p.goto(origin+'/#/onboarding');
   assert.equal(await p.getByRole('button',{name:/장애인 화장실 장애인 화장실 시설 정보/}).getAttribute('aria-pressed'),'true');
-  await p.getByText('여행 기본정보 · 기간과 인원',{exact:true}).click();
+  assert.equal(await p.locator('details').nth(0).evaluate(el=>el.open),true);
   await p.getByRole('button',{name:'인원 증가'}).click();
-  await p.getByText('여행 취향 더하기 · 선택사항',{exact:true}).click();
+  assert.equal(await p.locator('details').nth(1).evaluate(el=>el.open),true);
   await p.getByRole('button',{name:/힐링 · 온전한 휴식/}).click();
   await p.getByRole('button',{name:/이 조건으로 장소 살펴보기/}).filter({visible:true}).click();await p.waitForURL('**/#/home');
   const edited=await p.evaluate(()=>JSON.parse(localStorage.getItem('jeju_allin_profile')));assert.equal(edited.headcount,3);assert.equal(edited.travelType,'healing');assert.deepEqual(edited.access.required,['restroom']);

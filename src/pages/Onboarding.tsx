@@ -159,7 +159,7 @@ export default function Onboarding() {
        </section>
        <aside className="lg:sticky lg:top-4 rounded-3xl bg-white border border-line p-5 space-y-4" aria-label="선택 조건 요약"><p className="font-bold">이번 여행에서 확인할 조건</p><div className="flex flex-wrap gap-2" aria-live="polite">{selected.length?selected.map(k=><span key={k} className="bg-primary-light text-primary rounded-lg px-3 py-2 text-sm">{ACCESS_LABELS[k]}</span>):<p className="text-sm text-sub">아직 선택한 조건이 없어요.<br />먼저 장소를 둘러봐도 좋습니다.</p>}</div><p className="text-xs text-sub">{confirmedOnly?'선택 조건이 자료상 확인된 곳만':'정보가 부족한 장소도 함께 표시'}</p><button type="button" onClick={submit} className="hidden lg:block bg-primary text-white rounded-xl w-full py-4 font-bold">이 조건으로 장소 살펴보기 →</button><p className="text-xs text-muted">기간과 취향은 아래에서 추가할 수 있어요. 나중에 언제든 변경할 수 있습니다.</p></aside>
       </div>
-      <details className="mt-6 rounded-2xl border border-line bg-white p-5"><summary className="font-bold text-lg cursor-pointer">여행 기본정보 · 기간과 인원</summary><p className="text-sm text-sub my-3">일정을 위한 기본값은 {nightsLabel(nights)}, {headcount}명입니다. 필요할 때 변경하세요.</p>
+      <details open className="mt-6 rounded-2xl border border-line bg-white p-5"><summary className="font-bold text-lg cursor-pointer">여행 기본정보 · 기간과 인원</summary><p className="text-sm text-sub my-3">일정을 위한 기본값은 {nightsLabel(nights)}, {headcount}명입니다. 필요할 때 변경하세요.</p>
       <div className="preferences-grid mt-4">
 
       {/* 여행 기간 · 인원 */}
@@ -269,7 +269,7 @@ export default function Onboarding() {
       </Section>
 
       </div></details>
-      <details className="mt-4 rounded-2xl border border-line bg-white p-5"><summary className="font-bold text-lg cursor-pointer">여행 취향 더하기 · 선택사항</summary><p className="text-sm text-sub my-3">좋아하는 여행, 음식, 동반 반려동물과 관심 테마를 추가하세요.</p><div className="preferences-grid mt-4">
+      <details open className="mt-4 rounded-2xl border border-line bg-white p-5"><summary className="font-bold text-lg cursor-pointer">여행 취향 더하기 · 선택사항</summary><p className="text-sm text-sub my-3">좋아하는 여행, 음식, 동반 반려동물과 관심 테마를 추가하세요.</p><div className="preferences-grid mt-4">
       {/* Q1 여행 유형 */}
       <Section num="1" title={t('onb.q1')}>
         <div className="grid grid-cols-1 gap-2.5">
