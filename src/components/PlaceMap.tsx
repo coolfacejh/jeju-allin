@@ -1,6 +1,6 @@
-import { BASEMAP_URL, BASEMAP_OPTIONS } from '../lib/mapTiles';
+import { addBasemap, type MapStatus } from '../lib/mapTiles';
 import { accessRows } from '../lib/access';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster';
@@ -83,6 +83,7 @@ export default function PlaceMap({
   const onDelRef = useRef(onDeleteMySpot);
   onDelRef.current = onDeleteMySpot;
 
+  const [mapStatus,setMapStatus]=useState<MapStatus>('loading');
   useEffect(() => {
     if (!elRef.current || mapRef.current) return;
     const map = L.map(elRef.current, {
@@ -93,7 +94,7 @@ export default function PlaceMap({
       maxBounds: JEJU_BOUNDS,
       maxBoundsViscosity: 0.8,
     });
-    L.tileLayer(BASEMAP_URL, BASEMAP_OPTIONS).addTo(map);
+    const disposeBasemap = addBasemap(map,setMapStatus);
 
     const cluster = L.markerClusterGroup({
       maxClusterRadius: 48,
@@ -161,6 +162,7 @@ export default function PlaceMap({
       rememberView();
       refreshRef.current = () => {};
       labelRef.current = null;
+      disposeBasemap();
       map.off();
       map.remove();
       mapRef.current = null;
@@ -246,6 +248,7 @@ export default function PlaceMap({
 
   return (
     <div className="flex flex-col gap-2">
+      {mapStatus!=='ready'&&<p role="status" className="text-sm text-sub">{mapStatus==='loading'?'선명한 지도를 불러오는 중…':'지도 배경을 불러오지 못했습니다. 연결 상태를 확인한 뒤 목록에서 지도를 다시 열어 주세요.'}</p>}
       <style>{`.jmap-label{background:rgba(255,255,255,.95);border:none;box-shadow:0 1px 3px rgba(0,0,0,.25);border-radius:6px;padding:1px 6px;font-size:12px;font-weight:800;color:#0A6E6D}.jmap-label::before{display:none}.jmap-spot{background:rgba(255,255,255,.92);border:none;box-shadow:0 1px 2px rgba(0,0,0,.2);border-radius:5px;padding:0 5px;font-size:10px;font-weight:700;color:#0f172a;white-space:nowrap}.jmap-spot::before{display:none}.jmap-my{background:#db2777;border:none;box-shadow:0 1px 3px rgba(0,0,0,.3);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:800;color:#fff;white-space:nowrap}.jmap-my::before{display:none}`}</style>
       <div ref={elRef} className="w-full rounded-2xl overflow-hidden shadow-card z-0" style={{ height: '68vh' }} />
       <div className="flex items-center justify-between px-1">
@@ -254,7 +257,7 @@ export default function PlaceMap({
           <span className="flex items-center gap-1"><i className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: COLOR.food }} /> 먹거리</span>
           <span className="flex items-center gap-1"><i className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: COLOR.activity }} /> 즐길거리</span>
         </div>
-        <span className="text-[10px] text-muted">확대 시 배경은 확대 표시됩니다 · 장소 이름 확인 가능</span>
+        <span className="text-[10px] text-muted">확대해도 선명한 지도 · 장소를 눌러 상세 확인</span>
       </div>
     </div>
   );

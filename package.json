@@ -4,15 +4,17 @@
   "version": "1.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/build-map-worker.mjs && vite",
+    "build": "node scripts/build-map-worker.mjs && tsc -b && vite build",
     "preview": "vite preview",
     "test": "node scripts/test.mjs && node --test tests/visitjeju-server.test.mjs"
   },
   "dependencies": {
+    "@maplibre/maplibre-gl-leaflet": "^0.1.4",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lz-string": "^1.5.0",
+    "maplibre-gl": "^6.11.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.3"
