@@ -4,6 +4,7 @@ export interface VisitWindow {
   close?: string;
 }
 export interface ScheduleSettings {
+  mealAware?: boolean;
   startDate?: string;
   transport: 'car' | 'walk' | 'transit';
   dayStart: string;
@@ -15,7 +16,7 @@ export interface ScheduleSettings {
   visits: Record<string, VisitWindow>;
 }
 export const DEFAULT_SCHEDULE: ScheduleSettings = {
-  transport: 'car', dayStart: '10:00', dayEnd: '18:00', arrivalBuffer: 60, departureBuffer: 120, visits: {},
+  mealAware: true, transport: 'car', dayStart: '10:00', dayEnd: '20:00', arrivalBuffer: 60, departureBuffer: 120, visits: {},
 };
 export const TRANSPORT_LABEL = { car: '자동차', walk: '도보', transit: '대중교통' };
 export function minutes(value?: string): number | null {
@@ -39,7 +40,7 @@ export function validSchedule(value: unknown, ids: number[]): value is ScheduleS
   if (!value || typeof value !== 'object') return false;
   const s = value as ScheduleSettings;
   const optionalTime = (v: unknown) => v === undefined || v === '' || (typeof v === 'string' && minutes(v) !== null);
-  if (!['car', 'walk', 'transit'].includes(s.transport) || minutes(s.dayStart) === null || minutes(s.dayEnd) === null
+  if ((s.mealAware!==undefined && typeof s.mealAware!=='boolean') || !['car', 'walk', 'transit'].includes(s.transport) || minutes(s.dayStart) === null || minutes(s.dayEnd) === null
     || !optionalTime(s.arrival) || !optionalTime(s.departure)
     || (s.startDate !== undefined && (typeof s.startDate !== 'string' || !validDate(s.startDate)))
     || ![s.arrivalBuffer, s.departureBuffer].every(n => Number.isInteger(n) && n >= 0 && n <= 720)

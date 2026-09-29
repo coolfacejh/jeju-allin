@@ -1,8 +1,8 @@
 import type { Content } from '../types';
-import { validSchedule, type ScheduleSettings } from './schedule';
+import { DEFAULT_SCHEDULE, validSchedule, type ScheduleSettings } from './schedule';
 import { loadSavedIds, loadProfile, loadPlanNotes } from './storage';
 import { resolvePlaces, validPlace } from './places';
-import { chunkIntoDays, orderRoute } from './planner';
+import { recommendDays } from './planner';
 
 export interface Trip {
   version: 2;
@@ -61,7 +61,7 @@ export function currentTrip(): Trip {
   const places = resolvePlaces(ids);
   const pool = new Map([...(stored?.places ?? []), ...places].map(p => [p.id, p]));
   const available = ids.flatMap(id => pool.has(id) ? [pool.get(id)!] : []);
-  if (!stored) return makeTrip(chunkIntoDays(orderRoute(available), nights + 1), nights, headcount, loadPlanNotes());
+  if (!stored) return makeTrip(recommendDays(available, nights + 1), nights, headcount, loadPlanNotes(), {...DEFAULT_SCHEDULE,visits:{}});
   const buckets: Content[][] = Array.from({ length: nights + 1 }, () => []);
   stored.days.forEach((day, i) => day.forEach(id => {
     if (ids.includes(id) && pool.has(id)) buckets[Math.min(i, nights)].push(pool.get(id)!);

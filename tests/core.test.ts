@@ -17,7 +17,7 @@ import { currentTrip, makeTrip, saveTrip, validTrip } from '../src/lib/trip';
 import { encodeTrip, decodeTrip, shareUrl, doShare } from '../src/lib/share';
 import { saveSavedIds, saveProfile } from '../src/lib/storage';
 import { calculateCuration } from '../src/lib/curate';
-import { scheduleDay } from '../src/lib/planner';
+import { scheduleDay, orderRoute, recommendDays } from '../src/lib/planner';
 import { DEFAULT_SCHEDULE, dateForDay, validSchedule } from '../src/lib/schedule';
 import type { Content, UserProfile } from '../src/types';
 
@@ -397,4 +397,28 @@ test('required facilities use AND matching and exclude negative evidence even in
  assert.equal(confirmedAccessDefault({...needs,confirmedOnly:false}),true);
  assert.equal(confirmedAccessDefault({...needs,confirmedOnly:false,filterVersion:2}),false);
  assert.equal(matchesAccessRequirements(external),true);
+});
+
+const routePlace=(id:number,contentType:Content['contentType'],name:string):Content=>({...external,id,contentType,name,lat:33.5,lng:126.5,avgStayMinutes:90});
+test('smart route places lodging last and restaurants at distinct lunch and dinner times',()=>{
+ const hotel=routePlace(701,'stay','숙소'),lunch=routePlace(702,'food','식당1'),dinner=routePlace(703,'food','식당2');
+ const activities=[704,705,706].map(id=>routePlace(id,'activity','관광'+id));
+ const ordered=orderRoute([hotel,lunch,dinner,...activities]);
+ assert.equal(ordered.at(-1)?.id,hotel.id);
+ assert.deepEqual(new Set(ordered.map(p=>p.id)),new Set([hotel,lunch,dinner,...activities].map(p=>p.id)));
+ const plan=scheduleDay(ordered);
+ const meals=plan.stops.filter(s=>s.item.contentType==='food');
+ assert.ok(meals[0].arrive>='12:00'&&meals[0].arrive<='14:00');assert.equal(meals[1].arrive,'18:00');
+ assert.equal(plan.stops.at(-1)?.item.id,hotel.id);
+ assert.ok(meals[1].waitMin!>0);
+});
+test('smart route distinguishes cafes, late arrival, unknown transport and explicit closing limits',()=>{
+ const meal=routePlace(710,'food','식당'),cafe=routePlace(711,'food','카페'),hotel=routePlace(712,'stay','숙소');
+ assert.equal(scheduleDay([cafe]).stops[0].arrive,'10:00');
+ const late=scheduleDay([meal,hotel],{...DEFAULT_SCHEDULE,arrival:'15:00',visits:{[meal.id]:{close:'17:00'}}});
+ assert.equal(late.stops[0].arrive,'18:00');assert.ok(late.warnings.some(w=>w.includes('마감')));
+ const unknown=scheduleDay([cafe,meal],{...DEFAULT_SCHEDULE,transport:'transit'});
+ assert.equal(unknown.stops[1].arrive,'확인 필요');
+ const days=recommendDays([hotel,meal,cafe,...[713,714,715].map(id=>routePlace(id,'activity','관광'))],2);
+ assert.equal(days[0].at(-1)?.id,hotel.id);assert.equal(new Set(days.flat().map(p=>p.id)).size,6);
 });

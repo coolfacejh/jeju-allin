@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../components/Icon';
 import ScheduleForm from '../components/ScheduleForm';
 import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
 import { currentTrip, makeTrip, saveTrip, saveTripSelection } from '../lib/trip';
 import { loadSavedIds } from '../lib/storage';
-import { scheduleDay } from '../lib/planner';
+import { scheduleDay, orderRoute } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
 import { kakaoRouteUrl } from '../lib/maps';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
@@ -53,7 +53,14 @@ function estimateCost(items: Content[]): number {
 
 export default function Planner() {
   const navigate = useNavigate();
-  const [initial] = useState(currentTrip);
+  const location=useLocation();
+  const [initial] = useState(()=>{
+    const trip=currentTrip();
+    if(!location.state?.smartRoute)return trip;
+    const schedule={...(trip.schedule??DEFAULT_SCHEDULE),mealAware:true};
+    return makeTrip(trip.days.map((ids,i)=>orderRoute(ids.map(id=>trip.places.find(p=>p.id===id)!),schedule,i,trip.nights)),trip.nights,trip.headcount,trip.notes,schedule);
+  });
+  useEffect(()=>{if(location.state?.smartRoute)navigate(location.pathname,{replace:true,state:null});},[]);
   const profile = { nights: initial.nights, headcount: initial.headcount };
   const days = initial.nights + 1;
   const [buckets, setBuckets] = useState<Content[][]>(() => initial.days.map(d => d.map(id => initial.places.find(p => p.id === id)!)));
@@ -190,6 +197,10 @@ export default function Planner() {
         ) : (
           <>
             <ScheduleForm value={settings} onChange={setSettings} />
+            <div className="rounded-xl bg-primary-light p-4 text-sm space-y-2">
+              <p>스마트루트: 숙소는 마지막 · 점심 12~14시 · 저녁 18~20시. 카페는 식사와 구분합니다. 이동시간은 추정치이며 영업시간은 별도 확인이 필요합니다.</p>
+              <button type="button" className="font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setSettings(next);setBuckets(prev=>prev.map((b,i)=>orderRoute(b,next,i,profile.nights)));show('날짜와 메모는 유지하고 숙소·식사 시간 기준으로 재정렬했어요.');}}>숙소·식사 시간 기준으로 다시 추천</button>
+            </div>
             {/* 요약 */}
             <section className="mt-4 rounded-2xl bg-gradient-to-br from-primary-dark to-primary text-white p-5 shadow-raised">
               <div className="flex items-center gap-1.5 mb-2">
@@ -333,6 +344,7 @@ export default function Planner() {
                           일정에서 제외
                         </button>
                         <p className="text-xs text-primary font-bold mt-3">예상 방문 {s.arrive} ~ {s.depart}</p>
+                        {!!s.waitMin && <p className="text-xs text-sub">식사·방문 가능 시간까지 여유·대기 {s.waitMin}분 포함</p>}
                         <details className="mt-2 text-xs">
                           <summary className="cursor-pointer text-primary py-2">직접 확인한 방문 시간 · 체류시간</summary>
                           <div className="grid grid-cols-2 gap-2 mt-2">

@@ -117,7 +117,7 @@ export default function MyTrip() {
         {/* 동선 만들기 — 상단 노출 CTA */}
         {items.length > 0 && (
           <button
-            onClick={() => items.length >= 1 && navigate('/planner')}
+            onClick={() => items.length >= 1 && navigate('/planner', {state:{smartRoute:true}})}
             disabled={items.length < 1}
             className={`flex items-center justify-between gap-2 rounded-2xl p-4 shadow-raised transition-all active:scale-[0.99] ${
               items.length >= 1 ? 'bg-gradient-to-br from-primary-dark to-primary text-white' : 'bg-white text-muted'
@@ -219,7 +219,7 @@ export default function MyTrip() {
             <section className="grid-span-all rounded-2xl bg-surface-sub p-4 flex items-start gap-3">
               <Icon name="auto_awesome" className="text-primary text-[20px] shrink-0 mt-0.5" />
               <p className="text-xs text-sub leading-relaxed">
-                숙소를 기준으로 이동시간이 가장 짧은 순서의 하루 코스를 만들어 드려요. 여러 날 일정은 날짜별로 자동 분배됩니다. 위의
+                숙소는 하루 마지막에, 식당은 점심·저녁 시간대에 배치하고 이동거리도 함께 고려합니다. 새 일정은 날짜별로 분배하며 기존 일정은 날짜를 유지하고 순서를 다시 추천합니다. 위의
                 <strong className="text-primary"> ‘AI 스마트 루트 만들기’</strong>를 눌러보세요.
               </p>
             </section>
