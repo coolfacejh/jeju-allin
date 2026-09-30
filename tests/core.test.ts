@@ -17,7 +17,7 @@ import { currentTrip, makeTrip, saveTrip, validTrip } from '../src/lib/trip';
 import { encodeTrip, decodeTrip, shareUrl, doShare } from '../src/lib/share';
 import { saveSavedIds, saveProfile } from '../src/lib/storage';
 import { calculateCuration } from '../src/lib/curate';
-import { scheduleDay, orderRoute, recommendDays } from '../src/lib/planner';
+import { scheduleDay, orderRoute, recommendDays, balanceNearbyDays } from '../src/lib/planner';
 import { DEFAULT_SCHEDULE, dateForDay, validSchedule } from '../src/lib/schedule';
 import type { Content, UserProfile } from '../src/types';
 
@@ -435,4 +435,20 @@ test('geographic days keep eastern and western meals with nearby sights and lodg
  assert.ok(scheduleDay(mixed).warnings.some(w=>w.includes('장거리')));
  const unknown={...make(808,'동','food'),lat:undefined,lng:undefined};
  assert.equal(recommendDays([...places,unknown],3).flat().length,8);
+});
+
+test('nearby day balancing respects arrival deadline, lodging and unknown transit',()=>{
+ const first=[901,902,903].map(id=>({...routePlace(id,'activity','관광'+id),avgStayMinutes:90}));
+ const next=routePlace(904,'activity','다음날 관광'),hotel=routePlace(905,'stay','숙소');
+ const settings={...DEFAULT_SCHEDULE,arrival:'15:00',dayEnd:'20:00'};
+ const original=[[...first,hotel],[next]];
+ const balanced=balanceNearbyDays(original,settings);
+ assert.ok(balanced[0].length<original[0].length);
+ assert.equal(balanced[0].at(-1)?.id,hotel.id);
+ assert.equal(new Set(balanced.flat().map(p=>p.id)).size,5);
+ assert.equal(original[0].length,4);
+ const far=balanceNearbyDays([[...first,hotel],[{...next,lng:126.95}]],settings);
+ assert.equal(far[0].length,4);
+ const transit=balanceNearbyDays(original,{...settings,transport:'transit'});
+ assert.deepEqual(transit,original);
 });

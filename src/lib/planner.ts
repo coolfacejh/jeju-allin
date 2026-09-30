@@ -132,7 +132,46 @@ export function recommendDays(items:Content[],days:number,settings:ScheduleSetti
   [buckets[target],buckets[best]]=[buckets[best],buckets[target]];
   buckets[target].push(p);
  });
- return buckets.map((b,i)=>orderRoute(b,settings,i,count-1));
+ const ordered=buckets.map((b,i)=>orderRoute(b,settings,i,count-1));
+ return balanceNearbyDays(ordered,settings);
+}
+// Reduce known daily overtime only when a nearby day can take the visit.
+// Unknown transport times stay unresolved; lodgings never move during balancing.
+export function balanceNearbyDays(input:Content[][],settings:ScheduleSettings):Content[][] {
+ const buckets=input.map(day=>day.slice());
+ const overtime=(places:Content[],day:number)=>{
+  if(!places.length)return 0;
+  const plan=scheduleDay(places,settings,day,buckets.length-1),end=plan.stops[plan.stops.length-1]?.depart;
+  if(!end||end==='확인 필요')return null;
+  const match=end.match(/^\+(\d+)일 (.*)$/);
+  const finish=match?Number(match[1])*1440+(minutes(match[2])??0):minutes(end);
+  const limit=minutes(plan.deadline);
+  return finish===null||limit===null?null:Math.max(0,finish-limit);
+ };
+ for(let pass=0;pass<Math.min(12,input.flat().length);pass++){
+  let best:{from:number;to:number;source:Content[];target:Content[];gain:number}|undefined;
+  for(let from=0;from<buckets.length;from++){
+   const excess=overtime(buckets[from],from);if(excess===null||excess<=0)continue;
+   for(const item of buckets[from]){
+    if(item.contentType==='stay'||courseForPlace(item.id))continue;
+    for(let to=0;to<buckets.length;to++){
+     if(to===from||Math.abs(to-from)>1)continue;
+     const neighbours=buckets[to].filter(p=>Number.isFinite(haversineKm(item,p)));
+     if(!neighbours.length||Math.min(...neighbours.map(p=>haversineKm(item,p)))>15)continue;
+     const previous=overtime(buckets[to],to);if(previous===null)continue;
+     const source=orderRoute(buckets[from].filter(p=>p.id!==item.id),settings,from,buckets.length-1);
+     const target=orderRoute([...buckets[to],item],settings,to,buckets.length-1);
+     const sourceOver=overtime(source,from),targetOver=overtime(target,to);
+     if(sourceOver===null||targetOver===null||targetOver>0)continue;
+     const gain=excess+previous-sourceOver-targetOver;
+     if(gain>0&&(!best||gain>best.gain))best={from,to,source,target,gain};
+    }
+   }
+  }
+  if(!best)break;
+  buckets[best.from]=best.source;buckets[best.to]=best.target;
+ }
+ return buckets;
 }
 
 // 이미 정해진 순서를 여러 날로 균등 분배 (연속 청크)
