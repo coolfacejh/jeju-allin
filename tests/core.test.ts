@@ -485,3 +485,20 @@ test('saved legacy events in the reported screenshot cannot reappear in the gene
  assert.deepEqual(currentTrip().places.map(p=>p.id),[permanent.id]);
  assert.equal(resolvePlaces([snoopy.id,festival.id]).length,2);
 });
+
+import {previousLodging,lodgingLast} from '../src/lib/planner';
+test('lodging closes its day and anchors the next day without a duplicate visit or check-in duration',()=>{
+ const hotel={...external,id:991201,name:'숙소',contentType:'stay' as const,lat:33.5,lng:126.5};
+ const near={...external,id:991202,contentType:'activity' as const,lat:33.51,lng:126.5};
+ const far={...near,id:991203,lat:33.55};
+ const days=[lodgingLast([hotel,near]),[far]];
+ assert.equal(days[0].at(-1)?.id,hotel.id);
+ assert.equal(previousLodging(days,0),undefined);assert.equal(previousLodging(days,1)?.id,hotel.id);
+ const plan=scheduleDay([near],DEFAULT_SCHEDULE,1,1,hotel);
+ assert.equal(plan.stops.length,1);assert.ok(plan.stops[0].legFromPrev!.minutes!>0);
+ assert.equal(plan.totalTravelMin,plan.stops[0].legFromPrev!.minutes);
+ assert.equal(plan.stops[0].arrive,'10:02');
+ assert.equal(orderRoute([far,near],DEFAULT_SCHEDULE,1,1,hotel)[0].id,near.id);
+ assert.equal(scheduleDay([near],DEFAULT_SCHEDULE,1,1,{...hotel,lat:undefined}).complete,false);
+ assert.equal(previousLodging([[],[near]],1),undefined);
+});

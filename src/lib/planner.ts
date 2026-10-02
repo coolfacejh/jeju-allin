@@ -63,12 +63,14 @@ export function isMealStop(item:Content):boolean {
  return item.contentType==='food' && subcatOf(item)!=='카페·찻집';
 }
 // Prefer meals before a long next activity would miss the meal window; keep all lodgings last.
-export function orderRoute(items:Content[],settings:ScheduleSettings=DEFAULT_SCHEDULE,day=0,nights=0):Content[] {
+export function lodgingLast(items:Content[]):Content[] {return [...items.filter(p=>p.contentType!=='stay'),...items.filter(p=>p.contentType==='stay')];}
+export function previousLodging(days:Content[][],day:number):Content|undefined {return day>0?days[day-1]?.filter(p=>p.contentType==='stay').slice(-1)[0]:undefined;}
+export function orderRoute(items:Content[],settings:ScheduleSettings=DEFAULT_SCHEDULE,day=0,nights=0,origin?:Content):Content[] {
  const stays=items.filter(p=>p.contentType==='stay');
  const meals=items.filter(isMealStop);
  const activities=items.filter(p=>p.contentType!=='stay'&&!isMealStop(p));
  const ordered:Content[]=[];
- const nearest=(pool:Content[])=>pool.reduce((best,p)=>!ordered.length||haversineKm(ordered[ordered.length-1],best)<=haversineKm(ordered[ordered.length-1],p)?best:p,pool[0]);
+ const nearest=(pool:Content[])=>{const from=ordered[ordered.length-1]??origin;return pool.reduce((best,p)=>!from||haversineKm(from,best)<=haversineKm(from,p)?best:p,pool[0]);};
  const start=Math.max(minutes(settings.dayStart)??600,day===0?(minutes(settings.arrival)??-settings.arrivalBuffer)+settings.arrivalBuffer:0);
  let eaten=0;
  while(activities.length||meals.length){
@@ -77,7 +79,7 @@ export function orderRoute(items:Content[],settings:ScheduleSettings=DEFAULT_SCH
   else if(!meals.length)pick=nearest(activities);
   else {
    const activity=nearest(activities),meal=nearest(meals);
-   const trial=scheduleDay([...ordered,activity,meal],{...settings,mealAware:true},day,nights);
+   const trial=scheduleDay([...ordered,activity,meal],{...settings,mealAware:true},day,nights,origin);
    const arrival=minutes(trial.stops[trial.stops.length-1].arrive);
    const target=start>=14*60||eaten>0?18*60:12*60;
    // Unknown travel times: interleave a meal after two activities, without claiming an arrival time.
@@ -89,7 +91,7 @@ export function orderRoute(items:Content[],settings:ScheduleSettings=DEFAULT_SCH
  // Reject a meal-driven detour when a geographical order is substantially shorter.
  const located=items.filter(p=>p.contentType!=='stay');
  if(located.every(p=>Number.isFinite(haversineKm(p,p)))&&located.length>1){
-  const length=(route:Content[])=>route.slice(1).reduce((sum,p,i)=>sum+haversineKm(route[i],p),0);
+  const length=(route:Content[])=>route.slice(1).reduce((sum,p,i)=>sum+haversineKm(route[i],p),origin&&route.length?haversineKm(origin,route[0]):0);
   let best=[...ordered,...stays];
   for(const startPlace of located){
    const route=[startPlace],remaining=located.filter(p=>p.id!==startPlace.id);
@@ -133,7 +135,8 @@ export function recommendDays(items:Content[],days:number,settings:ScheduleSetti
   buckets[target].push(p);
  });
  const ordered=buckets.map((b,i)=>orderRoute(b,settings,i,count-1));
- return balanceNearbyDays(ordered,settings);
+ const balanced=balanceNearbyDays(ordered,settings);
+ return balanced.map((b,i)=>orderRoute(b,settings,i,count-1,previousLodging(balanced,i)));
 }
 // Reduce known daily overtime only when a nearby day can take the visit.
 // Unknown transport times stay unresolved; lodgings never move during balancing.
@@ -141,7 +144,7 @@ export function balanceNearbyDays(input:Content[][],settings:ScheduleSettings):C
  const buckets=input.map(day=>day.slice());
  const overtime=(places:Content[],day:number)=>{
   if(!places.length)return 0;
-  const plan=scheduleDay(places,settings,day,buckets.length-1),end=plan.stops[plan.stops.length-1]?.depart;
+  const plan=scheduleDay(places,settings,day,buckets.length-1,previousLodging(buckets,day)),end=plan.stops[plan.stops.length-1]?.depart;
   if(!end||end==='확인 필요')return null;
   const match=end.match(/^\+(\d+)일 (.*)$/);
   const finish=match?Number(match[1])*1440+(minutes(match[2])??0):minutes(end);
@@ -188,7 +191,7 @@ export function chunkIntoDays(ordered: Content[], days: number): Content[][] {
 }
 
 // This estimates elapsed time, never actual road/transit travel or live opening hours.
-export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEFAULT_SCHEDULE, day = 0, nights = 0): RoutePlan {
+export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEFAULT_SCHEDULE, day = 0, nights = 0, origin?: Content): RoutePlan {
   const warnings: string[] = [];
   const stops: RouteStop[] = [];
   const baseStart = minutes(settings.dayStart) ?? 600;
@@ -205,8 +208,8 @@ export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEF
   let complete = true;
   ordered.forEach((item, i) => {
     let leg: RouteLeg | null = null;
-    if (i > 0) {
-      const previous = ordered[i - 1];
+    if (i > 0 || origin) {
+      const previous = i>0 ? ordered[i - 1] : origin!;
       const km = haversineKm(previous, item);
       const ferry = /우도|마라도|가파도/.test(previous.name + item.name);
       const unknown = !Number.isFinite(km) || ferry || settings.transport === 'transit';

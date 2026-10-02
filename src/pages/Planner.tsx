@@ -7,7 +7,7 @@ import ScheduleForm from '../components/ScheduleForm';
 import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
 import { currentTrip, makeTrip, saveTrip, saveTripSelection } from '../lib/trip';
 import { loadProfile, saveProfile, loadSavedIds } from '../lib/storage';
-import { scheduleDay, orderRoute, recommendDays } from '../lib/planner';
+import { scheduleDay, orderRoute, recommendDays, lodgingLast, previousLodging } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
 import { kakaoRouteUrl } from '../lib/maps';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
@@ -66,7 +66,7 @@ export default function Planner() {
   const [headcount,setHeadcount]=useState(initial.headcount);
   const profile = { nights: initial.nights, headcount };
   const days = initial.nights + 1;
-  const [buckets, setBuckets] = useState<Content[][]>(() => initial.days.map(d => d.map(id => initial.places.find(p => p.id === id)!)));
+  const [buckets, setBuckets] = useState<Content[][]>(() => initial.days.map(d => d.map(id => initial.places.find(p => p.id === id)!)).map(lodgingLast));
   const items = buckets.flat();
   const [removed, setRemoved] = useState<{ item: Content; day: number; index: number; savedIndex: number } | null>(null);
   const [day, setDay] = useState(0);
@@ -116,6 +116,7 @@ export default function Planner() {
       if (!place) return previous;
       const next = previous.map(d => d.filter(p => p.id !== id));
       next[target].push(place);
+      next[target]=lodgingLast(next[target]);
       return next;
     });
   }
@@ -135,7 +136,8 @@ export default function Planner() {
   }
 
   const dayItems = buckets[day] ?? [];
-  const plan = useMemo(() => scheduleDay(dayItems, settings, day, initial.nights), [dayItems, settings, day, initial.nights]);
+  const origin=previousLodging(buckets,day);
+  const plan = useMemo(() => scheduleDay(dayItems, settings, day, initial.nights,origin), [dayItems, settings, day, initial.nights,origin]);
   const totalH = Math.floor(plan.totalTravelMin / 60);
   const totalM = plan.totalTravelMin % 60;
 
@@ -153,7 +155,7 @@ export default function Planner() {
       const next = prev.map((b) => b.slice());
       const arr = next[day];
       const j = idx + dir;
-      if (j < 0 || j >= arr.length) return prev;
+      if (j < 0 || j >= arr.length || arr[idx].contentType==='stay' || arr[j].contentType==='stay') return prev;
       [arr[idx], arr[j]] = [arr[j], arr[idx]];
       return next;
     });
@@ -203,11 +205,11 @@ export default function Planner() {
             <label className="text-sm font-bold">여행 인원<select aria-label="여행 인원" className="ml-3 border border-line rounded-xl p-2" value={headcount} onChange={e=>{const n=Number(e.target.value);setHeadcount(n);const p=loadProfile();if(p)saveProfile({...p,headcount:n});}}>{Array.from({length:100},(_,i)=><option key={i+1} value={i+1}>{i+1}명</option>)}</select></label>
             <ScheduleForm value={settings} onChange={next=>{setSettings(next);const p=loadProfile();if(p)saveProfile({...p,startDate:next.startDate});}} />
             <div className="rounded-xl bg-primary-light p-4 text-sm space-y-2">
-              <p>스마트루트: 숙소는 마지막 · 점심 12~14시 · 저녁 18~20시. 카페는 식사와 구분합니다. 이동시간은 추정치이며 영업시간은 별도 확인이 필요합니다.</p>
+              <p>스마트루트: 숙소는 마지막, 다음 날은 전날 숙소에서 출발 · 점심 12~14시 · 저녁 18~20시. 카페는 식사와 구분합니다. 이동시간은 추정치이며 영업시간은 별도 확인이 필요합니다.</p>
               <button type="button" className="block font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setBeforeRegroup(buckets);setSettings(next);setBuckets(recommendDays(items,days,next));setDay(0);show('날짜별 장소를 가까운 권역끼리 다시 묶었어요. 메모와 방문 설정은 유지했습니다.');}}>권역별로 날짜까지 다시 추천</button>
               {beforeRegroup&&<button type="button" className="block text-primary underline" onClick={()=>{setBuckets(beforeRegroup);setBeforeRegroup(null);setDay(0);}}>날짜 재배정 되돌리기</button>}
               <p className="text-xs text-sub">동·서부를 오간다면 위 버튼으로 날짜 배정까지 바꿔 주세요. 아래 버튼은 현재 날짜 안의 순서만 바꿉니다.</p>
-              <button type="button" className="font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setSettings(next);setBuckets(prev=>prev.map((b,i)=>orderRoute(b,next,i,profile.nights)));show('날짜와 메모는 유지하고 숙소·식사 시간 기준으로 재정렬했어요.');}}>숙소·식사 시간 기준으로 다시 추천</button>
+              <button type="button" className="font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setSettings(next);setBuckets(prev=>prev.map((b,i)=>orderRoute(b,next,i,profile.nights,previousLodging(prev,i))));show('날짜와 메모는 유지하고 숙소·식사 시간 기준으로 재정렬했어요.');}}>숙소·식사 시간 기준으로 다시 추천</button>
             </div>
             {/* 요약 */}
             <section className="mt-4 rounded-2xl bg-gradient-to-br from-primary-dark to-primary text-white p-5 shadow-raised">
@@ -261,10 +263,11 @@ export default function Planner() {
             <div className="planner-columns">
             <div className="planner-map">
             {/* 미니 지도 */}
-            {dayItems.length > 0 && <RouteMap stops={dayItems} />}
+            {dayItems.length > 0 && <RouteMap stops={dayItems} origin={origin} />}
 
             </div>
             <div className="min-w-0">
+            {origin&&<div className="rounded-xl bg-primary-light p-4 text-sm" data-lodging-origin={origin.id}><p className="font-bold">출발 숙소 · {origin.name}</p><p>{settings.dayStart} 출발 · 전날 숙소에서 첫 장소까지의 이동을 포함합니다.</p></div>}
             {/* 타임라인 (수동 재정렬) */}
             {dayItems.length === 0 ? (
               <p className="text-center text-sm text-muted py-8">이 날은 아직 비어 있어요.</p>
@@ -303,7 +306,7 @@ export default function Planner() {
                             {/* 순서 조정 */}
                             <button
                               onClick={() => move(i, -1)}
-                              disabled={i === 0}
+                              disabled={i === 0 || s.item.contentType==='stay'}
                               className="w-7 h-7 rounded-full bg-surface-sub text-sub flex items-center justify-center active:scale-90 disabled:opacity-30"
                               aria-label="위로"
                             >
@@ -311,7 +314,7 @@ export default function Planner() {
                             </button>
                             <button
                               onClick={() => move(i, 1)}
-                              disabled={i === plan.stops.length - 1}
+                              disabled={i === plan.stops.length - 1 || s.item.contentType==='stay' || plan.stops[i+1]?.item.contentType==='stay'}
                               className="w-7 h-7 rounded-full bg-surface-sub text-sub flex items-center justify-center active:scale-90 disabled:opacity-30"
                               aria-label="아래로"
                             >
