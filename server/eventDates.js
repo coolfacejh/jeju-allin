@@ -10,7 +10,7 @@ export function calendarDate(value) {
 export function eventDates(raw) {
  const category=raw.providerCategory||raw.contentscd?.label||'';
  const name=raw.name||raw.title||'';
- const detected=raw.event || String(raw.contenttypeid)==='15' || /축제|행사/.test(category) || /축제|페스티벌|박람회/.test(name) || (raw.contentType==='activity' && /(?:^|\s)20\d{2}(?:년|\s)/.test(name));
+ const detected=raw.event || String(raw.contenttypeid)==='15' || /축제|행사/.test(category) || /축제|페스티벌|박람회|이벤트|행사(?!장)/.test(name) || (raw.contentType==='activity' && /(?:^|\s)20\d{2}(?:년|\s)/.test(name));
  if(!detected)return undefined;
  let start=calendarDate(raw.event?.start||raw.eventstartdate||raw.festivalstartdate);
  let end=calendarDate(raw.event?.end||raw.eventenddate||raw.festivalenddate);

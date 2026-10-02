@@ -1,3 +1,4 @@
+import { eventVisible } from './events';
 import type { Content } from '../types';
 import { DEFAULT_SCHEDULE, validSchedule, type ScheduleSettings } from './schedule';
 import { loadSavedIds, loadProfile, loadPlanNotes } from './storage';
@@ -60,11 +61,12 @@ export function currentTrip(): Trip {
   const ids = [...new Set(loadSavedIds())];
   const places = resolvePlaces(ids);
   const pool = new Map([...(stored?.places ?? []), ...places].map(p => [p.id, p]));
-  const available = ids.flatMap(id => pool.has(id) ? [pool.get(id)!] : []);
+  const available = ids.flatMap(id => pool.has(id) ? [pool.get(id)!] : []).filter(p=>eventVisible(p,{startDate:profile?.startDate??stored?.schedule?.startDate,nights}));
+  const allowed = new Set(available.map(p=>p.id));
   if (!stored) return makeTrip(recommendDays(available, nights + 1), nights, headcount, loadPlanNotes(), {...DEFAULT_SCHEDULE,startDate:profile?.startDate,visits:{}});
   const buckets: Content[][] = Array.from({ length: nights + 1 }, () => []);
   stored.days.forEach((day, i) => day.forEach(id => {
-    if (ids.includes(id) && pool.has(id)) buckets[Math.min(i, nights)].push(pool.get(id)!);
+    if (allowed.has(id) && pool.has(id)) buckets[Math.min(i, nights)].push(pool.get(id)!);
   }));
   const assigned = new Set(buckets.flat().map(p => p.id));
   available.filter(p => !assigned.has(p.id)).forEach(p => {

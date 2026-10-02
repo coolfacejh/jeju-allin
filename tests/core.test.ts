@@ -472,3 +472,16 @@ test('new itinerary inherits the date selected on onboarding',()=>{
  memory.clear();saveProfile({...profile,startDate:'2026-10-08'});
  assert.equal(currentTrip().schedule?.startDate,'2026-10-08');
 });
+
+test('saved legacy events in the reported screenshot cannot reappear in the generated itinerary',()=>{
+ const snoopy={...external,id:991101,contentType:'activity' as const,name:"스누피가든 5월 가정의달 이벤트 'Picnic All Together'"};
+ const festival={...snoopy,id:991102,name:'2026 숲멍쉬멍 대축제'};
+ const permanent={...snoopy,id:991103,name:'스누피가든'};
+ saveProfile({...profile,startDate:'2026-10-10'});
+ rememberPlaces([snoopy,festival,permanent]);saveSavedIds([snoopy.id,festival.id,permanent.id]);
+ saveTrip(makeTrip([[snoopy,festival,permanent],[],[]],2,4,{}));
+ assert.equal(eventVisible(snoopy,{startDate:'2026-10-10',nights:2}),false);
+ assert.equal(eventVisible(festival,{startDate:'2026-10-10',nights:2}),false);
+ assert.deepEqual(currentTrip().places.map(p=>p.id),[permanent.id]);
+ assert.equal(resolvePlaces([snoopy.id,festival.id]).length,2);
+});

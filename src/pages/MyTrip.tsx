@@ -1,10 +1,11 @@
+import { eventVisible } from '../lib/events';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../components/Icon';
 import BottomNav from '../components/BottomNav';
 import { resolvePlaces } from '../lib/places';
 import { currentTrip } from '../lib/trip';
-import { loadSavedIds, saveSavedIds } from '../lib/storage';
+import { loadProfile, loadSavedIds, saveSavedIds } from '../lib/storage';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
 import { nightsLabel } from './Onboarding';
 import { useToast } from '../components/Toast';
@@ -40,8 +41,11 @@ export default function MyTrip() {
     } catch (error) { show(error instanceof Error ? error.message : '공유에 실패했어요'); }
   }
 
-  const items = useMemo(() => resolvePlaces(ids), [ids]);
-  const missing = ids.filter(id => !items.some(p => p.id === id));
+  const resolved = useMemo(() => resolvePlaces(ids), [ids]);
+  const profile=loadProfile();
+  const items = resolved.filter(p=>eventVisible(p,profile??{nights:0}));
+  const hiddenEvents=resolved.length-items.length;
+  const missing = ids.filter(id => !resolved.some(p => p.id === id));
   const visible = items.filter((c) => filter === 'all' || c.contentType === filter);
 
   function remove(id: number) {
@@ -114,6 +118,7 @@ export default function MyTrip() {
           </div>
         </section>
 
+        {hiddenEvents>0&&<p role="status" className="text-xs text-sub">여행 기간에 맞지 않거나 개최 날짜가 확인되지 않은 행사 {hiddenEvents}곳은 보관함과 일정 추천에서 숨겼습니다.</p>}
         {/* 동선 만들기 — 상단 노출 CTA */}
         {items.length > 0 && (
           <button

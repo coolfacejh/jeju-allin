@@ -1,3 +1,4 @@
+import { resolvePlaces } from '../lib/places';
 import RouteMap from '../components/RouteMap';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -78,7 +79,7 @@ export default function Planner() {
   }
   const [saveFailed, setSaveFailed] = useState(false);
   const [beforeRegroup,setBeforeRegroup]=useState<Content[][]|null>(null);
-  const missing = loadSavedIds().filter(id => !items.some(p => p.id === id)).length;
+  const missing = loadSavedIds().filter(id => !resolvePlaces([id]).length).length;
   useEffect(() => {
     setSaveFailed(!saveTrip(makeTrip(buckets, profile.nights, profile.headcount, notes, settings)));
   }, [buckets, notes, settings, profile.nights, profile.headcount]);
