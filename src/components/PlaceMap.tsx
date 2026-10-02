@@ -91,6 +91,10 @@ export default function PlaceMap({
       zoom: 10,
       minZoom: 9,
       zoomAnimation: false,
+      // Gentle wheel/trackpad zoom; +/- buttons retain their familiar full step.
+      zoomSnap: 0.25,
+      wheelPxPerZoomLevel: 320,
+      wheelDebounceTime: 80,
       maxBounds: JEJU_BOUNDS,
       maxBoundsViscosity: 0.8,
     });
