@@ -1,6 +1,6 @@
 import { mergeAccessSources } from './access';
 import type { Content } from '../types';
-const KEY = 'jeju_visitjeju_cache_v2';
+const KEY = 'jeju_visitjeju_cache_v3';
 const TTL = 86400000;
 let sessionCache: {t:number;items:Content[]} | undefined;
 export function loadVisitCache(maxAge=7*TTL): Content[] {
@@ -26,7 +26,7 @@ export function fetchVisitPlaces(force=false,onProgress?:Listener):Promise<Conte
    async function page(n:number){
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),22000);
     try {
-     const r=await fetch(`/api/visitjeju?page=${n}&schema=2`,{signal:controller.signal});
+     const r=await fetch(`/api/visitjeju?page=${n}&schema=3`,{signal:controller.signal});
      if(!r.ok)throw new Error('visitjeju_unavailable');
      const d=await r.json();
      if(!Array.isArray(d.items)||d.page!==n||!Number.isInteger(d.pageCount)||d.pageCount<1||d.pageCount>100)throw new Error('visitjeju_format');
@@ -61,7 +61,7 @@ export function uniqueCatalogue(places:Content[]):Content[] {
   for (const p of [...places].sort((a,b)=>Number(a.provenance?.source==='visitjeju')-Number(b.provenance?.source==='visitjeju'))) {
     const key=p.contentType+':'+p.name.normalize('NFKC').toLowerCase().replace(/[\s\p{P}]/gu,'');
     const matches=names.get(key)??[];
-    const duplicate=matches.find(q=>p.provenance?.source!==q.provenance?.source && (
+    const duplicate=matches.find(q=>JSON.stringify(q.event)===JSON.stringify(p.event) && p.provenance?.source!==q.provenance?.source && (
       p.lat!=null&&p.lng!=null&&q.lat!=null&&q.lng!=null&&Math.hypot(p.lat-q.lat,(p.lng-q.lng)*0.84)<0.0009
     ));
     if (!duplicate) {const copy={...p}; result.push(copy); names.set(key,[...matches,copy]);}

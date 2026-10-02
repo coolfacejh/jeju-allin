@@ -32,3 +32,12 @@ test('photo source selects full size and excludes reviews, unrelated hosts and d
  await assert.rejects(fetchPlacePhotos('https://evil.test'));
  const result=await fetchPlacePhotos('CNTS_000000000018332',async()=>new Response(html));assert.equal(result.photos.length,1);
 });
+
+test('festival mapper retains dates and does not guess dates from a title year or received time',()=>{
+ const festival={...raw,contentscd:{label:'축제/행사'},title:'제주 축제',eventstartdate:'20261001',eventenddate:'20261004'};
+ assert.deepEqual(normalizePlace(festival,'2026-10-05').event,{start:'2026-10-01',end:'2026-10-04'});
+ assert.deepEqual(normalizePlace({...festival,eventstartdate:'20260230'},'now').event,{});
+ assert.deepEqual(normalizePlace({...raw,contentscd:{label:'축제/행사'},title:'2024 제주 행사'},'2026-10-05').event,{});
+ assert.equal(normalizePlace(raw,'now').event,undefined);
+ assert.deepEqual(normalizePlace({...festival,eventstartdate:'',eventenddate:'',introduction:'기간: 2026.10.01 ~ 2026.10.04'},'now').event,{start:'2026-10-01',end:'2026-10-04'});
+});

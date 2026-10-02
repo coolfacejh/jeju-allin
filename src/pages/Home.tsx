@@ -1,3 +1,5 @@
+import { eventVisible, eventPeriod, koreaToday } from '../lib/events';
+import { dateForDay } from '../lib/schedule';
 
 import { AccessSummary } from '../components/AccessPanel';
 import { accessFit, accessRows, requiredAccess, matchesAccessRequirements, confirmedAccessDefault, ACCESS_LABELS } from '../lib/access';
@@ -9,7 +11,7 @@ import BottomNav from '../components/BottomNav';
 import PlaceMap from '../components/PlaceMap';
 import { loadExplore, saveExplore } from '../lib/explore';
 import { loadPlaces, rememberPlaces } from '../lib/places';
-import { calculateCuration, TRAVEL_TYPE_NAME, THEME_NAME } from '../lib/curate';
+import { calculateCuration, THEME_NAME } from '../lib/curate';
 import { nightsLabel } from './Onboarding';
 import { loadProfile, loadSavedIds, saveSavedIds, loadWish, saveWish, loadReasonsOn, logEvent, loadMySpots, saveMySpots, type MySpot } from '../lib/storage';
 import { fetchLivePlaces, loadLiveCache, fetchBarrierFreeIds } from '../lib/live';
@@ -32,12 +34,6 @@ const TYPE_SECTIONS: { key: ContentType; tkey: string }[] = [
   { key: 'activity', tkey: 'sec.activity' },
   { key: 'food', tkey: 'sec.food' },
 ];
-
-const GRADE_STYLE: Record<string, { badge: string; icon: string }> = {
-  적합: { badge: 'bg-primary text-white', icon: 'spa' },
-  높음: { badge: 'bg-tertiary-light text-tertiary', icon: 'thumb_up' },
-  보통: { badge: 'bg-surface-sub text-muted', icon: 'thumb_up' },
-};
 
 export default function Home() {
   const navigate = useNavigate();
@@ -129,7 +125,7 @@ export default function Home() {
     [profile, liveAug, visit],
   );
   // 카테고리·권역·검색 시 실시간 데이터까지 합친 전체 풀
-  const pool = curated;
+  const pool = curated.filter(p=>eventVisible(p,profile??{nights:0}));
 
 
 
@@ -175,7 +171,7 @@ export default function Home() {
 
   const grouped = tab === 'all' && !q && region === 'all';
   // 기본 피드는 큐레이션(엄선) 데이터, 필터를 걸면 실시간 포함 전체 풀에서 탐색
-  const base = grouped ? curated : pool;
+  const base = pool;
   const filtered = base.filter(
     (c) =>
       (tab === 'all' || c.contentType === tab) &&
@@ -358,12 +354,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
               <Chip accent>📅 {nightsLabel(profile.nights ?? 1)} · {profile.headcount ?? 2}명</Chip>
-              <Chip>🌿 {profile.travelType?TRAVEL_TYPE_NAME[profile.travelType]:'여행 취향 미선택'}</Chip>
-              {profile.hasChild && <Chip accent>👶 아이 동반</Chip>}
-              {profile.hasSenior && <Chip accent>🧓 시니어 동반</Chip>}
-              {profile.themes.slice(0, 3).map((t) => (
-                <Chip key={t}>#{t}</Chip>
-              ))}
+              <Chip>{profile.startDate ? `${profile.startDate} ~ ${dateForDay(profile.startDate,profile.nights)}` : '날짜 미정'}</Chip>
             </div>
           </div>
           <div className="bg-white rounded-xl p-3 shadow-card flex items-start gap-2">
@@ -377,6 +368,8 @@ export default function Home() {
           </div>
         </section>
 
+        <p className="text-xs text-sub" role="status">행사는 {profile.startDate?`${profile.startDate} ~ ${dateForDay(profile.startDate,profile.nights)}`:`${koreaToday()} 이후`} 기준으로 표시합니다. 기간이 맞지 않거나 개최 날짜를 확인할 수 없는 행사는 제외합니다.</p>
+        <section aria-label="관심 테마" className="bg-white rounded-xl p-4"><p className="font-bold text-sm mb-3">관심 테마로 좁혀보기</p><div className="flex flex-wrap gap-2">{Object.entries(THEME_NAME).map(([key,label])=><button key={key} aria-pressed={wish===label} className={`px-3 py-2 rounded-full text-xs ${wish===label?'bg-primary text-white':'bg-surface-sub'}`} onClick={()=>{const next=wish===label?'':label;setWish(next);saveWish(next);}}>{label}</button>)}</div><p className="text-xs text-sub mt-2">선택한 테마가 장소 소개나 태그에 포함된 결과만 표시합니다.</p></section>
         {/* 직접 하고 싶은 것 입력 */}
         <div className="bg-white rounded-xl p-3 shadow-card">
           <div className="flex items-center gap-1.5 mb-2 text-primary">
@@ -774,7 +767,7 @@ function Card({
   showReason?: boolean;
 }) {
   const { t } = useI18n();
-  const g = GRADE_STYLE[item.matchGrade];
+
   const stop = (fn: () => void) => (e: React.MouseEvent) => {
     e.stopPropagation();
     fn();
@@ -787,10 +780,6 @@ function Card({
         ) : (
           item.image
         )}
-        <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md ${g.badge}`}>
-          <Icon name={g.icon} className="text-[15px]" fill />
-          {item.matchScore}점 {item.matchGrade === '적합' ? '태그 일치' : item.matchGrade === '높음' ? '취향 부합' : '참고'}
-        </div>
         <button
           onClick={stop(onToggle)}
           aria-label={saved ? `${item.name} 담기 취소` : `${item.name} 담기`}
@@ -808,6 +797,7 @@ function Card({
       </div>
 
       <div className="p-5 flex flex-col gap-3">
+        {eventPeriod(item)&&<p className="text-xs text-primary">행사 기간 · {eventPeriod(item)}</p>}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <h3 className="font-bold text-[17px] truncate">{item.name}</h3>

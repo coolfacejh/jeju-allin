@@ -5,7 +5,7 @@ import Icon from '../components/Icon';
 import ScheduleForm from '../components/ScheduleForm';
 import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
 import { currentTrip, makeTrip, saveTrip, saveTripSelection } from '../lib/trip';
-import { loadSavedIds } from '../lib/storage';
+import { loadProfile, saveProfile, loadSavedIds } from '../lib/storage';
 import { scheduleDay, orderRoute, recommendDays } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
 import { kakaoRouteUrl } from '../lib/maps';
@@ -62,7 +62,8 @@ export default function Planner() {
     return makeTrip(recommendDays(trip.places,trip.nights+1,schedule),trip.nights,trip.headcount,trip.notes,schedule);
   });
   useEffect(()=>{if(location.state?.smartRoute)navigate(location.pathname,{replace:true,state:null});},[]);
-  const profile = { nights: initial.nights, headcount: initial.headcount };
+  const [headcount,setHeadcount]=useState(initial.headcount);
+  const profile = { nights: initial.nights, headcount };
   const days = initial.nights + 1;
   const [buckets, setBuckets] = useState<Content[][]>(() => initial.days.map(d => d.map(id => initial.places.find(p => p.id === id)!)));
   const items = buckets.flat();
@@ -198,7 +199,8 @@ export default function Planner() {
           <EmptyState onGo={() => navigate('/home')} />
         ) : (
           <>
-            <ScheduleForm value={settings} onChange={setSettings} />
+            <label className="text-sm font-bold">여행 인원<select aria-label="여행 인원" className="ml-3 border border-line rounded-xl p-2" value={headcount} onChange={e=>{const n=Number(e.target.value);setHeadcount(n);const p=loadProfile();if(p)saveProfile({...p,headcount:n});}}>{Array.from({length:100},(_,i)=><option key={i+1} value={i+1}>{i+1}명</option>)}</select></label>
+            <ScheduleForm value={settings} onChange={next=>{setSettings(next);const p=loadProfile();if(p)saveProfile({...p,startDate:next.startDate});}} />
             <div className="rounded-xl bg-primary-light p-4 text-sm space-y-2">
               <p>스마트루트: 숙소는 마지막 · 점심 12~14시 · 저녁 18~20시. 카페는 식사와 구분합니다. 이동시간은 추정치이며 영업시간은 별도 확인이 필요합니다.</p>
               <button type="button" className="block font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setBeforeRegroup(buckets);setSettings(next);setBuckets(recommendDays(items,days,next));setDay(0);show('날짜별 장소를 가까운 권역끼리 다시 묶었어요. 메모와 방문 설정은 유지했습니다.');}}>권역별로 날짜까지 다시 추천</button>

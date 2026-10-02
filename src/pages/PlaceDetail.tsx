@@ -1,3 +1,4 @@
+import { eventPeriod } from '../lib/events';
 import PlaceGallery from '../components/PlaceGallery';
 import NearbyRestrooms from '../components/NearbyRestrooms';
 import { courseForPlace, isOlleSegment } from '../lib/olle';
@@ -100,15 +101,11 @@ export default function PlaceDetail() {
         >
           <Icon name="favorite" className="text-[20px]" fill={saved} />
         </button>
-        {curated && (
-          <div className="absolute top-16 left-4 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold flex items-center gap-1 shadow-md">
-            <Icon name="spa" className="text-[15px]" fill />
-            {curated.matchScore}점 {curated.matchGrade}
-          </div>
-        )}
+
       </div>
 
       <main className="app-shell mx-auto px-4 mt-4 relative flex flex-col gap-4">
+        {eventPeriod(base)&&<p className="text-sm text-primary">행사 기간 · {eventPeriod(base)}</p>}
         {/* 기본 정보 */}
         <section className="bg-white rounded-2xl shadow-card p-5 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">

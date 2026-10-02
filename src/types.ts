@@ -29,6 +29,7 @@ export type ThemeKey =
 
 // 사용자 취향 프로필 (온보딩 결과)
 export interface UserProfile {
+  startDate?: string;
   travelType: TravelType | null;
   companion: Companion | null;
   hasChild: boolean;
@@ -86,6 +87,7 @@ export interface AccessSource {
   checkedAt?: string; tags?: string[]; fields?: Partial<Record<AccessKey,string>>;
 }
 export interface Content {
+  event?: { start?: string; end?: string };
   accessSources?: AccessSource[];
   phone?: string;
   providerCategory?: string;

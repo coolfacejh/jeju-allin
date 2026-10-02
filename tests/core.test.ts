@@ -452,3 +452,23 @@ test('nearby day balancing respects arrival deadline, lodging and unknown transi
  const transit=balanceNearbyDays(original,{...settings,transport:'transit'});
  assert.deepEqual(transit,original);
 });
+
+import {eventVisible,koreaToday} from '../src/lib/events';
+test('event dates overlap inclusively; expired, future and unknown events do not leak to results',()=>{
+ const event={...external,contentType:'activity' as const,name:'제주 축제',event:{start:'2026-10-01',end:'2026-10-04'}};
+ assert.equal(eventVisible(event,{startDate:'2026-10-04',nights:0}),true);
+ assert.equal(eventVisible(event,{startDate:'2026-10-05',nights:2}),false);
+ assert.equal(eventVisible(event,{startDate:'2026-09-28',nights:2}),false);
+ assert.equal(eventVisible(event,{startDate:'2026-09-30',nights:1}),true);
+ assert.equal(eventVisible({...event,event:{}},{startDate:'2026-10-01',nights:2}),false);
+ assert.equal(eventVisible({...event,event:{start:'2026-02-30',end:'2026-10-04'}},{nights:2}),false);
+ assert.equal(eventVisible(event,{nights:2},'2026-10-05'),false);
+ assert.equal(eventVisible(event,{nights:2},'2026-10-04'),true);
+ assert.equal(eventVisible(external,{startDate:'2026-10-05',nights:2}),true);
+ assert.equal(koreaToday(new Date('2026-10-01T15:00:00Z')),'2026-10-02');
+ assert.equal(eventVisible({...external,contentType:'activity',name:'2024 문화가 있는 날 실버마이크'},{nights:2}),false);
+});
+test('new itinerary inherits the date selected on onboarding',()=>{
+ memory.clear();saveProfile({...profile,startDate:'2026-10-08'});
+ assert.equal(currentTrip().schedule?.startDate,'2026-10-08');
+});
