@@ -24,23 +24,15 @@ try {
   assert.ok(await panel.getByText(/직선 약 0m/).count()>0);
   const first=p.locator('[data-restroom]').first();assert.ok((await first.getByRole('link',{name:'길찾기',exact:true}).getAttribute('href')).includes('/link/to/'));
   await panel.getByRole('checkbox',{name:'장애인용 변기 등록 시설만',exact:true}).check();assert.equal(await panel.getByText('장애인용 대변기: 등록 수량 0개',{exact:true}).count(),0);
-  await panel.getByRole('combobox',{name:'화장실 검색 반경'}).selectOption('1');await panel.scrollIntoViewIfNeeded();
+  assert.deepEqual(await panel.locator('select option').evaluateAll(nodes=>nodes.map(n=>n.value)),['3','5','10']);
+  for(const radius of ['3','5','10']){await panel.getByRole('combobox',{name:'화장실 검색 반경'}).selectOption(radius);assert.ok((await panel.getByRole('status').innerText()).includes(`반경 ${radius}km`));}await panel.scrollIntoViewIfNeeded();
   await p.screenshot({path:`output/verification/restrooms-${width}.png`});
   assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await p.evaluate(()=>{const a=JSON.parse(localStorage.getItem('jeju_place_snapshots_v1'));a[1].lat=null;a[1].lng=null;localStorage.setItem('jeju_place_snapshots_v1',JSON.stringify(a));});
   await p.goto(origin+'/#/place/990002');await p.getByText('이 장소의 좌표가 없어 가까운 순서를 계산할 수 없습니다.',{exact:true}).waitFor();
   assert.equal(await p.locator('[data-restroom]').count(),0);
-  await p.getByText('서귀포시 포함 · 좌표 없는 화장실 주소로 찾기',{exact:true}).click();
-  await p.getByRole('textbox',{name:'화장실 이름 또는 주소'}).fill('성산');
-  assert.ok(await p.locator('[data-address-restroom]').count()>0);
-  assert.ok((await p.locator('[data-address-restroom]').first().getByRole('link',{name:'주소로 길찾기'}).getAttribute('href')).includes('destination='));
-  await p.getByRole('textbox',{name:'화장실 이름 또는 주소'}).fill('');
-  await p.getByText('주소 검색 403곳 · 거리 미확인',{exact:true}).waitFor();
-  await p.getByRole('checkbox',{name:'장애인 화장실 등록 시설만 보기',exact:true}).check();
-  await p.getByText('주소 검색 223곳 · 거리 미확인',{exact:true}).waitFor();
-  await p.getByRole('textbox',{name:'화장실 이름 또는 주소'}).scrollIntoViewIfNeeded();
-  await p.screenshot({path:`output/verification/seogwipo-restrooms-${width}.png`});
-
+  assert.equal(await panel.locator('details').count(),0);
+  assert.equal(await p.locator('[data-address-restroom]').count(),0);
   assert.deepEqual(errors,[]);console.log(`${width}: official toilets, distance, accessibility filter, route links, missing coordinates, no overflow/errors PASS`);await ctx.close();
  }
 }finally{await browser.close();server.close();}
