@@ -3,24 +3,23 @@ import Icon from './Icon';
 import { useI18n } from '../i18n';
 
 const items = [
-  { to: '/onboarding', key: 'nav.taste', icon: 'tune' },
   { to: '/home', key: 'nav.curation', icon: 'explore' },
-  { to: '/olle', key: '올레길', icon: 'hiking' },
   { to: '/my-trip', key: 'nav.mytrip', icon: 'favorite' },
+  { to: '/onboarding', key: 'nav.taste', icon: 'tune' },
 ];
 
 export default function BottomNav({ savedCount = 0 }: { savedCount?: number }) {
   const { t } = useI18n();
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-t border-line shadow-[0_-4px_20px_rgba(30,41,59,0.05)]">
-      <div className="app-shell mx-auto h-[4.25rem] px-4 grid grid-cols-4 items-center">
+    <nav className="travel-bottom-nav fixed bottom-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-t border-line shadow-[0_-4px_20px_rgba(30,41,59,0.05)]">
+      <div className="app-shell mx-auto h-16 px-4 grid grid-cols-3 items-center">
         {items.map((it) => (
           <NavLink
             key={it.to}
             to={it.to}
             className={({ isActive }) =>
               `group flex flex-col items-center justify-center gap-1 h-12 rounded-full transition-all active:scale-95 ${
-                isActive ? 'text-primary font-bold' : 'text-muted hover:text-sub'
+                isActive ? 'nav-selected text-primary font-bold' : 'text-muted hover:text-sub'
               }`
             }
           >

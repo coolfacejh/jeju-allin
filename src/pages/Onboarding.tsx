@@ -1,3 +1,5 @@
+import JejuBrand from '../components/JejuBrand';
+import JejuJourney from '../components/JejuJourney';
 import { AccessCategoryIcon } from '../components/AccessPictograms';
 import { saveExplore } from '../lib/explore';
 import { ACCESS_LABELS, confirmedAccessDefault } from '../lib/access';
@@ -63,8 +65,9 @@ export default function Onboarding() {
   }
 
   return (
-    <main className="min-h-screen w-full app-shell mx-auto px-4 pb-10 bg-surface text-ink font-sans">
-      <div className="flex justify-between items-center pt-3">
+    <main className="onboarding-page min-h-screen w-full app-shell mx-auto px-4 pb-10 bg-surface text-ink font-sans">
+      <div className="onboarding-brandbar"><JejuBrand /><LangToggle /></div>
+      <div className="onboarding-tools">
         <button
           onClick={resetAll}
           className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold active:scale-95 transition-all ${
@@ -74,15 +77,10 @@ export default function Onboarding() {
           <Icon name="restart_alt" className="text-[16px]" />
           {confirmReset ? '정말 초기화?' : '선택 조건 초기화'}
         </button>
-        <LangToggle />
       </div>
-      <header className="mt-4 mb-6 rounded-3xl bg-primary text-white px-5 py-6 md:px-10 md:py-10 relative overflow-hidden">
-        <p className="text-sm font-bold tracking-wide text-white/90">JEJU ALL-IN · 제주 무장애 여행</p>
-        <h1 className="text-[25px] md:text-4xl font-extrabold leading-tight mt-4 break-keep">내게 필요한 조건부터,<br />제주 여행을 시작하세요.</h1>
-        <p className="text-sm md:text-base text-white/90 mt-4 leading-relaxed">출입구, 이동로, 화장실 정보를 확인하고<br className="md:hidden" /> 나와 동행자에게 맞는 여행을 준비하세요.</p>
-        <div className="flex flex-wrap gap-2 mt-5 text-xs"><span className="border border-white/30 rounded-full px-3 py-2">시설 정보와 출처 확인</span><span className="border border-white/30 rounded-full px-3 py-2">주변 공중화장실 찾기</span><span className="border border-white/30 rounded-full px-3 py-2">내 여행 일정에 담기</span></div>
-      </header>
-      <section aria-label="여행 일정" className="rounded-3xl bg-white border border-line p-5 md:p-6 mb-6">
+      <JejuJourney intro />
+      <div className="journey-steps" aria-label="여행 준비 순서"><span className="is-current"><b>1</b> 여행 조건</span><i /><span><b>2</b> 장소 탐색</span><i /><span><b>3</b> 일정 완성</span></div>
+      <section aria-label="여행 일정" className="travel-panel date-panel rounded-2xl bg-white p-5 md:p-6 mb-6">
         <p className="text-primary text-xs font-bold">01 · 여행 일정</p><h2 className="text-xl font-bold mt-2">언제, 얼마나 머무르나요?</h2>
         <div className="flex flex-wrap items-end gap-4 mt-4">
           <label className="text-sm font-bold">여행 시작일<input aria-label="여행 시작일" type="date" min="2000-01-01" max="2100-11-30" value={startDate} onChange={e=>setStartDate(e.target.value)} className="block border border-line rounded-xl p-3 mt-2" /></label>
@@ -94,22 +92,22 @@ export default function Onboarding() {
       </section>
       {error&&<p role="alert" className="text-red-700 p-3">{error}</p>}
       <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-6 items-start">
-       <section aria-label="여행 접근성 조건" className="bg-white rounded-3xl border border-line p-5 md:p-6">
+       <section aria-label="여행 접근성 조건" className="travel-panel access-panel bg-white rounded-2xl p-5 md:p-6">
         <p className="text-primary text-xs font-bold">02 · 필요한 접근성 조건</p>
         <h2 className="text-xl md:text-2xl font-bold mt-2">어떤 환경이 필요한가요?</h2>
         <p className="text-sm text-sub mt-2 mb-5">본인과 동행자에게 필요한 조건을 모두 선택하세요. 선택 없이 둘러볼 수도 있습니다.</p>
         <div className="flex flex-wrap gap-2 mb-4"><button type="button" aria-pressed={barrierFree} onClick={()=>{setBarrierFree(v=>!v);}} className="border border-line rounded-full px-4 py-2 text-sm">♿ 휠체어 접근 {barrierFree?'✓':''}</button><button type="button" aria-pressed={strollerNeed} onClick={()=>setStrollerNeed(v=>!v)} className="border border-line rounded-full px-4 py-2 text-sm">유모차 진입 {strollerNeed?'✓':''}</button></div>
         <p className="text-xs text-muted mb-4">빠른 선택은 출입구·이동로 조건을 추가합니다. 아래에서 개별 변경할 수 있어요.</p>
-        <div className="grid sm:grid-cols-2 gap-3">{(Object.keys(ACCESS_LABELS) as AccessKey[]).map(key=><button type="button" key={key} aria-pressed={selected.includes(key)} onClick={()=>toggleRequired(key)} className={`flex items-center gap-3 p-4 rounded-2xl border-2 text-left min-h-[92px] ${selected.includes(key)?'border-primary bg-primary-light':'border-line bg-white'}`}>
+        <div className="grid sm:grid-cols-2 gap-3">{(Object.keys(ACCESS_LABELS) as AccessKey[]).map(key=><button type="button" key={key} aria-pressed={selected.includes(key)} onClick={()=>toggleRequired(key)} className={`access-choice flex items-center gap-3 p-4 rounded-2xl border-2 text-left min-h-[92px] ${selected.includes(key)?'border-primary bg-primary-light':'border-line bg-white'}`}>
          <AccessCategoryIcon kind={key} state={selected.includes(key)?'available':'unknown'} /><span className="flex-1"><span className="block font-bold text-sm">{ACCESS_LABELS[key]}</span><span className="block text-xs text-sub mt-1">{{stepFree:'입구의 턱·계단 정보',ramp:'다른 진입 경로 정보',route:'실내 이동 공간 정보',restroom:'장애인 화장실 시설 정보',parking:'전용 주차구역 정보',elevator:'층간 이동 시설 정보'}[key]}</span></span><span aria-hidden="true" className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${selected.includes(key)?'bg-primary text-white border-primary':'border-line'}`}>{selected.includes(key)?'✓':''}</span>
         </button>)}</div>
         <fieldset className="mt-6 border-t border-line pt-4 space-y-3"><legend className="font-bold text-sm pt-5">정보가 부족한 장소도 보여드릴까요?</legend><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={!confirmedOnly} onChange={()=>setConfirmedOnly(false)} /><span>정보가 부족한 곳도 함께 보기<span className="block text-xs text-sub mt-1">미확인·조건부 장소를 포함합니다. 시설이 없다고 확인된 곳은 제외합니다.</span></span></label><label className="flex gap-3 text-sm"><input type="radio" name="accessEvidence" checked={confirmedOnly} onChange={()=>setConfirmedOnly(true)} /><span>선택 조건이 자료상 확인된 곳만 보기<span className="block text-xs text-sub mt-1">선택한 시설이 모두 ‘있음’인 장소만 표시합니다. 기본 검색 방식입니다.</span></span></label></fieldset>
         <p className="mt-4 text-xs text-muted leading-relaxed">아이콘은 원하는 조건을 뜻합니다. 자료상 시설 등록은 현장 이용 가능을 보장하지 않으므로 상세 설명과 이용 조건을 함께 확인하세요.</p>
        </section>
-       <aside className="lg:sticky lg:top-4 rounded-3xl bg-white border border-line p-5 space-y-4" aria-label="선택 조건 요약"><p className="font-bold">이번 여행에서 확인할 조건</p><div className="flex flex-wrap gap-2" aria-live="polite">{selected.length?selected.map(k=><span key={k} className="bg-primary-light text-primary rounded-lg px-3 py-2 text-sm">{ACCESS_LABELS[k]}</span>):<p className="text-sm text-sub">아직 선택한 조건이 없어요.<br />먼저 장소를 둘러봐도 좋습니다.</p>}</div><p className="text-xs text-sub">{confirmedOnly?'선택 조건이 자료상 확인된 곳만':'정보가 부족한 장소도 함께 표시'}</p><button type="button" onClick={submit} className="hidden lg:block bg-primary text-white rounded-xl w-full py-4 font-bold">이 조건으로 장소 살펴보기 →</button><p className="text-xs text-muted">관심 테마는 다음 화면에서 결과를 보며 고를 수 있어요. 인원은 일정 화면에서 변경합니다.</p></aside>
+       <aside className="trip-summary lg:sticky lg:top-4 rounded-2xl bg-white p-5 space-y-4" aria-label="선택 조건 요약"><p className="font-bold">이번 여행에서 확인할 조건</p><div className="flex flex-wrap gap-2" aria-live="polite">{selected.length?selected.map(k=><span key={k} className="bg-primary-light text-primary rounded-lg px-3 py-2 text-sm">{ACCESS_LABELS[k]}</span>):<p className="text-sm text-sub">아직 선택한 조건이 없어요.<br />먼저 장소를 둘러봐도 좋습니다.</p>}</div><p className="text-xs text-sub">{confirmedOnly?'선택 조건이 자료상 확인된 곳만':'정보가 부족한 장소도 함께 표시'}</p><button type="button" onClick={submit} className="hidden lg:block bg-primary text-white rounded-xl w-full py-4 font-bold">이 조건으로 장소 살펴보기 →</button><p className="text-xs text-muted">관심 테마는 다음 화면에서 결과를 보며 고를 수 있어요. 인원은 일정 화면에서 변경합니다.</p></aside>
       </div>
       <p className="text-xs text-sub mt-5">접근성 정보는 장소 상세에서 출처와 확인 필요 항목을 함께 볼 수 있습니다. 선택한 조건은 이 브라우저에 저장됩니다.</p>
-      <div className="sticky bottom-2 z-30 lg:hidden pt-3 mt-2">
+      <div className="onboarding-submit sticky bottom-0 z-30 lg:hidden pt-3 mt-2">
         <button
           onClick={submit}
 

@@ -1,3 +1,5 @@
+import JejuBrand from '../components/JejuBrand';
+import JejuJourney from '../components/JejuJourney';
 import { eventVisible, eventPeriod, koreaToday } from '../lib/events';
 import { dateForDay } from '../lib/schedule';
 
@@ -310,26 +312,18 @@ export default function Home() {
   if (!profile) return <Navigate to="/onboarding" replace />;
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-ink">
-      <header className="fixed top-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-line">
+    <div className="curation-page min-h-screen bg-surface font-sans text-ink">
+      <header className="global-header fixed top-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-b border-line">
         <div className="app-shell mx-auto h-16 px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-              <Icon name="explore" className="text-[20px]" />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-accent">Jeju All-In</span>
-              <span className="font-bold text-[17px]">{t('home.feed')}</span>
-            </div>
-          </div>
+          <JejuBrand />
           <div className="flex items-center gap-2">
             <LangToggle />
             <button
-              onClick={() => navigate('/lab')}
+              onClick={() => navigate('/access-guide')}
               className="w-10 h-10 rounded-full flex items-center justify-center text-muted hover:text-primary"
-              aria-label="실험실"
+              aria-label="접근성 정보 이용 안내"
             >
-              <Icon name="science" className="text-[22px]" />
+              <Icon name="info" className="text-[22px]" />
             </button>
           </div>
         </div>
@@ -337,9 +331,10 @@ export default function Home() {
 
       <main className="app-shell mx-auto pt-16 pb-28 px-4 flex flex-col gap-6">
 
+        <JejuJourney />
         {/* 취향 요약 */}
-        <section className="flex flex-col gap-2 mt-4">
-          <div className="bg-white rounded-xl p-4 shadow-card">
+        <section className="profile-overview">
+          <div className="travel-panel bg-white rounded-2xl p-4 shadow-card">
             <div className="flex items-center justify-between pb-2">
               <div className="flex items-center gap-1 text-primary">
                 <Icon name="psychology" className="text-[18px]" />
@@ -357,7 +352,7 @@ export default function Home() {
               <Chip>{profile.startDate ? `${profile.startDate} ~ ${dateForDay(profile.startDate,profile.nights)}` : '날짜 미정'}</Chip>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-3 shadow-card flex items-start gap-2">
+          <div className="clean-banner rounded-2xl p-4 flex items-start gap-3">
             <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
               <Icon name="verified" className="text-[15px]" fill />
             </div>
@@ -368,15 +363,16 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="explore-controls" aria-label="장소 검색 조건">
         <p className="text-xs text-sub" role="status">행사는 {profile.startDate?`${profile.startDate} ~ ${dateForDay(profile.startDate,profile.nights)}`:`${koreaToday()} 이후`} 기준으로 표시합니다. 기간이 맞지 않거나 개최 날짜를 확인할 수 없는 행사는 제외합니다.</p>
-        <section aria-label="관심 테마" className="bg-white rounded-xl p-4"><p className="font-bold text-sm mb-3">관심 테마로 좁혀보기</p><div className="flex flex-wrap gap-2">{Object.entries(THEME_NAME).map(([key,label])=><button key={key} aria-pressed={wish===label} className={`px-3 py-2 rounded-full text-xs ${wish===label?'bg-primary text-white':'bg-surface-sub'}`} onClick={()=>{const next=wish===label?'':label;setWish(next);saveWish(next);}}>{label}</button>)}</div><p className="text-xs text-sub mt-2">선택한 테마가 장소 소개나 태그에 포함된 결과만 표시합니다.</p></section>
+
         {/* 직접 하고 싶은 것 입력 */}
-        <div className="bg-white rounded-xl p-3 shadow-card">
+        <div className="search-panel">
           <div className="flex items-center gap-1.5 mb-2 text-primary">
             <Icon name="edit_note" className="text-[18px]" />
             <span className="text-[11px] font-bold uppercase tracking-wider">{t('home.wish.title')}</span>
           </div>
-          <div className="flex items-center gap-2 bg-surface rounded-full px-3 py-2">
+          <div className="travel-search flex items-center gap-2 rounded-xl px-3 py-3">
             <Icon name="search" className="text-[18px] text-muted" />
             <input
               value={wish}
@@ -400,6 +396,7 @@ export default function Home() {
           )}
         </div>
 
+        <section aria-label="관심 테마" className="theme-selector"><p className="font-bold text-sm mb-3">관심 테마로 좁혀보기</p><div className="theme-scroll">{Object.entries(THEME_NAME).map(([key,label])=><button key={key} aria-pressed={wish===label} className={`px-3 py-2 rounded-full text-xs ${wish===label?'bg-primary text-white':'bg-surface-sub'}`} onClick={()=>{const next=wish===label?'':label;setWish(next);saveWish(next);}}>{label}</button>)}</div><p className="text-xs text-sub mt-2">선택한 테마가 장소 소개나 태그에 포함된 결과만 표시합니다.</p></section>
         {requiredAccess(access).length>0 && <div className="rounded-xl bg-primary-light p-3 text-sm" role="status">
           <p className="font-bold">선택 시설: {requiredAccess(access).map(k=>ACCESS_LABELS[k]).join(' · ')}</p>
           <p>{!accessOn?'시설 조건 적용이 꺼져 있어 전체 장소를 표시합니다.':confirmedOnly?'선택한 시설이 모두 있음으로 확인된 장소만 표시합니다.':'미확인·조건부 장소도 포함합니다. 시설 없음은 제외합니다.'}</p>
@@ -515,8 +512,8 @@ export default function Home() {
         <button
           onClick={resetFilters}
           disabled={!filterActive}
-          className={`-mt-2 flex items-center justify-center gap-1.5 w-full rounded-full font-bold text-sm py-2.5 transition-all active:scale-95 ${
-            filterActive ? 'bg-accent text-white shadow-sm' : 'bg-surface-sub text-muted'
+          className={`filter-reset flex items-center justify-center gap-1.5 rounded-full font-bold text-sm py-2.5 transition-all active:scale-95 ${
+            filterActive ? 'text-primary bg-primary-light' : 'bg-surface-sub text-muted'
           }`}
         >
           <Icon name="restart_alt" className="text-[18px]" />
@@ -574,6 +571,8 @@ export default function Home() {
           </button>
         </div>
 
+        </section>
+        <details className="source-status"><summary>관광정보 출처 · 불러오기 상태</summary><div className="source-status-body">
         {/* 실시간 관광정보 상태 */}
         <div className="flex items-center justify-between -mt-2 px-1">
           <span className="text-[11px] text-muted flex items-center gap-1">
@@ -603,6 +602,9 @@ export default function Home() {
           <span>{visitState === 'loading' ? `비짓제주 ${visit.length ? `${visit.length}곳 먼저 표시 · 나머지 갱신 중` : '첫 관광정보 불러오는 중'} ${visitProgress}` : visitState === 'done' ? `제주관광공사 비짓제주 · ${visit.length}곳 · 목록의 중복 장소는 통합 표시` : `비짓제주 갱신 실패 · ${visit.length ? '기존 정보 유지' : '다시 시도해 주세요'}`}</span>
           <button type="button" className="shrink-0 text-primary underline" onClick={refreshVisit} disabled={visitState==='loading'}>다시 불러오기</button>
         </div>
+        </div></details>
+        <div className="results-heading"><div><p className="journey-eyebrow">CURATED FOR YOU</p><h2>{view==='map'?'지도 위에서 만나는 제주':'이번 여행에 담고 싶은 곳'}</h2></div><span>{subFiltered.length.toLocaleString()}곳</span></div>
+        <button className="olle-entry" onClick={()=>navigate('/olle')}><span><Icon name="hiking" /> 제주 올레길도 만나보세요</span><span>코스 살펴보기 →</span></button>
         {/* 지도 보기 */}
         {view === 'map' && (
           <div className="flex flex-col gap-2">
@@ -773,13 +775,14 @@ function Card({
     fn();
   };
   return (
-    <article onClick={onOpen} className="bg-white rounded-2xl overflow-hidden shadow-raised flex flex-col cursor-pointer active:scale-[0.99] transition-transform">
+    <article onClick={onOpen} className="destination-card bg-white rounded-2xl overflow-hidden shadow-card flex flex-col cursor-pointer active:scale-[0.99] transition-transform">
       <div className="relative w-full aspect-[16/10] bg-primary-light flex items-center justify-center text-6xl overflow-hidden">
         {/^https?:\/\//.test(item.image) ? (
           <img src={item.image} alt={item.name} loading="lazy" className="w-full h-full object-cover" />
         ) : (
           item.image
         )}
+        <span className="photo-category">{{stay:'머무를 곳',food:'로컬 미식',activity:'즐길 거리'}[item.contentType]}</span>
         <button
           onClick={stop(onToggle)}
           aria-label={saved ? `${item.name} 담기 취소` : `${item.name} 담기`}
@@ -800,7 +803,7 @@ function Card({
         {eventPeriod(item)&&<p className="text-xs text-primary">행사 기간 · {eventPeriod(item)}</p>}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="font-bold text-[17px] truncate">{item.name}</h3>
+            <h3 className="destination-title font-bold text-[16px]">{item.name}</h3>
             <p className="text-xs text-muted flex items-center gap-1 mt-0.5">
               <Icon name="location_on" className="text-[14px]" />
               {item.region}
@@ -816,10 +819,10 @@ function Card({
         </div>
 
         <AccessBadges item={item} />
-        <AccessSummary place={item} access={loadProfile()?.access} />
+        <div className="reasons-box rounded-xl p-3 bg-surface"><p className="flex items-center gap-1.5 text-xs font-bold text-primary"><Icon name="verified" className="text-[16px]" />장소 선택에 필요한 정보</p><AccessSummary place={item} access={loadProfile()?.access} /></div>
 
         {showReason && item.reasons.length > 0 && (
-          <div className="bg-surface rounded-xl p-3 flex flex-col gap-1.5">
+          <div className="reasons-box bg-surface rounded-xl p-3 flex flex-col gap-1.5">
             <div className="flex items-center gap-1 text-primary">
               <Icon name="auto_awesome" className="text-[16px]" />
               <span className="text-[11px] font-bold">{t('home.reason')}</span>
@@ -835,9 +838,9 @@ function Card({
           </div>
         )}
 
-        <div className="flex items-center justify-between">
+        <div className="destination-actions">
           <div className="flex items-center gap-1.5 flex-wrap">
-            {(item.hashtags ?? []).map((h) => (
+            {(item.hashtags ?? []).slice(0,3).map((h) => (
               <span key={h} className="px-2 py-0.5 rounded-md bg-surface-sub text-muted text-[11px]">
                 {h}
               </span>
@@ -845,7 +848,7 @@ function Card({
           </div>
           <button
             onClick={stop(onToggle)}
-            className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1 active:scale-95 transition-all ${
+            className={`save-place-button px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1 active:scale-95 transition-all ${
               saved ? 'bg-surface-sub text-primary' : 'bg-primary text-white'
             }`}
           >

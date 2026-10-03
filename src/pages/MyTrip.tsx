@@ -1,3 +1,5 @@
+import JejuBrand from '../components/JejuBrand';
+import { AccessSummary } from '../components/AccessPanel';
 import { eventVisible } from '../lib/events';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -72,14 +74,15 @@ export default function MyTrip() {
     k === 'all' ? items.length : items.filter((c) => c.contentType === k).length;
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-ink">
+    <div className="saved-page min-h-screen bg-surface font-sans text-ink">
+      <header className="collection-brand app-shell mx-auto px-4"><JejuBrand /><span>MY JEJU COLLECTION</span></header>
       <main className="app-shell mx-auto pt-6 pb-28 px-4 flex flex-col gap-6">
         {missing.length > 0 && <div role="alert" className="p-4 rounded-xl bg-amber-50 text-sm">
           기존에 담은 {missing.length}곳은 정보가 없거나 샘플 목록에서 제외된 장소입니다.
           <button className="block underline mt-2" onClick={() => { const next = ids.filter(id => !missing.includes(id)); if (saveSavedIds(next)) setIds(next); else show('보관함 변경을 저장하지 못했어요.'); }}>찾을 수 없는 장소를 보관함에서 제거</button>
         </div>}
 
-        <section className="flex flex-col gap-2">
+        <section className="collection-intro flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-[22px] font-bold">{t('mt.title')}</span>
@@ -124,7 +127,7 @@ export default function MyTrip() {
           <button
             onClick={() => items.length >= 1 && navigate('/planner', {state:{smartRoute:true}})}
             disabled={items.length < 1}
-            className={`flex items-center justify-between gap-2 rounded-2xl p-4 shadow-raised transition-all active:scale-[0.99] ${
+            className={`smart-route-banner flex items-center justify-between gap-2 rounded-2xl p-4 shadow-raised transition-all active:scale-[0.99] ${
               items.length >= 1 ? 'bg-gradient-to-br from-primary-dark to-primary text-white' : 'bg-white text-muted'
             }`}
           >
@@ -185,8 +188,8 @@ export default function MyTrip() {
         ) : (
           <section className="place-grid">
             {visible.map((c) => (
-              <article key={c.id} onClick={() => navigate(`/place/${c.id}`)} className="rounded-2xl bg-white overflow-hidden shadow-raised cursor-pointer active:scale-[0.99] transition-transform">
-                <div className="relative w-full h-40 bg-primary-light flex items-center justify-center text-5xl overflow-hidden">
+              <article key={c.id} onClick={() => navigate(`/place/${c.id}`)} className="destination-card saved-card rounded-2xl bg-white overflow-hidden shadow-card cursor-pointer active:scale-[0.99] transition-transform">
+                <div className="relative w-full aspect-[16/10] bg-primary-light flex items-center justify-center text-5xl overflow-hidden">
                   {/^https?:\/\//.test(c.image) ? (
                     <img src={c.image} alt={c.name} loading="lazy" className="w-full h-full object-cover" />
                   ) : (
@@ -202,20 +205,22 @@ export default function MyTrip() {
                   >
                     <Icon name="close" className="text-[18px]" />
                   </button>
-                  <div className="absolute bottom-3 right-3 text-white text-[11px] flex items-center gap-1 drop-shadow">
+                  <div className="photo-location absolute bottom-3 left-3 right-3 text-white text-[11px] flex items-center gap-1">
                     <Icon name="location_on" className="text-[14px]" /> {c.region}
                   </div>
                 </div>
                 <div className="p-5 flex flex-col gap-2">
-                  <h3 className="font-bold text-[17px]">{c.name}</h3>
-                  <p className="text-xs text-sub">{c.desc}</p>
+                  <h3 className="destination-title font-bold text-[16px]">{c.name}</h3>
+                  <p className="place-description text-sm text-sub">{c.desc}</p>
+                  <AccessSummary place={c} access={profile?.access} />
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {(c.hashtags ?? []).map((h) => (
+                    {(c.hashtags ?? []).slice(0,3).map((h) => (
                       <span key={h} className="px-2 py-0.5 rounded-full bg-surface-sub text-muted text-[11px]">
                         {h}
                       </span>
                     ))}
                   </div>
+                  <span className="detail-link">장소 자세히 보기 <span>→</span></span>
                 </div>
               </article>
             ))}

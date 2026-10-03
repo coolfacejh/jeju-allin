@@ -19,7 +19,7 @@ export default function PlaceGallery({place}:{place:Content}) {
   return()=>controller.abort();
  },[source]);
  const available=photos.filter(p=>!failed.includes(p.url)),current=available[selected]||available[0];
- return <section aria-label="장소 사진" className="w-full bg-slate-900 text-white">
+ return <section aria-label="장소 사진" className="place-gallery w-full bg-slate-900 text-white">
   <div className="h-64 md:h-[460px] flex items-center justify-center">
    {current?<a href={current.url} target="_blank" rel="noreferrer" className="w-full h-full flex justify-center" aria-label="현재 사진 원본 보기"><img src={current.url} alt={current.alt} className="max-w-full h-full object-contain" onError={()=>{setFailed(v=>[...v,current.url]);setSelected(0);}} /></a>:<p className="text-base">등록된 사진을 표시할 수 없습니다.</p>}
   </div>

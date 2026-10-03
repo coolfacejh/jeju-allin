@@ -162,7 +162,7 @@ export default function Planner() {
   }
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-ink">
+    <div className="planner-page min-h-screen bg-surface font-sans text-ink">
       <header className="fixed top-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-line">
         <div className="app-shell mx-auto h-16 px-4 flex items-center gap-2">
           <button
