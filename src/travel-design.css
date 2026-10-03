@@ -25,3 +25,5 @@ input[type=checkbox],input[type=radio]{accent-color:#0A6E6D;min-width:16px;min-h
 /* Keep the discovery header compact so the places remain the focus. */
 .curation-page .journey-hero{min-height:230px;max-height:260px}.curation-page .journey-art{max-height:260px;justify-self:end;width:auto;max-width:100%}.curation-page .journey-copy{padding:26px 32px}.curation-page .journey-copy h1{font-size:30px;margin:10px 0}.curation-page .journey-caption{margin-top:12px}
 @media(max-width:767px){.curation-page .journey-hero{min-height:218px;max-height:none}.curation-page .journey-copy{padding:24px}.curation-page .journey-copy h1{font-size:22px}.curation-page .journey-art{width:215px}.journey-intro .journey-copy h1{font-size:22px}.travel-bottom-nav a{min-height:48px}}
+
+.detail-actions{padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px #0f172a08}.detail-actions .app-shell{max-width:800px}.detail-actions button{font-size:14px;white-space:nowrap}.detail-top-back{z-index:35}@media(min-width:768px){.detail-top-back{position:fixed;left:max(24px,calc((100vw - 1216px)/2));top:16px}}

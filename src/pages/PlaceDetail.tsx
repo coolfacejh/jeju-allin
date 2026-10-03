@@ -48,6 +48,11 @@ export default function PlaceDetail() {
   if (olle) return <Navigate to={`/olle/${olle.slug}${isOlleSegment(placeId) ? "?segment=1" : ""}`} replace />;
   if (!base) return <Navigate to="/home" replace />;
 
+  function goBack() {
+    if (typeof window.history.state?.idx === 'number' && window.history.state.idx > 0) navigate(-1);
+    else navigate('/home', {replace:true});
+  }
+
   function toggleSave() {
     if (base && !rememberPlaces([base])) { window.alert('장소 저장에 실패했어요. 저장 공간을 확인해 주세요.'); return; }
     const ids = loadSavedIds();
@@ -81,13 +86,13 @@ export default function PlaceDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-ink pb-10">
+    <div className="min-h-screen bg-surface font-sans text-ink pb-28">
       {/* 히어로 */}
       <div className="app-shell mx-auto relative bg-slate-900">
         <PlaceGallery key={base.id} place={base} />
         <button
-          onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-ink active:scale-95 shadow-sm"
+          onClick={goBack}
+          className="detail-top-back absolute top-4 left-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-ink active:scale-95 shadow-sm"
           aria-label="뒤로"
         >
           <Icon name="arrow_back" className="text-[22px]" />
@@ -419,14 +424,14 @@ export default function PlaceDetail() {
       </main>
 
       {/* 담기 CTA */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-surface/90 backdrop-blur-md border-t border-line">
+      <div className="detail-actions fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-line">
         <div className="app-shell mx-auto px-4 py-3 flex gap-2">
           <button
-            onClick={() => navigate('/home')}
-            className="w-14 h-12 rounded-full bg-white shadow-card text-muted flex items-center justify-center active:scale-95"
-            aria-label="큐레이션"
+            onClick={goBack}
+            className="h-12 px-5 rounded-xl border border-line bg-white text-primary font-bold flex items-center justify-center gap-2 shrink-0 active:scale-95"
+            aria-label="목록으로"
           >
-            <Icon name="explore" className="text-[22px]" />
+            <Icon name="arrow_back" className="text-[20px]" /> 목록으로
           </button>
           <button
             onClick={toggleSave}

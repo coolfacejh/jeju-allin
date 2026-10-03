@@ -46,8 +46,13 @@ try {
   await page.getByRole('button', { name: '상세 보기', exact: true }).click();
   await page.waitForURL('**/#/place/990001');
   const expectedScroll = await page.evaluate(() => JSON.parse(sessionStorage.getItem('jeju_explore_v1')).scrollY);
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForTimeout(150);
+  const bottomBack = await page.getByRole('button', { name: '목록으로', exact: true }).boundingBox();
+  assert.ok(bottomBack && bottomBack.y >= 0 && bottomBack.y + bottomBack.height <= 844, 'return button remains visible at bottom');
+
   await page.getByRole('button', { name: '일정에 담기', exact: false }).click();
-  await page.getByRole('button', { name: '뒤로', exact: true }).click();
+  await page.getByRole('button', { name: '목록으로', exact: true }).click();
   await page.waitForURL('**/#/home');
   await map.waitFor();
   await page.waitForTimeout(400);
@@ -65,7 +70,7 @@ try {
     await marker.click(); await page.getByRole('button', { name: '상세 보기', exact: true }).click();
     await page.waitForURL('**/#/place/990001');
     if (back === 'browser') await page.goBack();
-    else await page.getByRole('button', { name: '큐레이션', exact: true }).click();
+    else await page.getByRole('button', { name: '목록으로', exact: true }).click();
     await page.waitForURL('**/#/home');
     await map.waitFor();
     assert.equal(await page.getByRole('button', { name: '북부', exact: true }).getAttribute('aria-pressed'), 'true');
