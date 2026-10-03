@@ -145,9 +145,9 @@ export default function Planner() {
     const head = days > 1 ? `${day + 1}일차 동선.` : '오늘의 동선.';
     const lines = plan.stops.map((s, i) => {
       const leg = s.legFromPrev ? s.legFromPrev.minutes === null ? ' 이동시간 확인 필요.' : ` 이동 약 ${s.legFromPrev.minutes}분.` : '';
-      return `${leg} ${i + 1}. ${s.item.name}, ${s.item.region}, ${band(s.arrive).label}, ${stayLabel(s.item, settings.visits[s.item.id]?.durationMin)}.`;
+      return `${leg} ${i + 1 + (origin ? 1 : 0)}. ${s.item.name}, ${s.item.region}, ${band(s.arrive).label}, ${stayLabel(s.item, settings.visits[s.item.id]?.durationMin)}.`;
     });
-    return head + lines.join('');
+    return head + (origin ? `1. ${origin.name}, ${settings.dayStart} 숙소 출발. ` : '') + lines.join('');
   }
 
   function move(idx: number, dir: -1 | 1) {
@@ -227,7 +227,7 @@ export default function Planner() {
               )}
               <p className="text-xs text-white/85 mb-3">입력한 방문 시간과 여유시간을 반영합니다. 이동은 직선거리 추정이며 실제 도로·교통상황·영업시간은 자동 조회하지 않습니다.</p>
               <div className="flex gap-2">
-                <Stat icon="pin_drop" value={`${dayItems.length}곳`} label={days > 1 ? `${day + 1}일차` : '방문지'} />
+                <Stat icon="pin_drop" value={`${dayItems.length + (origin ? 1 : 0)}곳`} label={days > 1 ? `${day + 1}일차` : '방문지'} />
                 <Stat icon="alt_route" value={`${plan.totalKm}km`} label="확인된 직선거리 합" />
                 <Stat icon="schedule" value={!plan.complete ? '확인 필요' : totalH > 0 ? `${totalH}시간 ${totalM}분` : `${totalM}분`} label="추정 이동시간" />
               </div>
@@ -254,7 +254,7 @@ export default function Planner() {
                       day === i ? 'bg-primary text-white shadow-sm' : 'bg-white text-muted'
                     }`}
                   >
-                    {i + 1}일차 {dateForDay(settings.startDate, i).slice(5)} <span className="opacity-70">· {b.length}곳</span>
+                    {i + 1}일차 {dateForDay(settings.startDate, i).slice(5)} <span className="opacity-70">· {b.length + (previousLodging(buckets,i) ? 1 : 0)}곳</span>
                   </button>
                 ))}
               </div>
@@ -263,11 +263,14 @@ export default function Planner() {
             <div className="planner-columns">
             <div className="planner-map">
             {/* 미니 지도 */}
-            {dayItems.length > 0 && <RouteMap stops={dayItems} origin={origin} />}
+            {(dayItems.length > 0 || origin) && <RouteMap stops={dayItems} origin={origin} />}
 
             </div>
             <div className="min-w-0">
-            {origin&&<div className="rounded-xl bg-primary-light p-4 text-sm" data-lodging-origin={origin.id}><p className="font-bold">출발 숙소 · {origin.name}</p><p>{settings.dayStart} 출발 · 전날 숙소에서 첫 장소까지의 이동을 포함합니다.</p></div>}
+            {origin&&<article className="flex gap-3 mb-3" data-lodging-origin={origin.id} aria-label="1번 일정 · 전날 숙소에서 출발">
+              <div className="flex flex-col items-center"><span className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">1</span><div className="w-0.5 flex-1 bg-line my-1" /></div>
+              <div className="flex-1 bg-white rounded-2xl shadow-card p-4"><p className="text-xs text-primary font-bold mb-3">첫 일정 · 숙소 출발</p><div className="flex items-center gap-3">{/^https?:/.test(origin.image)&&<img src={origin.image} alt="" className="w-12 h-12 rounded-xl object-cover" />}<div><h3 className="font-bold">{origin.name}</h3><p className="text-xs text-muted">{origin.region}</p></div></div><p className="text-primary font-bold text-sm mt-3">{settings.dayStart} 출발</p><p className="text-xs text-sub mt-2">전날 마지막 숙소에서 출발합니다. 다음 장소까지의 이동시간을 일정에 포함합니다.</p></div>
+            </article>}
             {/* 타임라인 (수동 재정렬) */}
             {dayItems.length === 0 ? (
               <p className="text-center text-sm text-muted py-8">이 날은 아직 비어 있어요.</p>
@@ -286,7 +289,7 @@ export default function Planner() {
                     <div className="flex gap-3">
                       <div className="flex flex-col items-center">
                         <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shrink-0">
-                          {i + 1}
+                          {i + 1 + (origin ? 1 : 0)}
                         </div>
                         {i < plan.stops.length - 1 && <div className="w-0.5 flex-1 bg-line my-1" />}
                       </div>
