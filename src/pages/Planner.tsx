@@ -1,3 +1,4 @@
+import PlaceText from '../components/PlaceText';
 import Localize from '../components/Localize';
 import { resolvePlaces } from '../lib/places';
 import RouteMap from '../components/RouteMap';
@@ -270,7 +271,7 @@ export default function Planner() {
             <div className="min-w-0">
             {origin&&<article className="flex gap-3 mb-3" data-lodging-origin={origin.id} aria-label="1번 일정 · 전날 숙소에서 출발">
               <div className="flex flex-col items-center"><span className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">1</span><div className="w-0.5 flex-1 bg-line my-1" /></div>
-              <div className="flex-1 bg-white rounded-2xl shadow-card p-4"><p className="text-xs text-primary font-bold mb-3">첫 일정 · 숙소 출발</p><div className="flex items-center gap-3">{/^https?:/.test(origin.image)&&<img src={origin.image} alt="" className="w-12 h-12 rounded-xl object-cover" />}<div><h3 className="font-bold">{origin.name}</h3><p className="text-xs text-muted">{origin.region}</p></div></div><p className="text-primary font-bold text-sm mt-3">{settings.dayStart} 출발</p><p className="text-xs text-sub mt-2">전날 마지막 숙소에서 출발합니다. 다음 장소까지의 이동시간을 일정에 포함합니다.</p></div>
+              <div className="flex-1 bg-white rounded-2xl shadow-card p-4"><p className="text-xs text-primary font-bold mb-3">첫 일정 · 숙소 출발</p><div className="flex items-center gap-3">{/^https?:/.test(origin.image)&&<img src={origin.image} alt="" className="w-12 h-12 rounded-xl object-cover" />}<div><h3 className="font-bold"><PlaceText place={origin} field="name" /></h3><p className="text-xs text-muted"><PlaceText place={origin} field="region" /></p></div></div><p className="text-primary font-bold text-sm mt-3">{settings.dayStart} 출발</p><p className="text-xs text-sub mt-2">전날 마지막 숙소에서 출발합니다. 다음 장소까지의 이동시간을 일정에 포함합니다.</p></div>
             </article>}
             {/* 타임라인 (수동 재정렬) */}
             {dayItems.length === 0 ? (
@@ -331,7 +332,7 @@ export default function Planner() {
                             {/^https?:/.test(s.item.image) ? <img src={s.item.image} alt={s.item.name} className="w-full h-full object-cover rounded-xl" /> : s.item.image}
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-bold text-[15px] truncate">{s.item.name}</h3>
+                            <h3 className="font-bold text-[15px] truncate"><PlaceText place={s.item} field="name" /></h3>
                             <a
                               href={kakaoRouteUrl(s.item.name, s.item.lat, s.item.lng)}
                               target="_blank"
@@ -339,7 +340,7 @@ export default function Planner() {
                               className="text-xs text-muted flex items-center gap-1 mt-0.5 truncate hover:text-primary w-fit"
                             >
                               <Icon name="location_on" className="text-[13px]" />
-                              {s.item.region}
+                              <PlaceText place={s.item} field="region" />
                               <Icon name="directions" className="text-[13px] text-primary" />
                             </a>
                           </div>

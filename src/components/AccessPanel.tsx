@@ -1,3 +1,4 @@
+import AccessEvidenceText from './AccessEvidenceText';
 import Localize from './Localize';
 import { AccessCategoryIcon } from './AccessPictograms';
 import { Link } from 'react-router-dom';
@@ -18,7 +19,7 @@ export default function AccessPanel({place}:{place:Content}) {
    {rows.map(row=><div key={row.key} data-access-row={row.key} data-access-state={row.state} className="rounded-xl border border-line p-3 min-w-0">
     <div className="flex items-center gap-3"><AccessCategoryIcon kind={row.key} state={row.state} /><div className="flex flex-1 min-w-0 flex-wrap items-center justify-between gap-2"><b className="text-sm">{ACCESS_LABELS[row.key]}</b><span className={`text-xs ${row.state==='available'?'text-primary':row.state==='unknown'?'text-muted':'text-amber-800'}`}>{STATE_LABELS[row.state]}</span></div></div>
     {row.evidence.map((e,i)=><div key={i} className="text-xs text-sub mt-2 break-words">
-      <p>“{e.text}”</p>
+      <AccessEvidenceText text={e.text} />
       <a className="underline text-primary" target="_blank" rel="noreferrer" href={accessSourceUrl(e.source)}>{e.source.source==='visitjeju'?'비짓제주 원문':'한국관광공사 무장애여행 안내'}</a>
       <p className="text-muted">수신 {new Date(e.source.receivedAt).toLocaleDateString('ko-KR')} · 현장 확인일 {e.source.checkedAt||'미확인'}</p>
     </div>)}

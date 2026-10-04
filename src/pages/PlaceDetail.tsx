@@ -1,4 +1,4 @@
-import SourceLanguageNote from '../components/SourceLanguageNote';
+import PlaceText, {PlaceTags, PlaceLanguageStatus} from '../components/PlaceText';
 import Localize from '../components/Localize';
 import { eventPeriod } from '../lib/events';
 import PlaceGallery from '../components/PlaceGallery';
@@ -130,7 +130,7 @@ export default function PlaceDetail() {
             </div>
             <SpeakButton getText={spokenText} />
           </div>
-          <h1 className="text-[22px] font-extrabold leading-tight">{base.name}</h1>
+          <h1 className="text-[22px] font-extrabold leading-tight"><PlaceText place={base} field="name" /></h1>
           <a
             href={kakaoMapUrl(base.name, base.lat, base.lng)}
             target="_blank"
@@ -138,16 +138,12 @@ export default function PlaceDetail() {
             className="text-sm text-muted flex items-center gap-1 hover:text-primary w-fit"
           >
             <Icon name="location_on" className="text-[16px]" />
-            {base.region}
+            <PlaceText place={base} field="region" />
             <Icon name="open_in_new" className="text-[13px]" />
           </a>
-          <p className="text-sm text-sub mt-1">{base.desc}</p>
+          <p className="text-sm text-sub mt-1"><PlaceText place={base} field="desc" /></p>
           <div className="flex flex-wrap gap-1.5 mt-1">
-            {(base.hashtags ?? []).map((h) => (
-              <span key={h} className="px-2 py-0.5 rounded-md bg-surface-sub text-muted text-[11px]">
-                {h}
-              </span>
-            ))}
+            <PlaceTags place={base} limit={12} />
           </div>
           {base.rating === 0 && (
             <p className="text-[11px] text-muted flex items-center gap-1 mt-1">
@@ -159,7 +155,7 @@ export default function PlaceDetail() {
         <p className="text-xs text-muted px-2">운영시간·요금·편의시설은 방문 전 확인이 필요합니다.
           {base.provenance?.retrievedAt && ` 정보 수신: ${new Date(base.provenance.retrievedAt).toLocaleDateString('ko-KR')} (현장 확인일 아님)`}
         </p>
-        <SourceLanguageNote />
+        <PlaceLanguageStatus place={base} />
         <AccessPanel place={access ? {...base,accessSources:[...(base.accessSources??[]).filter(s=>s.source!=='tourapi'),readTourSources()[tourId!] ?? tourAccessSource(tourId!,access)]}:base} />
         <NearbyRestrooms key={base.id} place={base} />
         {/* 무장애 정보 (한국관광공사 무장애여행) */}

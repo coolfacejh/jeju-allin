@@ -1,3 +1,4 @@
+import PlaceText from '../components/PlaceText';
 import Localize from '../components/Localize';
 import { useMemo, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -53,7 +54,7 @@ export default function SharedTrip() {
         <h2 className="text-lg font-bold mb-2">{day + 1}일차 {dateForDay(data.schedule?.startDate, day)}</h2>
         {!ids.length && <p className="text-sm text-muted">자유 일정</p>}
         {ids.map((id, index) => { const p = data.places.find(place => place.id === id)!; return <article key={id} className="bg-white rounded-xl p-4 mb-2 shadow-card">
-          <h3 className="font-bold">{index + 1}. {p.name}</h3>
+          <h3 className="font-bold">{index + 1}. <PlaceText place={p} field="name" /></h3>
           <a className="text-sm text-primary underline" href={kakaoMapUrl(p.name, p.lat, p.lng)} target="_blank" rel="noreferrer">{p.region || '지도에서 위치 보기'}</a>
           {data.schedule?.visits[id] && <p className="text-xs mt-2">직접 입력한 방문 시간: {data.schedule.visits[id].open || '미정'} ~ {data.schedule.visits[id].close || '미정'} · 체류 {data.schedule.visits[id].durationMin ?? '기본'}분</p>}
           {data.notes[id] && <p className="text-sm mt-2 whitespace-pre-wrap">메모: {data.notes[id]}</p>}

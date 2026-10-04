@@ -1,3 +1,4 @@
+import PlaceText, {PlaceTags} from '../components/PlaceText';
 import Localize from '../components/Localize';
 import JejuBrand from '../components/JejuBrand';
 import { AccessSummary } from '../components/AccessPanel';
@@ -207,19 +208,15 @@ export default function MyTrip() {
                     <Icon name="close" className="text-[18px]" />
                   </button>
                   <div className="photo-location absolute bottom-3 left-3 right-3 text-white text-[11px] flex items-center gap-1">
-                    <Icon name="location_on" className="text-[14px]" /> {c.region}
+                    <Icon name="location_on" className="text-[14px]" /> <PlaceText place={c} field="region" />
                   </div>
                 </div>
                 <div className="p-5 flex flex-col gap-2">
-                  <h3 className="destination-title font-bold text-[16px]">{c.name}</h3>
-                  <p className="place-description text-sm text-sub">{c.desc}</p>
+                  <h3 className="destination-title font-bold text-[16px]"><PlaceText place={c} field="name" /></h3>
+                  <p className="place-description text-sm text-sub"><PlaceText place={c} field="desc" /></p>
                   <AccessSummary place={c} access={profile?.access} />
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {(c.hashtags ?? []).slice(0,3).map((h) => (
-                      <span key={h} className="px-2 py-0.5 rounded-full bg-surface-sub text-muted text-[11px]">
-                        {h}
-                      </span>
-                    ))}
+                    <PlaceTags place={c} limit={3} />
                   </div>
                   <span className="detail-link">장소 자세히 보기 <span>→</span></span>
                 </div>

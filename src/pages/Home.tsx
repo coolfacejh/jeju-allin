@@ -1,3 +1,4 @@
+import PlaceText, {PlaceTags} from '../components/PlaceText';
 import SourceLanguageNote from '../components/SourceLanguageNote';
 import Localize from '../components/Localize';
 import JejuBrand from '../components/JejuBrand';
@@ -806,10 +807,10 @@ function Card({
         {eventPeriod(item)&&<p className="text-xs text-primary">행사 기간 · {eventPeriod(item)}</p>}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="destination-title font-bold text-[16px]">{item.name}</h3>
+            <h3 className="destination-title font-bold text-[16px]"><PlaceText place={item} field="name" /></h3>
             <p className="text-xs text-muted flex items-center gap-1 mt-0.5">
               <Icon name="location_on" className="text-[14px]" />
-              {item.region}
+              <PlaceText place={item} field="region" />
             </p>
           </div>
           {item.rating > 0 && (
@@ -843,11 +844,7 @@ function Card({
 
         <div className="destination-actions">
           <div className="flex items-center gap-1.5 flex-wrap">
-            {(item.hashtags ?? []).slice(0,3).map((h) => (
-              <span key={h} className="px-2 py-0.5 rounded-md bg-surface-sub text-muted text-[11px]">
-                {h}
-              </span>
-            ))}
+            <PlaceTags place={item} limit={3} />
           </div>
           <button
             onClick={stop(onToggle)}

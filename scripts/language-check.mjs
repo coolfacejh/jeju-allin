@@ -33,7 +33,7 @@ try{
  const saved=await page.evaluate(()=>localStorage.getItem('jeju_saved_trip_ids'));assert.ok(saved.includes('990123'));
  await writeFile(`output/verification/language/home-${width}.txt`, await page.locator('body').innerText());
  await page.screenshot({path:`output/verification/language/home-en-${width}.png`,fullPage:true});
- assert.ok(!/[가-힣]/.test((await page.locator('body').innerText()).replaceAll('제주올인','').replaceAll(fixture.name,'')), 'feed UI translated');
+ assert.ok(!/[가-힣]/.test((await page.locator('body').innerText()).replaceAll('제주올인','').replaceAll(fixture.name,'').replaceAll(fixture.region,'')), 'feed UI translated; original place data retained');
  await page.getByRole('button',{name:'Map',exact:true}).click();
  await page.locator('.leaflet-marker-icon').first().click();await page.getByRole('button',{name:'View details',exact:true}).waitFor();
  await page.getByRole('button',{name:'View details',exact:true}).click();await page.waitForURL('**/#/place/990123');
