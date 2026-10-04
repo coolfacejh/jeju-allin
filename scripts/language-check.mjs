@@ -1,0 +1,57 @@
+import {createServer} from 'node:http';
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+const {chromium}=await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE).href);
+const html=await readFile('dist/index.html');
+const fixture={id:990123,name:'테스트 관광지',contentType:'activity',region:'제주시',image:'🍊',desc:'관광기관이 제공한 한국어 원문',rating:0,reviewCount:0,lat:33.5,lng:126.5,tags:{travelType:[],companion:[],themes:[]},accessSources:[{source:'visitjeju',sourceId:'CNTS_000000000000001',receivedAt:'2026-10-01',fields:{parking:'장애인 주차구역 있음'}}]};
+const server=createServer((_req,res)=>{res.setHeader('Content-Type','text/html; charset=utf-8');res.end(html)});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin=`http://127.0.0.1:${server.address().port}`;
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true});
+try{
+ await mkdir('output/verification/language',{recursive:true});
+ for(const width of [390,1440]){
+ const page=await browser.newPage({viewport:{width,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/*',route=>{const u=new URL(route.request().url());if(u.pathname==='/api/visitjeju')return route.fulfill({json:{items:[fixture],page:1,pageCount:1}});if(u.pathname.startsWith('/api/'))return route.fulfill({json:{photos:[]}});if(u.hostname.endsWith('supabase.co'))return route.fulfill({json:u.searchParams.has('bf')?{ids:[],has:false}:{items:[fixture]}});if(u.origin===origin)return route.continue();return route.abort();});
+ await page.goto(origin+'/#/onboarding');
+ await page.getByLabel('여행 시작일',{exact:true}).fill('2026-10-12');await page.getByLabel('여행 기간',{exact:true}).selectOption('2');
+ await page.getByRole('button',{name:/장애인 주차구역/}).click();
+ await page.getByRole('button',{name:'English',exact:true}).click();
+ await page.getByRole('heading',{name:'What would make your trip comfortable?'}).waitFor();
+ assert.equal(await page.locator('html').getAttribute('lang'),'en');
+ assert.equal(await page.getByLabel('Start date',{exact:true}).inputValue(),'2026-10-12');assert.equal(await page.getByLabel('Trip length',{exact:true}).inputValue(),'2');
+ assert.equal(await page.getByRole('button',{name:/Accessible parking space/}).getAttribute('aria-pressed'),'true');
+ assert.equal(await page.getByRole('button',{name:'English',exact:true}).getAttribute('aria-pressed'),'true');
+ const korean=await page.locator('body').innerText();assert.ok(!/[가-힣]/.test(korean.replaceAll('제주올인','')),'onboarding UI fully translated except brand');
+ await page.screenshot({path:`output/verification/language/onboarding-en-${width}.png`,fullPage:true});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'onboarding no overflow');
+ await page.getByRole('button',{name:/Explore matching places/}).filter({visible:true}).click();
+ await page.waitForURL('**/#/home');await page.locator('.destination-card').first().waitFor();
+ const profile=await page.evaluate(()=>JSON.parse(localStorage.getItem('jeju_allin_profile')));assert.deepEqual(profile.access.required,['parking']);assert.equal(profile.nights,2);
+ await page.reload();await page.getByRole('heading',{name:/Discover Jeju/}).waitFor();assert.equal(await page.locator('html').getAttribute('lang'),'en');
+ await page.locator('.destination-card').first().getByRole('button',{name:/Add to trip/}).click();
+ const saved=await page.evaluate(()=>localStorage.getItem('jeju_saved_trip_ids'));assert.ok(saved.includes('990123'));
+ await writeFile(`output/verification/language/home-${width}.txt`, await page.locator('body').innerText());
+ await page.screenshot({path:`output/verification/language/home-en-${width}.png`,fullPage:true});
+ assert.ok(!/[가-힣]/.test((await page.locator('body').innerText()).replaceAll('제주올인','').replaceAll(fixture.name,'')), 'feed UI translated');
+ await page.getByRole('button',{name:'Map',exact:true}).click();
+ await page.locator('.leaflet-marker-icon').first().click();await page.getByRole('button',{name:'View details',exact:true}).waitFor();
+ await page.getByRole('button',{name:'View details',exact:true}).click();await page.waitForURL('**/#/place/990123');
+ await page.getByRole('heading',{name:'Check accessibility before visiting'}).waitFor();
+ assert.ok(await page.getByText('관광기관이 제공한 한국어 원문',{exact:true}).count());
+ await page.getByRole('button',{name:'Back to list',exact:true}).waitFor();
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'detail no overflow');
+ await page.screenshot({path:`output/verification/language/detail-en-${width}.png`,fullPage:true});
+ await page.goto(origin+'/#/my-trip');await page.getByRole('button',{name:/Create itinerary/}).click();await page.waitForURL('**/#/planner');
+ await page.getByRole('heading',{name:'Trip timing',exact:true}).waitFor();
+ await page.getByLabel('Transport',{exact:true}).selectOption('walk');assert.equal(await page.getByLabel('Transport',{exact:true}).inputValue(),'walk');
+ await writeFile(`output/verification/language/planner-${width}.txt`, await page.locator('body').innerText());
+ await page.screenshot({path:`output/verification/language/planner-en-${width}.png`,fullPage:true});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'planner no overflow');
+ await page.goto(origin+'/#/home');await page.getByRole('button',{name:'한국어',exact:true}).click();await page.getByRole('heading',{name:/나만의 방식/}).waitFor();
+ assert.equal(await page.locator('html').getAttribute('lang'),'ko');assert.equal(await page.evaluate(()=>localStorage.getItem('jeju_saved_trip_ids')),saved);
+ await page.reload();assert.equal(await page.locator('html').getAttribute('lang'),'ko');
+ assert.deepEqual(errors,[]);console.log(`PASS ${width}px: EN/KO, reload, dates/filters/saves preserved, detail, planner, source text, no errors/overflow`);
+ await page.close();
+ }
+}finally{await browser.close();await new Promise(r=>server.close(r));}

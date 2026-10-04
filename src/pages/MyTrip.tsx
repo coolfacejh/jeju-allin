@@ -1,3 +1,4 @@
+import Localize from '../components/Localize';
 import JejuBrand from '../components/JejuBrand';
 import { AccessSummary } from '../components/AccessPanel';
 import { eventVisible } from '../lib/events';
@@ -74,7 +75,7 @@ export default function MyTrip() {
     k === 'all' ? items.length : items.filter((c) => c.contentType === k).length;
 
   return (
-    <div className="saved-page min-h-screen bg-surface font-sans text-ink">
+    <Localize><div className="saved-page min-h-screen bg-surface font-sans text-ink">
       <header className="collection-brand app-shell mx-auto px-4"><JejuBrand /><span>MY JEJU COLLECTION</span></header>
       <main className="app-shell mx-auto pt-6 pb-28 px-4 flex flex-col gap-6">
         {missing.length > 0 && <div role="alert" className="p-4 rounded-xl bg-amber-50 text-sm">
@@ -239,6 +240,6 @@ export default function MyTrip() {
 
       <BottomNav savedCount={items.length} />
       {toast}
-    </div>
+    </div></Localize>
   );
 }

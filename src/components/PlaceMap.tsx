@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n';
+import Localize from './Localize';
 import { addBasemap, type MapStatus } from '../lib/mapTiles';
 import { accessRows } from '../lib/access';
 import { useEffect, useRef, useState } from 'react';
@@ -68,6 +70,7 @@ export default function PlaceMap({
   mySpots?: MySpot[];
   onDeleteMySpot?: (id: number) => void;
 }) {
+  const { lang } = useI18n();
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const clusterRef = useRef<L.MarkerClusterGroup | null>(null);
@@ -187,8 +190,8 @@ export default function PlaceMap({
       return (
         `<div style="font-weight:700;font-size:13px;margin-bottom:2px">${name}</div>` +
         `<div style="font-size:11px;color:#64748b;margin-bottom:6px">${region}</div>` +
-        `<div style="font-size:11px;margin-bottom:6px">접근성 정보 ${accessRows(p).filter(r=>r.state!=='unknown').length}/6항목 · 상세 조건 확인</div>` +
-        `<button data-id="${p.id}" class="jmap-open" style="background:#0A6E6D;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">상세 보기</button>`
+        `<div style="font-size:11px;margin-bottom:6px">${lang==='en'?'Accessibility information':'접근성 정보'} ${accessRows(p).filter(r=>r.state!=='unknown').length}/6 ${lang==='en'?'items · check details':'항목 · 상세 조건 확인'}</div>` +
+        `<button data-id="${p.id}" class="jmap-open" style="background:#0A6E6D;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">${lang==='en'?'View details':'상세 보기'}</button>`
       );
     };
 
@@ -225,7 +228,7 @@ export default function PlaceMap({
     };
     map.on('popupopen', onPopup);
     return () => {clearTimeout(labelTimer);map.off('popupopen',onPopup);};
-  }, [places]);
+  }, [places, lang]);
 
   // 내 스팟 마커 렌더
   useEffect(() => {
@@ -238,11 +241,11 @@ export default function PlaceMap({
       m.bindTooltip(textLabel(name), { permanent: true, direction: 'right', offset: [10, -8], className: 'jmap-my' });
       m.bindPopup(
         `<div style="font-weight:700;font-size:13px;margin-bottom:6px">★ ${name}</div>` +
-          `<button data-id="${s.id}" class="jmap-del" style="background:#db2777;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">삭제</button>`,
+          `<button data-id="${s.id}" class="jmap-del" style="background:#db2777;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">${lang==='en'?'Delete':'삭제'}</button>`,
       );
       m.addTo(mine);
     }
-  }, [mySpots]);
+  }, [mySpots, lang]);
 
   // 추가 모드 커서
   useEffect(() => {
@@ -251,7 +254,7 @@ export default function PlaceMap({
   }, [addMode]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <Localize><div className="flex flex-col gap-2">
       {mapStatus!=='ready'&&<p role="status" className="text-sm text-sub">{mapStatus==='loading'?'선명한 지도를 불러오는 중…':'지도 배경을 불러오지 못했습니다. 연결 상태를 확인한 뒤 목록에서 지도를 다시 열어 주세요.'}</p>}
       <style>{`.jmap-label{background:rgba(255,255,255,.95);border:none;box-shadow:0 1px 3px rgba(0,0,0,.25);border-radius:6px;padding:1px 6px;font-size:12px;font-weight:800;color:#0A6E6D}.jmap-label::before{display:none}.jmap-spot{background:rgba(255,255,255,.92);border:none;box-shadow:0 1px 2px rgba(0,0,0,.2);border-radius:5px;padding:0 5px;font-size:10px;font-weight:700;color:#0f172a;white-space:nowrap}.jmap-spot::before{display:none}.jmap-my{background:#db2777;border:none;box-shadow:0 1px 3px rgba(0,0,0,.3);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:800;color:#fff;white-space:nowrap}.jmap-my::before{display:none}`}</style>
       <div ref={elRef} className="w-full rounded-2xl overflow-hidden shadow-card z-0" style={{ height: '68vh' }} />
@@ -263,6 +266,6 @@ export default function PlaceMap({
         </div>
         <span className="text-[10px] text-muted">확대해도 선명한 지도 · 장소를 눌러 상세 확인</span>
       </div>
-    </div>
+    </div></Localize>
   );
 }

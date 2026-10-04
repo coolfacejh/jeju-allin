@@ -1,3 +1,4 @@
+import Localize from './Localize';
 import { NavLink } from 'react-router-dom';
 import Icon from './Icon';
 import { useI18n } from '../i18n';
@@ -11,7 +12,7 @@ const items = [
 export default function BottomNav({ savedCount = 0 }: { savedCount?: number }) {
   const { t } = useI18n();
   return (
-    <nav className="travel-bottom-nav fixed bottom-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-t border-line shadow-[0_-4px_20px_rgba(30,41,59,0.05)]">
+    <Localize><nav className="travel-bottom-nav fixed bottom-0 inset-x-0 z-50 bg-white/85 backdrop-blur-xl border-t border-line shadow-[0_-4px_20px_rgba(30,41,59,0.05)]">
       <div className="app-shell mx-auto h-16 px-4 grid grid-cols-3 items-center">
         {items.map((it) => (
           <NavLink
@@ -35,6 +36,6 @@ export default function BottomNav({ savedCount = 0 }: { savedCount?: number }) {
           </NavLink>
         ))}
       </div>
-    </nav>
+    </nav></Localize>
   );
 }

@@ -1,3 +1,4 @@
+import Localize from '../components/Localize';
 import JejuBrand from '../components/JejuBrand';
 import JejuJourney from '../components/JejuJourney';
 import { AccessCategoryIcon } from '../components/AccessPictograms';
@@ -65,7 +66,7 @@ export default function Onboarding() {
   }
 
   return (
-    <main className="onboarding-page min-h-screen w-full app-shell mx-auto px-4 pb-10 bg-surface text-ink font-sans">
+    <Localize><main className="onboarding-page min-h-screen w-full app-shell mx-auto px-4 pb-10 bg-surface text-ink font-sans">
       <div className="onboarding-brandbar"><JejuBrand /><LangToggle /></div>
       <div className="onboarding-tools">
         <button
@@ -121,6 +122,6 @@ export default function Onboarding() {
           <span className="text-[11px]">{t('onb.trust')}</span>
         </div>
       </div>
-    </main>
+    </main></Localize>
   );
 }

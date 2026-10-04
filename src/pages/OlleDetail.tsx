@@ -1,3 +1,4 @@
+import Localize from '../components/Localize';
 import { addBasemap } from '../lib/mapTiles';
 import OlleAccessCard from '../components/OlleAccessCard';
 import { useEffect, useRef, useState } from 'react';
@@ -26,10 +27,10 @@ function Endpoints({ course: c }: { course: OlleCourse }) {
     resize.observe(ref.current);
     return () => { disposeBasemap(); resize.disconnect(); map.remove(); };
   }, [c, attempt]);
-  return <div className="space-y-2"><div ref={ref} role="img" aria-label="공식 출발·도착 위치 지도. 실제 걷는 경로는 공식 지도에서 확인" className="h-64 md:h-80 rounded-xl relative z-0" />
+  return <Localize><div className="space-y-2"><div ref={ref} role="img" aria-label="공식 출발·도착 위치 지도. 실제 걷는 경로는 공식 지도에서 확인" className="h-64 md:h-80 rounded-xl relative z-0" />
     {status !== 'ready' && <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{status === 'loading' ? '지도를 불러오는 중입니다…' : '지도 배경을 모두 불러오지 못했어요. 인터넷 연결을 확인하거나 아래 길찾기·공식 지도 링크를 이용해 주세요.'}</p>}
     <button type="button" className="text-sm text-primary underline py-2" onClick={() => setAttempt(n => n+1)}>지도 다시 불러오기</button>
-  </div>;
+  </div></Localize>;
 }
 const mapUrl = (p: OlleCourse['start']) => `https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`;
 export default function OlleDetail() {
@@ -68,7 +69,7 @@ function Detail({ course: c }: { course: OlleCourse }) {
     if (!saveTripSelection(next, ids.includes(id) ? ids : [...ids,id])) { setMessage('저장하지 못했어요. 저장 공간을 확인해 주세요.'); return; }
     setSaved(true); setMessage(`${target+1}일차에 ${duration}분으로 담았어요. 출발·도착 이동 시간은 별도 확인해 주세요.`);
   }
-  return <div className="min-h-screen bg-surface text-ink pb-24"><main className="app-shell mx-auto px-4 py-6 space-y-5">
+  return <Localize><div className="min-h-screen bg-surface text-ink pb-24"><main className="app-shell mx-auto px-4 py-6 space-y-5">
     <Link to="/olle" className="inline-block text-primary py-2">← 올레길 목록</Link>
     <header className="bg-primary text-white p-6 md:p-8 rounded-3xl"><p>{c.region} · {c.code}코스</p><h1 className="text-2xl md:text-3xl font-bold mt-2">{c.name}</h1><p className="mt-4 text-lg">{c.distanceKm}km · {c.hours.join('~')}시간 · 난이도 {c.difficulty}</p></header>
     <div className="grid lg:grid-cols-2 gap-5 items-start">
@@ -81,5 +82,5 @@ function Detail({ course: c }: { course: OlleCourse }) {
         <section className="bg-white rounded-2xl border border-line p-5 space-y-3"><h2 className="text-lg font-bold">교통·편의시설·통제 안내</h2><ul className="list-disc pl-5 space-y-2 text-sm text-sub"><li>주차, 화장실, 식수·휴식 장소의 운영 상태는 미확인입니다. 공식 코스 지도와 방문 전 문의로 확인해 주세요.</li><li>돌아오는 교통편과 일몰 전 도착 가능 시간을 먼저 확인하세요.</li>{c.island && <li className="font-bold text-amber-800">{c.island} 코스는 배편 예약·결항 여부·마지막 배 시간을 확인하세요.</li>}<li>공사·날씨에 따른 통제와 우회 여부는 실시간 연동되지 않습니다.</li></ul><a className="block text-primary underline" href="https://www.jejuolle.org/trail" target="_blank" rel="noreferrer">공식 사이트에서 최신 공지 확인 ↗</a><a className="block text-primary underline" href="tel:0647622190">제주올레 문의 064-762-2190</a></section>
         <p className="text-xs text-muted">출처: <a href={olleSourceUrl(c)} target="_blank" rel="noreferrer" className="underline">제주올레 공식 코스 상세</a> · 정보 확인 {OLLE_CHECKED_AT}. 공식 안내의 변경 사항은 다음 정보 갱신 전까지 반영되지 않을 수 있습니다.</p>
       </div>
-    </div></main><BottomNav savedCount={loadSavedIds().length} /></div>;
+    </div></main><BottomNav savedCount={loadSavedIds().length} /></div></Localize>;
 }

@@ -1,3 +1,5 @@
+import SourceLanguageNote from '../components/SourceLanguageNote';
+import Localize from '../components/Localize';
 import { eventPeriod } from '../lib/events';
 import PlaceGallery from '../components/PlaceGallery';
 import NearbyRestrooms from '../components/NearbyRestrooms';
@@ -45,8 +47,8 @@ export default function PlaceDetail() {
   }, [placeId, tourId]);
 
   const olle = courseForPlace(placeId);
-  if (olle) return <Navigate to={`/olle/${olle.slug}${isOlleSegment(placeId) ? "?segment=1" : ""}`} replace />;
-  if (!base) return <Navigate to="/home" replace />;
+  if (olle) return <Localize><Navigate to={`/olle/${olle.slug}${isOlleSegment(placeId) ? "?segment=1" : ""}`} replace /></Localize>;
+  if (!base) return <Localize><Navigate to="/home" replace /></Localize>;
 
   function goBack() {
     if (typeof window.history.state?.idx === 'number' && window.history.state.idx > 0) navigate(-1);
@@ -86,7 +88,7 @@ export default function PlaceDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-ink pb-28">
+    <Localize><div className="min-h-screen bg-surface font-sans text-ink pb-28">
       {/* 히어로 */}
       <div className="app-shell mx-auto relative bg-slate-900">
         <PlaceGallery key={base.id} place={base} />
@@ -157,6 +159,7 @@ export default function PlaceDetail() {
         <p className="text-xs text-muted px-2">운영시간·요금·편의시설은 방문 전 확인이 필요합니다.
           {base.provenance?.retrievedAt && ` 정보 수신: ${new Date(base.provenance.retrievedAt).toLocaleDateString('ko-KR')} (현장 확인일 아님)`}
         </p>
+        <SourceLanguageNote />
         <AccessPanel place={access ? {...base,accessSources:[...(base.accessSources??[]).filter(s=>s.source!=='tourapi'),readTourSources()[tourId!] ?? tourAccessSource(tourId!,access)]}:base} />
         <NearbyRestrooms key={base.id} place={base} />
         {/* 무장애 정보 (한국관광공사 무장애여행) */}
@@ -444,18 +447,18 @@ export default function PlaceDetail() {
           </button>
         </div>
       </div>
-    </div>
+    </div></Localize>
   );
 }
 
 function Card({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
-    <section className="bg-white rounded-2xl shadow-card p-5">
+    <Localize><section className="bg-white rounded-2xl shadow-card p-5">
       <div className="flex items-center gap-1.5 mb-2 text-primary">
         <Icon name={icon} className="text-[18px]" />
         <h2 className="text-sm font-bold">{title}</h2>
       </div>
       {children}
-    </section>
+    </section></Localize>
   );
 }

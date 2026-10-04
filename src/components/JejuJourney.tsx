@@ -1,4 +1,5 @@
-export default function JejuJourney({intro=false}:{intro?:boolean}){return <section className={`journey-hero ${intro?'journey-intro':''}`} aria-label="제주 여행 소개">
+import Localize from './Localize';
+export default function JejuJourney({intro=false}:{intro?:boolean}){return <Localize><section className={`journey-hero ${intro?'journey-intro':''}`} aria-label="제주 여행 소개">
  <div className="journey-copy"><p className="journey-eyebrow"><span />{intro?'JEJU TASTE JOURNEY':'YOUR OWN JEJU'}</p>
  <h1>{intro?<>나에게 맞는 제주,<br />함께 떠나볼까요?</>:<>제주를 만나는<br /><em>나만의 방식.</em></>}</h1>
  <p className="journey-description">{intro?<>여행 날짜와 필요한 편의시설을 골라 주세요.<br />나와 동행자에게 맞는 제주를 찾아드릴게요.</>:<>머무를 곳, 즐길 거리, 로컬 미식까지.<br />내게 맞는 장소를 담아 하나의 여행으로.</>}</p>
@@ -14,4 +15,4 @@ export default function JejuJourney({intro=false}:{intro?:boolean}){return <sect
  <path d="M403 199v26m-16-17 16-25 16 25Z" fill="#064E4D" stroke="#064E4D" strokeWidth="4"/>
  <path d="M80 209c27-33 90 8 125-13" stroke="white" strokeWidth="3" strokeDasharray="5 8" fill="none"/><circle cx="78" cy="211" r="6" fill="#F97316"/>
  </svg><span className="journey-coordinate" aria-hidden="true">33.38° N / 126.53° E</span>
- </section>}
+ </section></Localize>}

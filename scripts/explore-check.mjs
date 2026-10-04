@@ -33,6 +33,7 @@ try {
   await page.getByRole('button', { name: '지도', exact: true }).click();
   await page.getByRole('button', { name: '북부', exact: true }).click();
   const map = page.locator('.leaflet-container');
+  await page.evaluate(() => document.fonts.ready);
   await map.scrollIntoViewIfNeeded();
   await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
   await page.waitForTimeout(400);
@@ -59,7 +60,7 @@ try {
   assert.equal(await page.getByRole('button', { name: /머무를 곳/ }).getAttribute('aria-pressed'), 'true');
   assert.equal(await page.getByRole('button', { name: '지도', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.equal(await page.getByRole('button', { name: '북부', exact: true }).getAttribute('aria-pressed'), 'true');
-  assert.ok(Math.abs((await page.evaluate(() => window.scrollY)) - expectedScroll) <= 3, 'page scroll restored');
+  assert.ok(Math.abs((await page.evaluate(() => window.scrollY)) - expectedScroll) <= 3, `page scroll restored: expected ${expectedScroll}, actual ${await page.evaluate(() => window.scrollY)}`);
   const afterBox = await marker.boundingBox(); const afterMapBox = await map.boundingBox();
   assert.ok(Math.abs(afterBox.x - afterMapBox.x - relativeBefore.x) <= 3, 'map longitude restored');
   assert.ok(Math.abs(afterBox.y - afterMapBox.y - relativeBefore.y) <= 3, 'map latitude restored');

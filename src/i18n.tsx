@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 
 export type Lang = 'ko' | 'en';
 const KEY = 'jeju_lang';
@@ -136,7 +136,7 @@ const en: Dict = {
   'onb.required': 'required',
   'onb.optional': 'optional',
   'onb.cta': 'Analyze & get recommendations',
-  'onb.trust': 'Saved safely in your browser, no login',
+  'onb.trust': 'Saved in this browser without login. Clearing browser data removes it.',
   'onb.mobility': 'Mobility needs (optional)',
   'd.locroute': 'Location · Directions',
   'd.kakaoRoute': 'KakaoMap directions',
@@ -148,7 +148,7 @@ const en: Dict = {
   'd.venue': 'In-store guide (for visitors)',
   'mt.title': 'My Saved Trip',
   'mt.share': 'Share',
-  'mt.route': 'Create AI smart route',
+  'mt.route': 'Create itinerary',
   'pl.title': 'Jeju All-In Smart Route',
   'common.popular': 'Popular',
   'unit.places': ' places',
@@ -179,6 +179,7 @@ const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (k: strin
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangS] = useState<Lang>(load);
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
   const setLang = useCallback((l: Lang) => {
     setLangS(l);
     try {
@@ -202,6 +203,9 @@ export function LangToggle() {
       {(['ko', 'en'] as Lang[]).map((l) => (
         <button
           key={l}
+          type="button"
+          aria-pressed={lang === l}
+          aria-label={l === 'en' ? 'English' : '한국어'}
           onClick={() => setLang(l)}
           className={`px-2.5 py-1 ${lang === l ? 'bg-primary text-white' : 'text-muted'}`}
         >

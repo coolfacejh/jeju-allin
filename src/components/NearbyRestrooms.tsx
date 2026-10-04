@@ -1,3 +1,4 @@
+import Localize from './Localize';
 import { useState } from 'react';
 import type { Content } from '../types';
 import { RESTROOM_CATALOGUE, RESTROOM_SURVEYS, accessibleToilet, nearbyRestrooms, validJejuPoint } from '../lib/restrooms';
@@ -6,7 +7,7 @@ import { kakaoMapUrl, kakaoRouteUrl } from '../lib/maps';
 export default function NearbyRestrooms({place}:{place:Content}) {
  const [radius,setRadius]=useState(3),[only,setOnly]=useState(false),[limit,setLimit]=useState(5);
  const valid=validJejuPoint(place.lat,place.lng),rows=nearbyRestrooms(place.lat,place.lng,radius,only);
- return <section aria-label="주변 공중화장실" className="bg-white rounded-2xl shadow-card p-5 space-y-4">
+ return <Localize><section aria-label="주변 공중화장실" className="bg-white rounded-2xl shadow-card p-5 space-y-4">
   <h2 className="text-lg font-bold">주변 공중화장실</h2>
   <p className="text-sm text-sub">선택한 장소 주변의 별도 시설입니다. 숙소·관광지 내부 시설이나 이용 가능 경로를 보장하지 않습니다.</p>
   <p className="text-xs text-muted">제주시·서귀포시 공개 자료 중 위치가 확인된 시설만 거리순으로 표시합니다. 좌표가 없는 자료는 제외합니다. · 자료 수신 {RESTROOM_CATALOGUE.retrievedAt}</p>
@@ -28,5 +29,5 @@ export default function NearbyRestrooms({place}:{place:Content}) {
   </>}
   <a href={kakaoMapUrl(`${place.name} 주변 공중화장실`)} target="_blank" rel="noreferrer" className="inline-block text-sm text-primary underline">지도에서 주변 화장실 검색 ↗</a>
   <p className="text-xs text-muted">화장실 픽토그램: 이지제주. 시설 정보는 제주시·서귀포시 공개 자료이며 이지제주 현장 조사와는 별개입니다.</p>
- </section>;
+ </section></Localize>;
 }

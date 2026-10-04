@@ -1,3 +1,4 @@
+import Localize from '../components/Localize';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BottomNav from '../components/BottomNav';
@@ -19,7 +20,7 @@ export default function Olle() {
   useEffect(() => { try { sessionStorage.setItem(KEY, JSON.stringify(filters)); } catch { /* optional */ } }, [filters]);
   const courses = filterOlle(OLLE_COURSES, filters);
   const update = (patch: Partial<OlleFilters>) => setFilters(f => ({ ...f, ...patch }));
-  return <div className="min-h-screen bg-surface text-ink pb-24">
+  return <Localize><div className="min-h-screen bg-surface text-ink pb-24">
     <main className="app-shell mx-auto px-4 py-8 space-y-6">
       <header className="rounded-3xl bg-primary text-white p-6 md:p-10">
         <p className="text-sm mb-2">제주를 천천히, 내 걸음으로</p>
@@ -48,5 +49,5 @@ export default function Olle() {
       {!courses.length && <p className="p-10 text-center text-sub">조건에 맞는 코스가 없어요. 필터를 조정해 주세요.</p>}
       <p className="text-xs text-muted leading-relaxed">출처: 제주올레 공식 코스 상세 · 정보 확인 {OLLE_CHECKED_AT}. 지역은 탐색 편의를 위한 앱 분류입니다. 쉬운 코스도 휠체어·유모차 이용이 보장되는 것은 아닙니다. 방문 전 최신 통제 안내를 확인해 주세요.</p>
     </main><BottomNav savedCount={saved.length} />
-  </div>;
+  </div></Localize>;
 }

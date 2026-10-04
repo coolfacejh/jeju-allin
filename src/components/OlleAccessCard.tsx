@@ -1,3 +1,4 @@
+import Localize from './Localize';
 import { AccessGuideLink } from './AccessPictograms';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -27,7 +28,7 @@ export default function OlleAccessCard({ course: c, onSaved }: { course: OlleCou
     setMessage(error ?? `${day+1}일차에 일부 구간만 ${minutes}분으로 담았어요.`);
     if (!error) onSaved();
   }
-  return <section id="olle-access" className="bg-white rounded-2xl border border-line p-5 space-y-4 scroll-mt-6">
+  return <Localize><section id="olle-access" className="bg-white rounded-2xl border border-line p-5 space-y-4 scroll-mt-6">
     <h2 className="text-lg font-bold">접근성 · 구간별 확인</h2>
     <AccessGuideLink />
     {facts && c.accessSegment ? <>
@@ -56,5 +57,5 @@ export default function OlleAccessCard({ course: c, onSaved }: { course: OlleCou
         {saved && <Link to="/my-trip" className="block text-sm underline text-primary">담은 구간 확인</Link>}
       </div>
     </> : <><p className="text-sm">이 앱에서 확인한 휠체어 안내 구간이 없습니다. 이용 불가라는 뜻은 아니며, 공식 안내와 현장 문의가 필요합니다.</p><a className="text-sm underline text-primary" href={olleSourceUrl(c)} target="_blank" rel="noreferrer">공식 접근성 안내 확인 ↗</a></>}
-  </section>;
+  </section></Localize>;
 }

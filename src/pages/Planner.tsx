@@ -1,3 +1,4 @@
+import Localize from '../components/Localize';
 import { resolvePlaces } from '../lib/places';
 import RouteMap from '../components/RouteMap';
 import { useEffect, useMemo, useState } from 'react';
@@ -162,7 +163,7 @@ export default function Planner() {
   }
 
   return (
-    <div className="planner-page min-h-screen bg-surface font-sans text-ink">
+    <Localize><div className="planner-page min-h-screen bg-surface font-sans text-ink">
       <header className="fixed top-0 inset-x-0 z-40 bg-surface/85 backdrop-blur-xl border-b border-line">
         <div className="app-shell mx-auto h-16 px-4 flex items-center gap-2">
           <button
@@ -396,13 +397,13 @@ export default function Planner() {
         )}
       </main>
       {toast}
-    </div>
+    </div></Localize>
   );
 }
 
 function EmptyState({ onGo }: { onGo: () => void }) {
   return (
-    <div className="flex flex-col items-center text-center p-8 rounded-2xl bg-white shadow-card gap-2 mt-6">
+    <Localize><div className="flex flex-col items-center text-center p-8 rounded-2xl bg-white shadow-card gap-2 mt-6">
       <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center text-primary">
         <Icon name="alt_route" className="text-[32px]" />
       </div>
@@ -413,16 +414,16 @@ function EmptyState({ onGo }: { onGo: () => void }) {
       <button onClick={onGo} className="mt-2 px-6 py-3 rounded-full bg-primary text-white font-bold text-sm active:scale-95">
         장소 담으러 가기
       </button>
-    </div>
+    </div></Localize>
   );
 }
 
 function Stat({ icon, value, label }: { icon: string; value: string; label: string }) {
   return (
-    <div className="flex-1 rounded-xl bg-white/15 px-3 py-2 flex flex-col">
+    <Localize><div className="flex-1 rounded-xl bg-white/15 px-3 py-2 flex flex-col">
       <Icon name={icon} className="text-[18px] mb-0.5" />
       <span className="font-bold text-sm leading-tight">{value}</span>
       <span className="text-[10px] text-white/70">{label}</span>
-    </div>
+    </div></Localize>
   );
 }

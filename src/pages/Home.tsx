@@ -1,3 +1,5 @@
+import SourceLanguageNote from '../components/SourceLanguageNote';
+import Localize from '../components/Localize';
 import JejuBrand from '../components/JejuBrand';
 import JejuJourney from '../components/JejuJourney';
 import { eventVisible, eventPeriod, koreaToday } from '../lib/events';
@@ -309,10 +311,10 @@ export default function Home() {
     });
   }
 
-  if (!profile) return <Navigate to="/onboarding" replace />;
+  if (!profile) return <Localize><Navigate to="/onboarding" replace /></Localize>;
 
   return (
-    <div className="curation-page min-h-screen bg-surface font-sans text-ink">
+    <Localize><div className="curation-page min-h-screen bg-surface font-sans text-ink">
       <header className="global-header fixed top-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-b border-line">
         <div className="app-shell mx-auto h-16 px-4 flex items-center justify-between">
           <JejuBrand />
@@ -332,6 +334,7 @@ export default function Home() {
       <main className="app-shell mx-auto pt-16 pb-28 px-4 flex flex-col gap-6">
 
         <JejuJourney />
+        <SourceLanguageNote />
         {/* 취향 요약 */}
         <section className="profile-overview">
           <div className="travel-panel bg-white rounded-2xl p-4 shadow-card">
@@ -719,7 +722,7 @@ export default function Home() {
       </main>
 
       <BottomNav savedCount={saved.length} />
-    </div>
+    </div></Localize>
   );
 }
 
@@ -733,25 +736,25 @@ function AccessBadges({ item }: { item: CuratedContent }) {
   if (item.pet?.petFriendly) badges.push({ label: '🐕 반려견' });
   if (badges.length === 0) return null;
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <Localize><div className="flex flex-wrap gap-1.5">
       {badges.map((b) => (
         <span key={b.label} className="text-[11px] px-2 py-0.5 rounded-full bg-tertiary-light text-tertiary font-medium">
           {b.label}
         </span>
       ))}
-    </div>
+    </div></Localize>
   );
 }
 
 function Chip({ children, accent }: { children: React.ReactNode; accent?: boolean }) {
   return (
-    <span
+    <Localize><span
       className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold shrink-0 ${
         accent ? 'bg-accent-light text-accent' : 'bg-primary/10 text-primary'
       }`}
     >
       {children}
-    </span>
+    </span></Localize>
   );
 }
 
@@ -775,7 +778,7 @@ function Card({
     fn();
   };
   return (
-    <article onClick={onOpen} className="destination-card bg-white rounded-2xl overflow-hidden shadow-card flex flex-col cursor-pointer active:scale-[0.99] transition-transform">
+    <Localize><article onClick={onOpen} className="destination-card bg-white rounded-2xl overflow-hidden shadow-card flex flex-col cursor-pointer active:scale-[0.99] transition-transform">
       <div className="relative w-full aspect-[16/10] bg-primary-light flex items-center justify-center text-6xl overflow-hidden">
         {/^https?:\/\//.test(item.image) ? (
           <img src={item.image} alt={item.name} loading="lazy" className="w-full h-full object-cover" />
@@ -857,6 +860,6 @@ function Card({
           </button>
         </div>
       </div>
-    </article>
+    </article></Localize>
   );
 }

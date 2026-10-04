@@ -1,3 +1,4 @@
+import Localize from '../components/Localize';
 import { useMemo, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { decodeTrip } from '../lib/share';
@@ -34,13 +35,13 @@ export default function SharedTrip() {
     }
   }
 
-  if (!data || !data.places.length) return <main className="app-shell mx-auto p-8 text-center">
+  if (!data || !data.places.length) return <Localize><main className="app-shell mx-auto p-8 text-center">
     <h1 className="text-xl font-bold">공유 여행을 열 수 없어요</h1>
     <p className="my-4 text-sm">링크가 손상되었거나, 이전 링크에 장소 정보가 포함되지 않았습니다. 작성자에게 새 링크를 요청해 주세요.</p>
     <button onClick={() => navigate('/home')} className="underline">홈으로</button>
-  </main>;
+  </main></Localize>;
 
-  return <div className="min-h-screen bg-surface text-ink pb-32">
+  return <Localize><div className="min-h-screen bg-surface text-ink pb-32">
     <header className="bg-primary text-white px-4 py-8"><div className="app-shell mx-auto">
       <h1 className="text-2xl font-bold">함께 떠나요, 제주 여행</h1>
       <p className="mt-2">{nightsLabel(data.nights)} · {data.headcount}명 · {data.places.length}곳</p>
@@ -66,5 +67,5 @@ export default function SharedTrip() {
     <footer className="fixed bottom-0 inset-x-0 p-4 bg-white border-t border-line">
       <button onClick={importTrip} className="block app-shell mx-auto w-full p-3 rounded-full bg-primary text-white font-bold">{confirm ? '현재 일정을 이 여행으로 바꾸기' : '이 일정을 내 여행으로 저장'}</button>
     </footer>
-  </div>;
+  </div></Localize>;
 }

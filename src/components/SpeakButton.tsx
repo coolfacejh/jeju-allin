@@ -1,3 +1,4 @@
+import Localize from './Localize';
 import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import { speak, stopSpeak, speechSupported } from '../lib/speech';
@@ -34,7 +35,7 @@ export default function SpeakButton({
   }
 
   return (
-    <button
+    <Localize><button
       onClick={(e) => {
         e.stopPropagation();
         toggle();
@@ -49,6 +50,6 @@ export default function SpeakButton({
     >
       <Icon name={on ? 'stop_circle' : 'volume_up'} className={compact ? 'text-[15px]' : 'text-[16px]'} fill={on} />
       {on ? t('speak.stop') : t('speak.play')}
-    </button>
+    </button></Localize>
   );
 }
