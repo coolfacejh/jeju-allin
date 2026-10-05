@@ -1,3 +1,4 @@
+import { AllinPlanGreeting } from '../components/AllinMascot';
 import PlaceText from '../components/PlaceText';
 import Localize from '../components/Localize';
 import { resolvePlaces } from '../lib/places';
@@ -214,6 +215,7 @@ export default function Planner() {
               <button type="button" className="font-bold underline text-primary" onClick={()=>{const next={...settings,mealAware:true};setSettings(next);setBuckets(prev=>prev.map((b,i)=>orderRoute(b,next,i,profile.nights,previousLodging(prev,i))));show('날짜와 메모는 유지하고 숙소·식사 시간 기준으로 재정렬했어요.');}}>숙소·식사 시간 기준으로 다시 추천</button>
             </div>
             {/* 요약 */}
+            <AllinPlanGreeting />
             <section className="mt-4 rounded-2xl bg-gradient-to-br from-primary-dark to-primary text-white p-5 shadow-raised">
               <div className="flex items-center gap-1.5 mb-2">
                 <Icon name="auto_awesome" className="text-[18px]" />

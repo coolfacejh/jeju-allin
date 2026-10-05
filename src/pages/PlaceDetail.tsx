@@ -1,3 +1,4 @@
+import { useAllinSaved } from '../components/AllinMascot';
 import PlaceText, {PlaceTags, PlaceLanguageStatus} from '../components/PlaceText';
 import Localize from '../components/Localize';
 import { eventPeriod } from '../lib/events';
@@ -23,6 +24,7 @@ export default function PlaceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useI18n();
+  const allinSaved = useAllinSaved();
   const placeId = Number(id);
   const base = loadPlaces().find((c) => c.id === placeId);
   const profile = loadProfile();
@@ -62,6 +64,7 @@ export default function PlaceDetail() {
     if (next.length > 100) { window.alert('한 여행에는 최대 100곳까지 담을 수 있어요.'); return; }
     if (!saveSavedIds(next)) { window.alert('저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.'); return; }
     setSaved(next.includes(placeId));
+    if (next.includes(placeId)) allinSaved.show();
   }
 
   const a = base.accessibility;
@@ -443,6 +446,7 @@ export default function PlaceDetail() {
           </button>
         </div>
       </div>
+      {allinSaved.node}
     </div></Localize>
   );
 }

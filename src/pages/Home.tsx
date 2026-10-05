@@ -1,3 +1,4 @@
+import AllinMascot, { useAllinSaved } from '../components/AllinMascot';
 import PlaceText, {PlaceTags} from '../components/PlaceText';
 import SourceLanguageNote from '../components/SourceLanguageNote';
 import Localize from '../components/Localize';
@@ -43,6 +44,7 @@ const TYPE_SECTIONS: { key: ContentType; tkey: string }[] = [
 export default function Home() {
   const navigate = useNavigate();
   const { t, lang } = useI18n();
+  const allinSaved = useAllinSaved();
   const [profile] = useState(loadProfile);
   const [initialExplore] = useState(loadExplore);
   const [tab, setTab] = useState<'all' | ContentType>(initialExplore.tab);
@@ -301,15 +303,11 @@ export default function Home() {
       window.alert('장소를 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.');
       return;
     }
-    setSaved((prev) => {
-      const adding = !prev.includes(id);
-      const next = adding ? [...prev, id] : prev.filter((x) => x !== id);
-      if (!saveSavedIds(next)) { window.alert('저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.'); return prev; }
-      if (adding) {
-        logEvent('save', { id, reasonsOn, ms: Date.now() - feedAt.current });
-      }
-      return next;
-    });
+    const adding = !saved.includes(id);
+    const next = adding ? [...saved, id] : saved.filter(x => x !== id);
+    if (!saveSavedIds(next)) { window.alert('저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.'); return; }
+    setSaved(next);
+    if (adding) { logEvent('save', { id, reasonsOn, ms: Date.now() - feedAt.current }); allinSaved.show(); }
   }
 
   if (!profile) return <Localize><Navigate to="/onboarding" replace /></Localize>;
@@ -714,7 +712,7 @@ export default function Home() {
               </button>
             )}
             {subFiltered.length === 0 && (
-              <div className="grid-span-all text-center py-10">
+              <div className="grid-span-all text-center py-10 allin-empty-state"><AllinMascot mood="calm" className="allin-empty" />
                 <p className="text-sm text-muted">{t('empty.cat')}</p>
               </div>
             )}
@@ -723,6 +721,7 @@ export default function Home() {
       </main>
 
       <BottomNav savedCount={saved.length} />
+      {allinSaved.node}
     </div></Localize>
   );
 }

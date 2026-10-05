@@ -1,3 +1,4 @@
+import AllinMascot from '../components/AllinMascot';
 import PlaceText, {PlaceTags} from '../components/PlaceText';
 import Localize from '../components/Localize';
 import JejuBrand from '../components/JejuBrand';
@@ -173,9 +174,7 @@ export default function MyTrip() {
 
         {items.length === 0 ? (
           <div className="flex flex-col items-center text-center p-8 rounded-2xl bg-white shadow-card gap-2 mt-2">
-            <div className="w-20 h-20 rounded-full bg-accent-light flex items-center justify-center text-accent mb-1">
-              <Icon name="favorite" className="text-[40px]" />
-            </div>
+            <AllinMascot mood="calm" className="allin-empty" />
             <h3 className="font-bold text-[17px]">아직 담은 여행지가 없어요</h3>
             <p className="text-xs text-muted max-w-[260px]">
               취향 큐레이션에서 하트를 눌러 나만의 제주 핫플레이스를 모아보세요.
