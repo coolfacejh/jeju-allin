@@ -1,3 +1,6 @@
+import RouteInsertDialog from '../components/RouteInsertDialog';
+import { insertRoutePlace, insertionEligible } from '../lib/routeInsert';
+import { rememberPlaces } from '../lib/places';
 import { AllinPlanGreeting } from '../components/AllinMascot';
 import PlaceText from '../components/PlaceText';
 import Localize from '../components/Localize';
@@ -74,7 +77,9 @@ export default function Planner() {
   const [removed, setRemoved] = useState<{ item: Content; day: number; index: number; savedIndex: number } | null>(null);
   const [day, setDay] = useState(0);
   const { show, node: toast } = useToast();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const [inserting,setInserting]=useState<{day:number;index:number}|null>(null);
+  const [added,setAdded]=useState<{before:Content[][];after:Content[][];ids:number[];beforeSettings:typeof settings;afterSettings:typeof settings;notes:typeof notes;headcount:number}|null>(null);
   const [notes, setNotes] = useState(initial.notes);
   const [settings, setSettings] = useState(() => initial.schedule ?? { ...DEFAULT_SCHEDULE, visits: {} });
   function setVisit(id: number, patch: VisitWindow) {
@@ -86,6 +91,24 @@ export default function Planner() {
   useEffect(() => {
     setSaveFailed(!saveTrip(makeTrip(buckets, profile.nights, profile.headcount, notes, settings)));
   }, [buckets, notes, settings, profile.nights, profile.headcount]);
+
+  function addPlace(place:Content,targetDay:number,index:number,duration:number):boolean {
+    if(!insertionEligible(place,settings,targetDay,loadProfile()?.access)){show(lang==='en'?'This place no longer matches your date or accessibility requirements.':'날짜 또는 접근성 조건에 맞지 않는 장소입니다.');return false;}
+    let next:Content[][];
+    try{next=insertRoutePlace(buckets,targetDay,index,place);}catch{show(lang==='en'?'Already scheduled, or the 100-place limit has been reached.':'이미 일정에 있거나 최대 100곳에 도달했습니다.');return false;}
+    const ids=loadSavedIds();const nextIds=[...new Set([...ids,place.id])];
+    if(nextIds.length>100){show(lang==='en'?'Your saved list has reached 100 places.':'보관함은 최대 100곳까지 담을 수 있어요.');return false;}
+    const nextSettings={...settings,visits:{...settings.visits,[place.id]:{...settings.visits[place.id],durationMin:duration}}};
+    if(!rememberPlaces([place])||!saveTripSelection(makeTrip(next,profile.nights,headcount,notes,nextSettings),nextIds)){show(lang==='en'?'Could not save. Check browser storage.':'추가하지 못했어요. 브라우저 저장 공간을 확인해 주세요.');return false;}
+    setAdded({before:buckets,after:next,ids,beforeSettings:settings,afterSettings:nextSettings,notes,headcount});
+    setRemoved(null);setBeforeRegroup(null);setBuckets(next);setSettings(nextSettings);setDay(targetDay);return true;
+  }
+  function undoAdd(){
+    if(!added||buckets!==added.after||settings!==added.afterSettings||notes!==added.notes||headcount!==added.headcount)return;
+    if(!saveTripSelection(makeTrip(added.before,profile.nights,headcount,notes,added.beforeSettings),added.ids)){show(lang==='en'?'Could not undo. Check browser storage.':'되돌리지 못했어요. 저장 공간을 확인해 주세요.');return;}
+    setBuckets(added.before);setSettings(added.beforeSettings);setAdded(null);
+  }
+  const addButton=(index:number)=><button type="button" className="route-insert-trigger" onClick={()=>setInserting({day,index})}>＋ {lang==='en'?'Add a stop':'장소 추가'}</button>;
 
   function excludePlace(id: number) {
     const sourceDay = buckets.findIndex(bucket => bucket.some(place => place.id === id));
@@ -195,6 +218,8 @@ export default function Planner() {
       </header>
 
       <main className="app-shell mx-auto pt-16 pb-16 px-4 flex flex-col gap-5">
+        {added&&buckets===added.after&&settings===added.afterSettings&&notes===added.notes&&headcount===added.headcount&&<div role="status" className="route-insert-undo"><span>{lang==='en'?'Place added. Existing stop order is preserved.':'장소를 추가했어요. 기존 방문 순서는 유지했습니다.'}</span><button type="button" onClick={undoAdd}>{lang==='en'?'Undo addition':'추가 되돌리기'}</button></div>}
+        {items.length===0&&addButton(0)}
         {removed && <div role="status" className="mt-4 rounded-xl bg-primary-light p-4 text-sm flex items-center justify-between gap-3">
           <span>{removed.item.name}을(를) 일정과 보관함에서 제외했어요.</span>
           <button type="button" onClick={undoExclude} className="shrink-0 font-bold text-primary underline p-2">되돌리기</button>
@@ -275,6 +300,7 @@ export default function Planner() {
               <div className="flex flex-col items-center"><span className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">1</span><div className="w-0.5 flex-1 bg-line my-1" /></div>
               <div className="flex-1 bg-white rounded-2xl shadow-card p-4"><p className="text-xs text-primary font-bold mb-3">첫 일정 · 숙소 출발</p><div className="flex items-center gap-3">{/^https?:/.test(origin.image)&&<img src={origin.image} alt="" className="w-12 h-12 rounded-xl object-cover" />}<div><h3 className="font-bold"><PlaceText place={origin} field="name" /></h3><p className="text-xs text-muted"><PlaceText place={origin} field="region" /></p></div></div><p className="text-primary font-bold text-sm mt-3">{settings.dayStart} 출발</p><p className="text-xs text-sub mt-2">전날 마지막 숙소에서 출발합니다. 다음 장소까지의 이동시간을 일정에 포함합니다.</p></div>
             </article>}
+            {addButton(0)}
             {/* 타임라인 (수동 재정렬) */}
             {dayItems.length === 0 ? (
               <p className="text-center text-sm text-muted py-8">이 날은 아직 비어 있어요.</p>
@@ -282,6 +308,7 @@ export default function Planner() {
               <section className="flex flex-col">
                 {plan.stops.map((s, i) => (
                   <div key={s.item.id}>
+                    {i>0&&addButton(i)}
                     {s.legFromPrev && (
                       <div className="flex items-center gap-2 pl-6 py-1 text-muted">
                         <Icon name="directions_car" className="text-[16px]" />
@@ -391,6 +418,7 @@ export default function Planner() {
               </section>
             )}
 
+            {dayItems.length>0&&addButton(dayItems.length)}
             </div>
             </div>
             <p className="text-[11px] text-muted text-center px-4">
@@ -399,6 +427,7 @@ export default function Planner() {
           </>
         )}
       </main>
+      {inserting&&<RouteInsertDialog buckets={buckets} day={inserting.day} index={inserting.index} settings={settings} onClose={()=>setInserting(null)} onAdd={addPlace}/> }
       {toast}
     </div></Localize>
   );

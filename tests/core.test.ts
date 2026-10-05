@@ -502,3 +502,37 @@ test('lodging closes its day and anchors the next day without a duplicate visit 
  assert.equal(scheduleDay([near],DEFAULT_SCHEDULE,1,1,{...hotel,lat:undefined}).complete,false);
  assert.equal(previousLodging([[],[near]],1),undefined);
 });
+
+import { insertRoutePlace, insertionEligible, nearbyKm } from '../src/lib/routeInsert';
+import { saveTripSelection } from '../src/lib/trip';
+test('manual insertion keeps other days, existing order and hotel origin; duplicates and limits are rejected',()=>{
+ const sight={...external,id:992001,contentType:'activity' as const};
+ const hotel={...external,id:992002,contentType:'stay' as const};
+ const nextSight={...sight,id:992003};const cafe={...external,id:992004};
+ const before=[[sight,hotel],[nextSight]];const inserted=insertRoutePlace(before,0,2,cafe);
+ assert.deepEqual(inserted.map(b=>b.map(p=>p.id)),[[sight.id,cafe.id,hotel.id],[nextSight.id]]);
+ assert.deepEqual(before[0].map(p=>p.id),[sight.id,hotel.id]);
+ assert.equal(previousLodging(inserted,1)?.id,hotel.id);
+ assert.throws(()=>insertRoutePlace(before,1,0,sight));assert.throws(()=>insertRoutePlace(before,2,0,cafe));
+ assert.throws(()=>insertRoutePlace([Array.from({length:100},(_,i)=>({...sight,id:10000+i}))],0,0,cafe));
+ assert.deepEqual(insertRoutePlace([[]],0,0,cafe)[0],[cafe]);
+});
+test('insertion candidates respect the individual day and require confirmed accessibility',()=>{
+ const festival={...external,event:{start:'2026-10-10',end:'2026-10-10'}};
+ const settings={...DEFAULT_SCHEDULE,startDate:'2026-10-09'};
+ assert.equal(insertionEligible(festival,settings,0),false);assert.equal(insertionEligible(festival,settings,1),true);assert.equal(insertionEligible(festival,settings,2),false);
+ assert.equal(insertionEligible(external,settings,0,{required:['parking']}),false);
+ assert.equal(insertionEligible({...external,accessSources:[{source:'visitjeju',sourceId:'test',receivedAt:1,tags:['장애인 주차구역']}]},settings,0,{required:['parking']}),true);
+ assert.equal(nearbyKm(external,{...external,lat:undefined}),null);assert.equal(nearbyKm(external,external),0);
+});
+test('inserted stops survive reload and undo restores selection; failed selection write rolls back',()=>{
+ const first={...external,id:992101,contentType:'activity' as const},added={...external,id:992102};
+ saveProfile({...profile,nights:0});rememberPlaces([first,added]);
+ const original=makeTrip([[first]],0,4,{},DEFAULT_SCHEDULE);
+ assert.ok(saveTripSelection(original,[first.id]));
+ const next=makeTrip(insertRoutePlace([[first]],0,1,added),0,4,{}, {...DEFAULT_SCHEDULE,visits:{[added.id]:{durationMin:40}}});
+ assert.ok(saveTripSelection(next,[first.id,added.id]));assert.deepEqual(currentTrip().days,next.days);
+ assert.ok(saveTripSelection(original,[first.id]));assert.deepEqual(currentTrip().days,original.days);
+ const old=storage.setItem;let fail=true;storage.setItem=(k,v)=>{if(k==='jeju_saved_trip_ids'&&fail){fail=false;throw Error('quota');}old(k,v);};
+ try{assert.equal(saveTripSelection(next,[first.id,added.id]),false);assert.deepEqual(currentTrip().days,original.days);}finally{storage.setItem=old;}
+});
