@@ -2,6 +2,9 @@
   "functions": {
     "api/visitjeju.js": {
       "maxDuration": 60
+    },
+    "api/place-booking.js": {
+      "maxDuration": 30
     }
   }
 }

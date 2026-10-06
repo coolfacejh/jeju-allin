@@ -556,3 +556,27 @@ test('lodging opens its verified room booking engine, never a generic search fal
  for(const p of [{...hotel,name:'다른 숙소'},{...hotel,region:'제주시 사장3길 330'},{...hotel,region:'서귀포시 사장3길 33'}]){assert.equal(naverBookingLink(p,now).kind,'unavailable');assert.equal(naverBookingLink(p,now).url,'');}
  assert.equal(naverBookingLink(hotel,new Date('2027-10-06')).kind,'unavailable');
 });
+
+import {matchesBooking,isNaverStayUrl,bookingSourceId,fetchStayBooking as lookupStay} from '../src/lib/stayBookingLookup';
+test('stay booking identity cannot match a neighboring street number or same-name property',()=>{
+ const p={name:'제주 숙소',region:'제주특별자치도 제주시 해안로 10 (연동)'};
+ assert.equal(matchesBooking(p,{name:'제주숙소',region:'제주특별자치도 제주시 해안로 10'}),true);
+ assert.equal(matchesBooking(p,{...p,region:'제주특별자치도 제주시 해안로 100'}),false);
+ assert.equal(matchesBooking(p,{...p,region:'제주특별자치도 서귀포시 해안로 10'}),false);
+ assert.equal(isNaverStayUrl('https://booking.naver.com/booking/3/bizes/123'),true);
+ assert.equal(isNaverStayUrl('https://booking.naver.com.evil.test/booking/3/bizes/123'),false);
+ assert.equal(bookingSourceId({...p,provenance:{source:'shared',sourceId:'CNTS_300000000012962'}}),undefined);
+});
+test('stay lookup rejects malformed or unrelated booking responses and deduplicates concurrent requests',async()=>{
+ const id='CNTS_300000000012962';const original=globalThis.fetch;let calls=0;
+ globalThis.fetch=async()=>{calls++;return new Response(JSON.stringify({id,name:'제주 숙소',region:'제주시 해안로 10',status:'available',url:'https://booking.naver.com/booking/3/bizes/123',sourceUrl:'https://www.visitjeju.net/kr/detail/view?contentsid='+id,checkedAt:'2026-10-06T00:00:00Z'}));};
+ try{const [a,b]=await Promise.all([lookupStay(id),lookupStay(id)]);assert.equal(calls,1);assert.deepEqual(a,b);
+ globalThis.fetch=async()=>new Response(JSON.stringify({id:'CNTS_300000000012963',name:'숙소',region:'제주',status:'available',url:'https://evil.test',sourceUrl:'https://www.visitjeju.net/kr/detail/view?contentsid=CNTS_300000000012963',checkedAt:'2026-10-06'}));
+ await assert.rejects(lookupStay('CNTS_300000000012963'));}finally{globalThis.fetch=original;}
+});
+
+import naverStays from '../src/lib/naverStayLinks.json';
+test('every audited lodging maps to its direct Naver page on detail and itinerary data, with stale expiry',()=>{
+ assert.ok(naverStays.length>=19);const now=new Date('2026-10-06T23:00:00+09:00');
+ for(const row of naverStays){const p={name:row.name,region:row.region,contentType:'stay' as const};assert.equal(naverBookingLink(p,now).kind,'booking',row.name);assert.equal(naverBookingLink(p,now).url,row.url);assert.equal(naverBookingLink({...p,region:row.region+'999'},now).kind,'unavailable');assert.equal(naverBookingLink(p,new Date('2027-01-01')).kind,'unavailable');}
+});

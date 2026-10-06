@@ -1,0 +1,192 @@
+[
+  {
+    "sourceId": "CONT_000000000501083",
+    "name": "카이리조트",
+    "region": "제주특별자치도 제주시 한림읍 협재2길 10",
+    "url": "https://booking.naver.com/booking/3/bizes/191043",
+    "sourceUrl": "http://jejukai.com/",
+    "checkedAt": "2026-10-06T05:38:55.884Z",
+    "destinationName": "카이리조트",
+    "destinationAddress": "제주특별자치도 제주시 한림읍 협재2길 10, 카이리조트"
+  },
+  {
+    "sourceId": "CNTS_000000000018691",
+    "name": "바다의향기",
+    "region": "제주특별자치도 서귀포시 대정읍 송악관광로177번길 254-6",
+    "url": "https://booking.naver.com/booking/3/bizes/674225",
+    "sourceUrl": "https://xn--ok0b52guvjwvl61ao2bky2c.com/",
+    "checkedAt": "2026-10-06T05:38:55.914Z",
+    "destinationName": "제주 바다의향기 펜션",
+    "destinationAddress": "제주특별자치도 서귀포시 대정읍 송악관광로177번길 254-6 제주 바다의향기 오션뷰펜션"
+  },
+  {
+    "sourceId": "CNTS_000000000019390",
+    "name": "중문통나무펜션리조트",
+    "region": "제주특별자치도 서귀포시 중산간서로594번길 7-8",
+    "url": "https://booking.naver.com/booking/3/bizes/14106",
+    "sourceUrl": "https://www.jejulog.com/",
+    "checkedAt": "2026-10-06T05:38:55.919Z",
+    "destinationName": "중문통나무펜션리조트",
+    "destinationAddress": "제주특별자치도 서귀포시 중산간서로594번길 7-8"
+  },
+  {
+    "sourceId": "CNTS_000000000020902",
+    "name": "씨스테이호텔",
+    "region": "제주특별자치도 제주시 애월읍 애월해안로 255",
+    "url": "https://booking.naver.com/booking/3/bizes/762826",
+    "sourceUrl": "http://www.seastayhotel.com/",
+    "checkedAt": "2026-10-06T05:38:56.115Z",
+    "destinationName": "씨스테이 호텔",
+    "destinationAddress": "제주특별자치도 제주시 애월읍 애월해안로 255, 씨스테이호텔"
+  },
+  {
+    "sourceId": "CNTS_300000000014317",
+    "name": "수키하우스",
+    "region": "제주특별자치도 서귀포시 도순남로 29",
+    "url": "https://booking.naver.com/booking/3/bizes/746590",
+    "sourceUrl": "https://sookihouse.com/",
+    "checkedAt": "2026-10-06T05:38:56.281Z",
+    "destinationName": "수키하우스",
+    "destinationAddress": "제주특별자치도 서귀포시 도순남로 29"
+  },
+  {
+    "sourceId": "CNTS_300000000013184",
+    "name": "벨룸리조트",
+    "region": "제주특별자치도 서귀포시 516로277번길 45 (토평동) 벨룸리조트",
+    "url": "https://booking.naver.com/booking/3/bizes/526611",
+    "sourceUrl": "https://www.velum.co.kr/",
+    "checkedAt": "2026-10-06T05:38:56.373Z",
+    "destinationName": "벨룸리조트",
+    "destinationAddress": "제주특별자치도 서귀포시 516로277번길 45"
+  },
+  {
+    "sourceId": "CNTS_000000000019334",
+    "name": "제주도아이랑 파미유리조트 키즈가족펜션",
+    "region": "제주특별자치도 서귀포시 이어도로 826-6",
+    "url": "https://booking.naver.com/booking/3/bizes/237606",
+    "sourceUrl": "https://www.jejufamille.co.kr/reservation",
+    "checkedAt": "2026-10-06T05:38:56.415Z",
+    "destinationName": "제주도아이랑 파미유리조트 키즈가족펜션",
+    "destinationAddress": "제주특별자치도 서귀포시 이어도로 826-6, 제주도아이랑 파미유리조트 키즈가족펜션"
+  },
+  {
+    "sourceId": "CNTS_200000000011033",
+    "name": "빌라비 하우스 펜션",
+    "region": "제주특별자치도 서귀포시 색달로64번길 51",
+    "url": "https://booking.naver.com/booking/3/bizes/363558",
+    "sourceUrl": "https://booking.naver.com/booking/3/bizes/363558",
+    "checkedAt": "2026-10-06T05:38:56.547Z",
+    "destinationName": "빌라비 하우스 펜션",
+    "destinationAddress": "제주특별자치도 서귀포시 색달로64번길 51,"
+  },
+  {
+    "sourceId": "CNTS_000000000018280",
+    "name": "서귀포 늘바다 애견동반펜션",
+    "region": "제주특별자치도 서귀포시 안덕면 대평로 38",
+    "url": "https://booking.naver.com/booking/3/bizes/297606",
+    "sourceUrl": "https://www.oceanlogps.kr/",
+    "checkedAt": "2026-10-06T05:38:56.649Z",
+    "destinationName": "서귀포 늘바다 휴양 펜션",
+    "destinationAddress": "제주특별자치도 서귀포시 안덕면 대평로 38 서귀포 늘바다 애견동반펜션"
+  },
+  {
+    "sourceId": "CNTS_300000000012696",
+    "name": "마녀의언덕 펜션",
+    "region": "제주특별자치도 서귀포시 예래해안로 207",
+    "url": "https://booking.naver.com/booking/3/bizes/730225",
+    "sourceUrl": "https://witchhilljeju.com/",
+    "checkedAt": "2026-10-06T05:38:56.762Z",
+    "destinationName": "마녀의언덕 독채펜션",
+    "destinationAddress": "제주특별자치도 서귀포시 예래해안로 209"
+  },
+  {
+    "sourceId": "CNTS_200000000008919",
+    "name": "호텔 서귀피안 서귀포본점",
+    "region": "제주특별자치도 서귀포시 보목로64번길 178 호텔서귀피안",
+    "url": "https://booking.naver.com/booking/3/bizes/250783",
+    "sourceUrl": "https://hotelseogwipean.com/",
+    "checkedAt": "2026-10-06T05:38:56.920Z",
+    "destinationName": "호텔 서귀피안 서귀포본점",
+    "destinationAddress": "제주특별자치도 서귀포시 보목로64번길 178, 호텔 서귀피안"
+  },
+  {
+    "sourceId": "CNTS_300000000013117",
+    "name": "해뜨는초록마을",
+    "region": "제주특별자치도 서귀포시 성산읍 섭지코지로25번길 8 (고성리) 해뜨는초록마을펜",
+    "url": "https://booking.naver.com/booking/3/bizes/231957",
+    "sourceUrl": "http://sogvill.co.kr/index.php",
+    "checkedAt": "2026-10-06T05:38:56.994Z",
+    "destinationName": "해뜨는초록마을",
+    "destinationAddress": "제주특별자치도 서귀포시 성산읍 섭지코지로25번길 8, 해뜨는초록마을펜션"
+  },
+  {
+    "sourceId": "CNTS_000000000021791",
+    "name": "제주올레하우스팬션",
+    "region": "제주특별자치도 제주시 구좌읍 덕행로 450-23",
+    "url": "https://booking.naver.com/booking/3/bizes/15060",
+    "sourceUrl": "http://ollehouse.kr/",
+    "checkedAt": "2026-10-06T05:38:57.199Z",
+    "destinationName": "제주올레하우스",
+    "destinationAddress": "제주특별자치도 제주시 구좌읍 덕행로 450-23"
+  },
+  {
+    "sourceId": "CNTS_000000000021480",
+    "name": "제주 순진한가 펜션",
+    "region": "제주특별자치도 서귀포시 법환상로 65",
+    "url": "https://booking.naver.com/booking/3/bizes/297597",
+    "sourceUrl": "https://ivyterrace.kr/",
+    "checkedAt": "2026-10-06T05:38:57.221Z",
+    "destinationName": "제주 순진한가 펜션",
+    "destinationAddress": "제주특별자치도 서귀포시 법환상로 65 (법환동) 제주 아이비테라스 펜션"
+  },
+  {
+    "sourceId": "CNTS_200000000009311",
+    "name": "제주 벨루가",
+    "region": "제주특별자치도 서귀포시 대정읍 영락하동로85번길 41-1",
+    "url": "https://booking.naver.com/booking/3/bizes/239456",
+    "sourceUrl": "https://xn--o39at8vj0ccup95a.com/",
+    "checkedAt": "2026-10-06T05:38:57.237Z",
+    "destinationName": "제주 벨루가",
+    "destinationAddress": "제주특별자치도 서귀포시 대정읍 영락하동로85번길 41-1, 제주도 풀빌라 제주벨루가"
+  },
+  {
+    "sourceId": "CNTS_000000000022624",
+    "name": "제주 베스트힐 글램핑 & 펜션",
+    "region": "제주특별자치도 제주시 조천읍 남조로 2109-36",
+    "url": "https://booking.naver.com/booking/3/bizes/172898",
+    "sourceUrl": "http://www.jejubesthill.com/",
+    "checkedAt": "2026-10-06T05:38:57.520Z",
+    "destinationName": "제주 베스트힐 글램핑 & 펜션",
+    "destinationAddress": "제주특별자치도 제주시 조천읍 남조로 2109-36, 제주베스트힐"
+  },
+  {
+    "sourceId": "CNTS_000000000018141",
+    "name": "제주신라호텔",
+    "region": "제주도 서귀포시 중문관광로 72번길 75",
+    "url": "https://booking.naver.com/booking/3/bizes/167605",
+    "sourceUrl": "https://booking.naver.com/booking/3/bizes/167605",
+    "checkedAt": "2026-10-06T05:38:57.538Z",
+    "destinationName": "제주신라호텔",
+    "destinationAddress": "제주특별자치도 서귀포시 중문관광로72번길 75"
+  },
+  {
+    "sourceId": "CONT_000000000500859",
+    "name": "롯데호텔 제주",
+    "region": "제주특별자치도 서귀포시 중문관광로72번길 35",
+    "url": "https://booking.naver.com/booking/3/bizes/167596",
+    "sourceUrl": "https://booking.naver.com/booking/3/bizes/167596",
+    "checkedAt": "2026-10-06T05:38:57.643Z",
+    "destinationName": "롯데 호텔 제주",
+    "destinationAddress": "제주특별자치도 서귀포시 중문관광로72번길 35, 롯데호텔"
+  },
+  {
+    "sourceId": "CNTS_300000000012962",
+    "name": "제주구도",
+    "region": "제주특별자치도 제주시 조천읍 중산간동로 648 (대흘리)",
+    "url": "https://booking.naver.com/booking/3/bizes/799462",
+    "sourceUrl": "https://booking.naver.com/booking/3/bizes/799462",
+    "checkedAt": "2026-10-06T05:38:57.755Z",
+    "destinationName": "제주구도",
+    "destinationAddress": "제주특별자치도 제주시 조천읍 중산간동로 648"
+  }
+]

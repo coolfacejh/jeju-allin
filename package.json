@@ -7,7 +7,7 @@
     "dev": "node scripts/build-map-worker.mjs && vite",
     "build": "node scripts/build-map-worker.mjs && tsc -b && vite build",
     "preview": "vite preview",
-    "test": "node scripts/test.mjs && node --test tests/visitjeju-server.test.mjs tests/place-english-server.test.mjs"
+    "test": "node scripts/test.mjs && node --test tests/visitjeju-server.test.mjs tests/place-english-server.test.mjs tests/place-booking-server.test.mjs"
   },
   "dependencies": {
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",

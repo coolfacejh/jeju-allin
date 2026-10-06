@@ -1,4 +1,7 @@
 import type { Content } from '../types';
+import stayLinkData from './naverStayLinks.json';
+const stayLinks=stayLinkData as Array<{name:string;region:string;url:string;checkedAt:string;sourceId:string;sourceUrl:string}>;
+import { matchesBooking, isNaverStayUrl } from './stayBookingLookup';
 
 // Only operator-confirmed, address-matched links belong here. Never infer booking IDs.
 // Verified 2026-10-06 against both the operator and the destination business page.
@@ -15,6 +18,9 @@ export const STAY_BOOKING_LINKS = [{
 const normalized=(s:string)=>s.normalize('NFKC').replace(/\s/g,'').toLowerCase();
 export function naverBookingLink(place:Pick<Content,'name'|'region'> & Partial<Pick<Content,'contentType'>>, now=new Date()):{kind:'booking'|'search'|'official'|'unavailable';url:string;checkedAt?:string} {
  if(place.contentType==='stay'){
+  const naver=stayLinks.find(entry=>matchesBooking(place,entry)&&isNaverStayUrl(entry.url));
+  if(naver){const age=now.getTime()-Date.parse(naver.checkedAt);if(age>=0&&age<30*86400000)return {kind:'booking',url:naver.url,checkedAt:naver.checkedAt};}
+
   const hotel=STAY_BOOKING_LINKS.find(entry=>entry.names.some(name=>normalized(name)===normalized(place.name))&&normalized(place.region).includes(entry.city)&&normalized(place.region).includes(entry.address)&&!/^[-0-9]/.test(normalized(place.region).split(entry.address)[1]??''));
   if(hotel){const age=now.getTime()-Date.parse(hotel.checkedAt+'T00:00:00+09:00');if(age>=0&&age<180*86400000)return {kind:'official',url:hotel.url,checkedAt:hotel.checkedAt};}
   return {kind:'unavailable',url:''};
