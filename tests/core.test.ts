@@ -577,6 +577,6 @@ test('stay lookup rejects malformed or unrelated booking responses and deduplica
 
 import naverStays from '../src/lib/naverStayLinks.json';
 test('every audited lodging maps to its direct Naver page on detail and itinerary data, with stale expiry',()=>{
- assert.ok(naverStays.length>=19);const now=new Date('2026-10-06T23:00:00+09:00');
+ assert.ok(naverStays.length>=18);const now=new Date('2026-10-06T23:00:00+09:00');
  for(const row of naverStays){const p={name:row.name,region:row.region,contentType:'stay' as const};assert.equal(naverBookingLink(p,now).kind,'booking',row.name);assert.equal(naverBookingLink(p,now).url,row.url);assert.equal(naverBookingLink({...p,region:row.region+'999'},now).kind,'unavailable');assert.equal(naverBookingLink(p,new Date('2027-01-01')).kind,'unavailable');}
 });

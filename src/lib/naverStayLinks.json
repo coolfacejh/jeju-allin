@@ -90,16 +90,6 @@
     "destinationAddress": "제주특별자치도 서귀포시 안덕면 대평로 38 서귀포 늘바다 애견동반펜션"
   },
   {
-    "sourceId": "CNTS_300000000012696",
-    "name": "마녀의언덕 펜션",
-    "region": "제주특별자치도 서귀포시 예래해안로 207",
-    "url": "https://booking.naver.com/booking/3/bizes/730225",
-    "sourceUrl": "https://witchhilljeju.com/",
-    "checkedAt": "2026-10-06T05:38:56.762Z",
-    "destinationName": "마녀의언덕 독채펜션",
-    "destinationAddress": "제주특별자치도 서귀포시 예래해안로 209"
-  },
-  {
     "sourceId": "CNTS_200000000008919",
     "name": "호텔 서귀피안 서귀포본점",
     "region": "제주특별자치도 서귀포시 보목로64번길 178 호텔서귀피안",
