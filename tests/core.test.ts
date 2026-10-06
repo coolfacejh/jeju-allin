@@ -549,3 +549,10 @@ test('Naver booking requires exact venue and address; unknown places and stale l
  const other={name:'식당 & 카페 #제주',region:'서귀포시 테스트로 1'};
  const search=new URL(naverBookingLink(other,now).url);assert.equal(search.hostname,'search.naver.com');assert.equal(search.searchParams.get('query'),other.name+' '+other.region+' 예약');
 });
+
+test('lodging opens its verified room booking engine, never a generic search fallback',()=>{
+ const now=new Date('2026-10-06T12:00:00+09:00');const hotel={name:'제주 호텔 더원',region:'제주특별자치도 제주시 사장3길 33',contentType:'stay' as const};
+ assert.equal(naverBookingLink(hotel,now).url,'https://be4.wingsbooking.com/HTO1?lang_type=KO');assert.equal(naverBookingLink(hotel,now).kind,'official');
+ for(const p of [{...hotel,name:'다른 숙소'},{...hotel,region:'제주시 사장3길 330'},{...hotel,region:'서귀포시 사장3길 33'}]){assert.equal(naverBookingLink(p,now).kind,'unavailable');assert.equal(naverBookingLink(p,now).url,'');}
+ assert.equal(naverBookingLink(hotel,new Date('2027-10-06')).kind,'unavailable');
+});
