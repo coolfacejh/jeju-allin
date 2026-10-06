@@ -536,3 +536,16 @@ test('inserted stops survive reload and undo restores selection; failed selectio
  const old=storage.setItem;let fail=true;storage.setItem=(k,v)=>{if(k==='jeju_saved_trip_ids'&&fail){fail=false;throw Error('quota');}old(k,v);};
  try{assert.equal(saveTripSelection(next,[first.id,added.id]),false);assert.deepEqual(currentTrip().days,original.days);}finally{storage.setItem=old;}
 });
+
+import { naverBookingLink } from '../src/lib/naverBooking';
+test('Naver booking requires exact venue and address; unknown places and stale links use encoded search',()=>{
+ const venue={name:'9.81파크 제주',region:'제주특별자치도 제주시 애월읍 천덕로 880-24'};
+ const now=new Date('2026-10-06T12:00:00+09:00');
+ assert.equal(naverBookingLink(venue,now).kind,'booking');
+ assert.equal(new URL(naverBookingLink(venue,now).url).hostname,'booking.naver.com');
+ assert.equal(naverBookingLink({...venue,region:'서울시 천덕로 880-25'},now).kind,'search');
+ assert.equal(naverBookingLink({...venue,name:'9.81파크 제주 카페'},now).kind,'search');
+ assert.equal(naverBookingLink(venue,new Date('2027-10-07')).kind,'search');
+ const other={name:'식당 & 카페 #제주',region:'서귀포시 테스트로 1'};
+ const search=new URL(naverBookingLink(other,now).url);assert.equal(search.hostname,'search.naver.com');assert.equal(search.searchParams.get('query'),other.name+' '+other.region+' 예약');
+});

@@ -1,3 +1,4 @@
+import NaverBooking from '../components/NaverBooking';
 import RouteInsertDialog from '../components/RouteInsertDialog';
 import { insertRoutePlace, insertionEligible } from '../lib/routeInsert';
 import { rememberPlaces } from '../lib/places';
@@ -399,6 +400,7 @@ export default function Planner() {
                           </div>
                           <p className="text-muted mt-2">운영시간·휴무·예약 여부를 직접 확인해 입력해 주세요. 입력하지 않은 장소의 영업 여부는 판단하지 않습니다.</p>
                         </details>
+                        <NaverBooking place={s.item} compact />
                         <input
                           aria-label={`${s.item.name} 메모`}
                           maxLength={500}

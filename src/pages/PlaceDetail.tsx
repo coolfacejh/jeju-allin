@@ -1,3 +1,4 @@
+import NaverBooking from '../components/NaverBooking';
 import { useAllinSaved } from '../components/AllinMascot';
 import PlaceText, {PlaceTags, PlaceLanguageStatus} from '../components/PlaceText';
 import Localize from '../components/Localize';
@@ -158,6 +159,7 @@ export default function PlaceDetail() {
         <p className="text-xs text-muted px-2">운영시간·요금·편의시설은 방문 전 확인이 필요합니다.
           {base.provenance?.retrievedAt && ` 정보 수신: ${new Date(base.provenance.retrievedAt).toLocaleDateString('ko-KR')} (현장 확인일 아님)`}
         </p>
+        <NaverBooking place={base} />
         <PlaceLanguageStatus place={base} />
         <AccessPanel place={access ? {...base,accessSources:[...(base.accessSources??[]).filter(s=>s.source!=='tourapi'),readTourSources()[tourId!] ?? tourAccessSource(tourId!,access)]}:base} />
         <NearbyRestrooms key={base.id} place={base} />

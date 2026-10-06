@@ -1,3 +1,4 @@
+import NaverBooking from '../components/NaverBooking';
 import Localize from '../components/Localize';
 import { addBasemap } from '../lib/mapTiles';
 import OlleAccessCard from '../components/OlleAccessCard';
@@ -82,5 +83,5 @@ function Detail({ course: c }: { course: OlleCourse }) {
         <section className="bg-white rounded-2xl border border-line p-5 space-y-3"><h2 className="text-lg font-bold">교통·편의시설·통제 안내</h2><ul className="list-disc pl-5 space-y-2 text-sm text-sub"><li>주차, 화장실, 식수·휴식 장소의 운영 상태는 미확인입니다. 공식 코스 지도와 방문 전 문의로 확인해 주세요.</li><li>돌아오는 교통편과 일몰 전 도착 가능 시간을 먼저 확인하세요.</li>{c.island && <li className="font-bold text-amber-800">{c.island} 코스는 배편 예약·결항 여부·마지막 배 시간을 확인하세요.</li>}<li>공사·날씨에 따른 통제와 우회 여부는 실시간 연동되지 않습니다.</li></ul><a className="block text-primary underline" href="https://www.jejuolle.org/trail" target="_blank" rel="noreferrer">공식 사이트에서 최신 공지 확인 ↗</a><a className="block text-primary underline" href="tel:0647622190">제주올레 문의 064-762-2190</a></section>
         <p className="text-xs text-muted">출처: <a href={olleSourceUrl(c)} target="_blank" rel="noreferrer" className="underline">제주올레 공식 코스 상세</a> · 정보 확인 {OLLE_CHECKED_AT}. 공식 안내의 변경 사항은 다음 정보 갱신 전까지 반영되지 않을 수 있습니다.</p>
       </div>
-    </div></main><BottomNav savedCount={loadSavedIds().length} /></div></Localize>;
+    </div><NaverBooking place={ollePlace(c)} /></main><BottomNav savedCount={loadSavedIds().length} /></div></Localize>;
 }
