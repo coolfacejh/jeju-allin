@@ -374,6 +374,15 @@ export default function Home() {
             <Icon name="edit_note" className="text-[18px]" />
             <span className="text-[11px] font-bold uppercase tracking-wider">{t('home.wish.title')}</span>
           </div>
+          <div className="place-search-row">
+            <select
+              aria-label={lang === 'en' ? 'Search category' : '검색 분류'}
+              className="place-search-category"
+              value={tab}
+              onChange={e => { setTab(e.target.value as 'all' | ContentType); setSub('all'); }}
+            >
+              {TABS.map(tb => <option key={tb.key} value={tb.key}>{tb.emoji}{t(tb.tkey)}</option>)}
+            </select>
           <div className="travel-search flex items-center gap-2 rounded-xl px-3 py-3">
             <Icon name="search" className="text-[18px] text-muted" />
             <input
@@ -382,7 +391,8 @@ export default function Home() {
                 setWish(e.target.value);
                 saveWish(e.target.value);
               }}
-              placeholder={t('home.wish.ph')}
+              aria-label={lang === 'en' ? 'Place name or keyword' : '장소명 또는 검색어'}
+              placeholder={tab === 'stay' ? (lang === 'en' ? 'Search hotels, pensions, or places to stay…' : '숙소명, 호텔, 펜션 등을 검색해 보세요…') : tab === 'activity' ? (lang === 'en' ? 'Search attractions, museums, or activities…' : '관광지명, 박물관, 즐길 거리를 검색해 보세요…') : tab === 'food' ? (lang === 'en' ? 'Search restaurants, cafes, or dishes…' : '식당명, 카페, 먹고 싶은 음식을 검색해 보세요…') : t('home.wish.ph')}
               className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted"
             />
             {wish && (
@@ -390,6 +400,7 @@ export default function Home() {
                 <Icon name="close" className="text-[18px]" />
               </button>
             )}
+          </div>
           </div>
           {q && (
             <p className="text-[11px] text-muted mt-1.5">
