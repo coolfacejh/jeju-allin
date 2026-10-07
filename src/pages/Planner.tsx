@@ -14,7 +14,7 @@ import ScheduleForm from '../components/ScheduleForm';
 import { DEFAULT_SCHEDULE, dateForDay, type VisitWindow } from '../lib/schedule';
 import { currentTrip, makeTrip, saveTrip, saveTripSelection } from '../lib/trip';
 import { loadProfile, saveProfile, loadSavedIds } from '../lib/storage';
-import { scheduleDay, orderRoute, recommendDays, lodgingLast, previousLodging } from '../lib/planner';
+import { scheduleDay, orderRoute, reorderSelectedDay, recommendDays, lodgingLast, previousLodging } from '../lib/planner';
 import { nightsLabel } from './Onboarding';
 import { kakaoRouteUrl } from '../lib/maps';
 import { buildTripText, shareUrl, doShare } from '../lib/share';
@@ -83,6 +83,21 @@ export default function Planner() {
   const [added,setAdded]=useState<{before:Content[][];after:Content[][];ids:number[];beforeSettings:typeof settings;afterSettings:typeof settings;notes:typeof notes;headcount:number}|null>(null);
   const [notes, setNotes] = useState(initial.notes);
   const [settings, setSettings] = useState(() => initial.schedule ?? { ...DEFAULT_SCHEDULE, visits: {} });
+  const [optimized,setOptimized]=useState<{before:Content[][];after:Content[][];beforeSettings:typeof settings;afterSettings:typeof settings;day:number;notes:typeof notes;headcount:number}|null>(null);
+  function optimizeDay(){
+    if((buckets[day]?.length??0)<2)return;
+    const nextSettings={...settings,mealAware:true};
+    const next=reorderSelectedDay(buckets,day,nextSettings);
+    if(!saveTrip(makeTrip(next,profile.nights,headcount,notes,nextSettings))){show(lang==='en'?'Could not save the new route. Your previous route is preserved.':'새 경로를 저장하지 못해 기존 경로를 유지했습니다.');return;}
+    setOptimized({before:buckets,after:next,beforeSettings:settings,afterSettings:nextSettings,day,notes,headcount});
+    setAdded(null);setRemoved(null);setBeforeRegroup(null);setBuckets(next);setSettings(nextSettings);
+    show(lang==='en'?'Reordered this day using distance and meal times.':'선택한 날의 경로를 거리와 식사 시간 기준으로 다시 정리했어요.');
+  }
+  function undoOptimize(){
+    if(!optimized||buckets!==optimized.after||settings!==optimized.afterSettings||notes!==optimized.notes||headcount!==optimized.headcount)return;
+    if(!saveTrip(makeTrip(optimized.before,profile.nights,headcount,notes,optimized.beforeSettings))){show(lang==='en'?'Could not save. Please try again.':'되돌린 경로를 저장하지 못했습니다.');return;}
+    setBuckets(optimized.before);setSettings(optimized.beforeSettings);setDay(optimized.day);setOptimized(null);
+  }
   function setVisit(id: number, patch: VisitWindow) {
     setSettings(previous => ({ ...previous, visits: { ...previous.visits, [id]: { ...previous.visits[id], ...patch } } }));
   }
@@ -219,7 +234,7 @@ export default function Planner() {
       </header>
 
       <main className="app-shell mx-auto pt-16 pb-16 px-4 flex flex-col gap-5">
-        {added&&buckets===added.after&&settings===added.afterSettings&&notes===added.notes&&headcount===added.headcount&&<div role="status" className="route-insert-undo"><span>{lang==='en'?'Place added. Existing stop order is preserved.':'장소를 추가했어요. 기존 방문 순서는 유지했습니다.'}</span><button type="button" onClick={undoAdd}>{lang==='en'?'Undo addition':'추가 되돌리기'}</button></div>}
+        {added&&buckets===added.after&&settings===added.afterSettings&&notes===added.notes&&headcount===added.headcount&&<div role="status" className="route-insert-undo"><span>{lang==='en'?'Place added. Existing stop order is preserved.':'장소를 추가했어요. 기존 방문 순서는 유지했습니다.'}</span><button type="button" onClick={optimizeDay}>{lang==='en'?'Optimize route':'경로 다시 최적화'}</button><button type="button" onClick={undoAdd}>{lang==='en'?'Undo addition':'추가 되돌리기'}</button></div>}
         {items.length===0&&addButton(0)}
         {removed && <div role="status" className="mt-4 rounded-xl bg-primary-light p-4 text-sm flex items-center justify-between gap-3">
           <span>{removed.item.name}을(를) 일정과 보관함에서 제외했어요.</span>
@@ -290,6 +305,11 @@ export default function Planner() {
               </div>
             )}
 
+            <section className="route-optimize-panel" aria-label={lang==='en'?'Route optimization':'경로 재정렬'}>
+              <div><strong>{lang==='en'?`Day ${day+1} route`:`${day+1}일차 경로`}</strong><p>{lang==='en'?'Reorder this day including added stops. Keep lodging last and use the previous night’s lodging as the starting point. Distance is estimated, not a road-routing result.':'추가한 장소까지 포함해 이날 방문 순서를 다시 정리합니다. 숙소는 마지막, 출발점은 전날 숙소를 반영합니다. 직선거리 기반 추천이며 실제 도로 최단 경로는 아닙니다.'}</p></div>
+              <button type="button" onClick={optimizeDay} disabled={(buckets[day]?.length??0)<2}>{lang==='en'?'Optimize this day’s route':'이날 경로 다시 최적화'}</button>
+              {optimized&&buckets===optimized.after&&settings===optimized.afterSettings&&notes===optimized.notes&&headcount===optimized.headcount&&<button type="button" className="route-optimize-undo" onClick={undoOptimize}>{lang==='en'?'Undo route optimization':'경로 최적화 되돌리기'}</button>}
+            </section>
             <div className="planner-columns">
             <div className="planner-map">
             {/* 미니 지도 */}

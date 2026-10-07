@@ -590,3 +590,15 @@ test('keyword search matches one character, partial names and whitespace-normali
 });
 
 test('search tolerates missing provider text and unknown legacy theme labels',()=>{assert.equal(matchesPlaceKeyword({...external,name:'카페',desc:undefined,tags:{...external.tags,themes:['legacy']}} as any,'카페'),true);});
+
+import {reorderSelectedDay} from '../src/lib/planner';
+test('reoptimization includes inserted places, preserves other dates and settings, and ends at lodging',()=>{
+ const origin={...external,id:771,contentType:'stay' as const,lat:33.4,lng:126.3};
+ const near={...external,id:772,contentType:'activity' as const,lat:33.401,lng:126.301};
+ const far={...near,id:773,lat:33.6,lng:126.8};const hotel={...origin,id:774};
+ const before=[[origin],[far,hotel,near]];const original=JSON.stringify(before);const settings={...DEFAULT_SCHEDULE,visits:{[near.id]:{durationMin:40}}};
+ const after=reorderSelectedDay(before,1,settings);
+ assert.equal(after[0],before[0]);assert.deepEqual(after[1].map(x=>x.id).sort(),[772,773,774]);assert.equal(after[1].at(-1)?.id,774);
+ assert.deepEqual(after[1],orderRoute(before[1],{...settings,mealAware:true},1,1,origin));
+ assert.equal(JSON.stringify(before),original);assert.equal(settings.visits[near.id].durationMin,40);assert.throws(()=>reorderSelectedDay(before,2,settings));
+});

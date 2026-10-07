@@ -76,3 +76,5 @@ input[type=checkbox],input[type=radio]{accent-color:#0A6E6D;min-width:16px;min-h
 @media(max-width:540px){.place-search-row{flex-direction:column;gap:8px}.place-search-category{flex:auto;width:100%}}
 
 .keyword-results .destination-card{content-visibility:auto;contain-intrinsic-size:auto 480px}
+
+.route-optimize-panel{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:18px;background:#e6f4f2;border:1px solid #cee3df;border-radius:18px}.route-optimize-panel>div{flex:1;min-width:220px}.route-optimize-panel p{font-size:12px;line-height:1.7;color:#52656c;margin-top:6px}.route-optimize-panel>button{padding:12px 18px;border-radius:12px;background:#0a6e6d;color:white;font-weight:700;min-height:44px}.route-optimize-panel>button:disabled{opacity:.45;cursor:not-allowed}.route-optimize-panel>button:focus-visible{outline:3px solid #f97316;outline-offset:3px}.route-optimize-panel>.route-optimize-undo{background:white;color:#0a6e6d}.route-insert-undo{flex-wrap:wrap}

@@ -255,3 +255,9 @@ export function scheduleDay(ordered: Content[], settings: ScheduleSettings = DEF
 export function planRoute(items: Content[]): RoutePlan {
   return scheduleDay(orderRoute(items));
 }
+
+// Reorder one day without moving places across dates or mutating the saved plan.
+export function reorderSelectedDay(days:Content[][],day:number,settings:ScheduleSettings):Content[][] {
+ if(!Number.isInteger(day)||day<0||day>=days.length)throw Error('invalid_day');
+ return days.map((items,index)=>index===day?orderRoute(items,{...settings,mealAware:true},day,days.length-1,previousLodging(days,day)):items);
+}
