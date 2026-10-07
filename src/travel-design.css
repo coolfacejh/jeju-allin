@@ -74,3 +74,5 @@ input[type=checkbox],input[type=radio]{accent-color:#0A6E6D;min-width:16px;min-h
 .place-search-row .travel-search{flex:1;min-width:0}
 .place-search-category:focus-visible{outline:3px solid #0a6e6d;outline-offset:2px}
 @media(max-width:540px){.place-search-row{flex-direction:column;gap:8px}.place-search-category{flex:auto;width:100%}}
+
+.keyword-results .destination-card{content-visibility:auto;contain-intrinsic-size:auto 480px}

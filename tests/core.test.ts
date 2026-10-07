@@ -580,3 +580,13 @@ test('every audited lodging maps to its direct Naver page on detail and itinerar
  assert.ok(naverStays.length>=18);const now=new Date('2026-10-06T23:00:00+09:00');
  for(const row of naverStays){const p={name:row.name,region:row.region,contentType:'stay' as const};assert.equal(naverBookingLink(p,now).kind,'booking',row.name);assert.equal(naverBookingLink(p,now).url,row.url);assert.equal(naverBookingLink({...p,region:row.region+'999'},now).kind,'unavailable');assert.equal(naverBookingLink(p,new Date('2027-01-01')).kind,'unavailable');}
 });
+
+import {matchesPlaceKeyword} from '../src/lib/placeSearch';
+test('keyword search matches one character, partial names and whitespace-normalized recorded fields',()=>{
+ const p={...external,name:'제주 바다 카페',desc:'흑 돼지 요리와 전망',region:'제주시 애월읍',providerCategory:'음식점',hashtags:['오션뷰'],tags:{...external.tags,themes:[]}};
+ for(const q of ['카','카페','바다카페','흑돼지','애월','오션','음식점','없는단어 카페','  '])assert.equal(matchesPlaceKeyword(p,q),true,q);
+ assert.equal(matchesPlaceKeyword(p,'박물관'),false);
+ assert.equal(matchesPlaceKeyword({...p,name:'Ocean CAFE'},'cafe'),true);
+});
+
+test('search tolerates missing provider text and unknown legacy theme labels',()=>{assert.equal(matchesPlaceKeyword({...external,name:'카페',desc:undefined,tags:{...external.tags,themes:['legacy']}} as any,'카페'),true);});

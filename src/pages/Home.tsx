@@ -1,3 +1,4 @@
+import { matchesPlaceKeyword } from '../lib/placeSearch';
 import AllinMascot, { useAllinSaved } from '../components/AllinMascot';
 import PlaceText, {PlaceTags} from '../components/PlaceText';
 import SourceLanguageNote from '../components/SourceLanguageNote';
@@ -138,10 +139,7 @@ export default function Home() {
 
   const q = wish.trim().toLowerCase();
   function matchesWish(c: (typeof curated)[number]) {
-    if (!q) return true;
-    const themeNames = c.tags.themes.map((t) => THEME_NAME[t]).join(' ');
-    const hay = `${c.name} ${c.desc} ${c.region} ${(c.hashtags ?? []).join(' ')} ${themeNames}`.toLowerCase();
-    return q.split(/\s+/).some((w) => hay.includes(w));
+    return matchesPlaceKeyword(c, wish);
   }
 
   function matchesAccess(c: (typeof curated)[number]) {
@@ -389,6 +387,7 @@ export default function Home() {
               value={wish}
               onChange={(e) => {
                 setWish(e.target.value);
+                setSub('all');
                 saveWish(e.target.value);
               }}
               aria-label={lang === 'en' ? 'Place name or keyword' : '장소명 또는 검색어'}
@@ -402,9 +401,10 @@ export default function Home() {
             )}
           </div>
           </div>
+          <p className="text-[11px] text-muted mt-1.5">{lang === 'en' ? 'Type a word or part of a name to see all matches in names, descriptions and tags. Your selected filters still apply.' : '단어나 이름의 일부만 입력해도 장소명·소개·태그에서 일치하는 전체 목록을 보여드려요. 선택한 분류·접근성·지역 조건은 유지됩니다.'}</p>
           {q && (
             <p className="text-[11px] text-muted mt-1.5">
-'{wish.trim()}' · {filtered.length} {t('home.wish.found')}
+{lang === 'en' ? `‘${wish.trim()}’ · All ${subFiltered.length} matching places within your filters` : `‘${wish.trim()}’ · 선택 조건 내 검색 결과 전체 ${subFiltered.length}곳`}
             </p>
           )}
         </div>
@@ -707,11 +707,11 @@ export default function Home() {
             })}
           </div>
         ) : (
-          <section className="place-grid">
-            {subFiltered.slice(0, visibleCount).map((c) => (
+          <section className={q ? "place-grid keyword-results" : "place-grid"}>
+            {(q ? subFiltered : subFiltered.slice(0, visibleCount)).map((c) => (
               <Card key={c.id} item={c} saved={saved.includes(c.id)} onToggle={() => toggleSave(c.id)} onOpen={() => openPlace(c.id)} showReason={reasonsOn} />
             ))}
-            {subFiltered.length > visibleCount && (
+            {!q && subFiltered.length > visibleCount && (
               <button
                 onClick={() => setVisibleCount((n) => n + 24)}
                 className="grid-span-all mx-auto mt-1 flex items-center gap-1 px-5 py-2.5 rounded-full bg-white shadow-card text-primary text-sm font-bold active:scale-95"
