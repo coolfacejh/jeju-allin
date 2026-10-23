@@ -1,3 +1,4 @@
+import PlaceAccessIcons from '../components/PlaceAccessIcons';
 import { matchesPlaceKeyword } from '../lib/placeSearch';
 import AllinMascot, { useAllinSaved } from '../components/AllinMascot';
 import PlaceText, {PlaceTags} from '../components/PlaceText';
@@ -833,6 +834,7 @@ function Card({
         </div>
 
         <AccessBadges item={item} />
+<PlaceAccessIcons place={item} />
         <div className="reasons-box rounded-xl p-3 bg-surface"><p className="flex items-center gap-1.5 text-xs font-bold text-primary"><Icon name="verified" className="text-[16px]" />장소 선택에 필요한 정보</p><AccessSummary place={item} access={loadProfile()?.access} /></div>
 
         {showReason && item.reasons.length > 0 && (

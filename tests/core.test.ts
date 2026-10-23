@@ -1,3 +1,4 @@
+import {easyJejuMatch} from '../src/lib/easyJeju';
 import { matchesAccessRequirements, confirmedAccessDefault } from '../src/lib/access';
 import { nearbyRestrooms, addressRestrooms, accessibleToilet, RESTROOM_CATALOGUE } from '../src/lib/restrooms';
 import { confirmedPictograms } from '../src/lib/accessPictograms';
@@ -601,4 +602,19 @@ test('reoptimization includes inserted places, preserves other dates and setting
  assert.equal(after[0],before[0]);assert.deepEqual(after[1].map(x=>x.id).sort(),[772,773,774]);assert.equal(after[1].at(-1)?.id,774);
  assert.deepEqual(after[1],orderRoute(before[1],{...settings,mealAware:true},1,1,origin));
  assert.equal(JSON.stringify(before),original);assert.equal(settings.visits[near.id].durationMin,40);assert.throws(()=>reorderSelectedDay(before,2,settings));
+});
+
+test('EasyJeju pictograms require exact attraction name and matching area, without inventing grades',()=>{
+ const p={...CONTENTS[0],contentType:'activity',name:'반딧불이마을 청수리(반딧불이 영농조합)',region:'제주특별자치도 제주시 한경면 연명로 348'} as Content;
+ const match=easyJejuMatch(p);assert.ok(match);assert.deepEqual(match.pictograms,[4,7,10,11,14]);assert.match(match.url,/no=1964$/);
+ assert.equal(easyJejuMatch({...p,region:'서귀포시 안덕면'}),undefined);
+ assert.equal(easyJejuMatch({...p,name:'청수리'}),undefined);
+ assert.equal(easyJejuMatch({...p,contentType:'stay'}),undefined);
+ assert.equal(easyJejuMatch({...p,region:''}),undefined);
+ assert.ok(!match.pictograms.includes(12),'ordinary parking is not accessible parking');
+});
+
+test('EasyJeju matches official street number without requiring an administrative dong in the app address',()=>{
+ const p={...CONTENTS[0],contentType:'activity',name:'국립제주박물관',region:'제주특별자치도 제주시 일주동로 17'} as Content;
+ assert.ok(easyJejuMatch(p));assert.equal(easyJejuMatch({...p,region:'제주시 건입동 일주동로 170'}),undefined);
 });

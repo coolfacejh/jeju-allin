@@ -1,3 +1,4 @@
+import PlaceAccessIcons from '../components/PlaceAccessIcons';
 import NaverBooking from '../components/NaverBooking';
 import { useAllinSaved } from '../components/AllinMascot';
 import PlaceText, {PlaceTags, PlaceLanguageStatus} from '../components/PlaceText';
@@ -161,6 +162,7 @@ export default function PlaceDetail() {
         </p>
         <NaverBooking place={base} />
         <PlaceLanguageStatus place={base} />
+<PlaceAccessIcons place={base} />
         <AccessPanel place={access ? {...base,accessSources:[...(base.accessSources??[]).filter(s=>s.source!=='tourapi'),readTourSources()[tourId!] ?? tourAccessSource(tourId!,access)]}:base} />
         <NearbyRestrooms key={base.id} place={base} />
         {/* 무장애 정보 (한국관광공사 무장애여행) */}

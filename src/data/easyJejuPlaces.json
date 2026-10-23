@@ -1,0 +1,3329 @@
+{
+  "retrievedAt": "2026-10-23T14:41:42.751Z",
+  "source": "https://easyjeju.net/pages.php?p=tourist&folders=tour",
+  "records": [
+    {
+      "id": "1964",
+      "name": "반딧불이마을 청수리(반딧불이 영농조합)",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1964",
+      "address": "제주특별자치도 제주시 한경면 연명로 348"
+    },
+    {
+      "id": "1962",
+      "name": "제주 홀릭뮤지엄",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        3,
+        6,
+        9,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1962",
+      "address": "제주특별자치도 제주시 애월읍 광령리 100-3"
+    },
+    {
+      "id": "1927",
+      "name": "이너리스",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        1,
+        2,
+        5,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1927",
+      "address": "제주특별자치도 제주시 조천읍 선교로 264"
+    },
+    {
+      "id": "1905",
+      "name": "조안베어뮤지엄",
+      "region": "서귀포시 대포동",
+      "pictograms": [
+        3,
+        6,
+        9,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1905",
+      "address": "제주특별자치도 서귀포시 대포로 113"
+    },
+    {
+      "id": "1823",
+      "name": "에코랜드 테마파크",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        3,
+        6,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1823",
+      "address": "제주특별자치도 제주시 조천읍 번영로 1278-169"
+    },
+    {
+      "id": "1816",
+      "name": "서귀다원",
+      "region": "서귀포시 상효동",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1816",
+      "address": "제주특별자치도 서귀포시 516로 717"
+    },
+    {
+      "id": "1797",
+      "name": "서귀포매일올레시장",
+      "region": "서귀포시 서귀동",
+      "pictograms": [
+        1,
+        11,
+        12
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1797",
+      "address": "제주특별자치도 서귀포시 서귀동 277-1 서귀포시공영주차장"
+    },
+    {
+      "id": "1796",
+      "name": "아르떼뮤지엄 제주",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        1,
+        12,
+        14,
+        25,
+        32
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1796",
+      "address": "제주특별자치도 제주시 애월읍 어림비로 478 아르떼뮤지엄"
+    },
+    {
+      "id": "1649",
+      "name": "산양큰엉곶",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        4,
+        11,
+        12,
+        13,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1649",
+      "address": "제주특별자치도 제주시 한경면 연명로 179 산양큰엉곶"
+    },
+    {
+      "id": "1647",
+      "name": "목장카페 밭디",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        2,
+        12,
+        20,
+        29,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1647",
+      "address": "제주특별자치도 서귀포시 표선면 번영로 2486 목장카페 밭디"
+    },
+    {
+      "id": "1643",
+      "name": "금능석물원",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        3,
+        6,
+        11,
+        13,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1643",
+      "address": "제주특별자치도 제주시 한림읍 한림로 176 금능석물원"
+    },
+    {
+      "id": "1637",
+      "name": "제주동화마을",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        3,
+        12,
+        14,
+        20,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1637",
+      "address": "제주특별자치도 제주시 구좌읍 비자림로 1191 제주동화마을"
+    },
+    {
+      "id": "1631",
+      "name": "제주자연생태공원",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        1,
+        11,
+        13,
+        14,
+        34
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1631",
+      "address": "제주특별자치도 서귀포시 성산읍 금백조로 448"
+    },
+    {
+      "id": "1620",
+      "name": "하리보 해피월드",
+      "region": "제주시 오등동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        16,
+        30
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1620",
+      "address": "제주특별자치도 제주시 아연로 444-1 하리보 해피월드"
+    },
+    {
+      "id": "1617",
+      "name": "노형수퍼마켙",
+      "region": "제주시 해안동",
+      "pictograms": [
+        4,
+        10,
+        11,
+        12,
+        13
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1617",
+      "address": "제주특별자치도 제주시 노형로 89 제주매직월드"
+    },
+    {
+      "id": "1609",
+      "name": "김정문알로에 알로에숲",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        1,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1609",
+      "address": "제주특별자치도 서귀포시 성산읍 성읍정의현로32번길 43 1층"
+    },
+    {
+      "id": "1507",
+      "name": "퍼시픽 마리나 요트투어",
+      "region": "서귀포시 서부권 색달동",
+      "pictograms": [
+        7,
+        10,
+        12,
+        13,
+        16
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1507",
+      "address": "제주특별자치도 서귀포시 중문관광로 154-17 퍼시픽리솜"
+    },
+    {
+      "id": "1506",
+      "name": "메가박스 제주삼화점",
+      "region": "제주시 삼양2동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        24,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1506",
+      "address": "제주특별자치도 제주시 삼봉로 11"
+    },
+    {
+      "id": "1497",
+      "name": "한라디지털아트뮤지엄",
+      "region": "제주시 노형동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        25,
+        34
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1497",
+      "address": "제주특별자치도 제주시 한라대학로 38 제주한라대학교 한라컨벤션 로비층"
+    },
+    {
+      "id": "1476",
+      "name": "화조원",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        13,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1476",
+      "address": "제주특별자치도 제주시 애월읍 애원로 804"
+    },
+    {
+      "id": "1475",
+      "name": "제주 아리랑혼",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1475",
+      "address": "제주특별자치도 서귀포시 표선면 번영로 2564-21 제주 아리랑혼"
+    },
+    {
+      "id": "1474",
+      "name": "제주커피박물관 Baum",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        10,
+        11,
+        12,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1474",
+      "address": "제주특별자치도 서귀포시 성산읍 서성일로1168번길 89-17 제주커피박물관"
+    },
+    {
+      "id": "1465",
+      "name": "낙선동4.3성",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        9,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1465",
+      "address": "제주특별자치도 제주시 조천읍 선흘서5길 7 낙선동 4·3유적지"
+    },
+    {
+      "id": "1462",
+      "name": "신화월드 신화가든",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        2,
+        8,
+        11,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1462",
+      "address": "제주특별자치도 서귀포시 안덕면 신화역사로304번길 89"
+    },
+    {
+      "id": "1460",
+      "name": "4.3유적지섯알오름학살터",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        12,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1460",
+      "address": "제주 서귀포시 대정읍 상모리 1590-3"
+    },
+    {
+      "id": "1459",
+      "name": "알뜨르비행장",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        7,
+        11,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1459",
+      "address": "제주 서귀포시 대정읍 상모리 1629-8"
+    },
+    {
+      "id": "1458",
+      "name": "신흥2리동백마을",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        1,
+        11,
+        20,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1458",
+      "address": "제주특별자치도 서귀포시 남원읍 중산간동로 5830"
+    },
+    {
+      "id": "1457",
+      "name": "신도포구",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1457",
+      "address": "제주특별자치도 서귀포시 대정읍 신도리 3049"
+    },
+    {
+      "id": "1456",
+      "name": "새미은총의동산",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        20,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1456",
+      "address": "제주특별자치도 제주시 한림읍 새미소길 15 삼위일체대성당"
+    },
+    {
+      "id": "1455",
+      "name": "서귀포칠십리시공원",
+      "region": "서귀포시 서홍동",
+      "pictograms": [
+        4,
+        7,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1455",
+      "address": "제주특별자치도 서귀포시 현청로 41-19"
+    },
+    {
+      "id": "1454",
+      "name": "새연교",
+      "region": "서귀포시 서홍동",
+      "pictograms": [
+        7,
+        10,
+        11,
+        12,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1454",
+      "address": "제주특별자치도 서귀포시 남성중로 40"
+    },
+    {
+      "id": "1453",
+      "name": "산굼부리",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        13,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1453",
+      "address": "제주특별자치도 제주시 조천읍 비자림로 768"
+    },
+    {
+      "id": "1452",
+      "name": "사계해변",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        4,
+        10,
+        11,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1452",
+      "address": "제주특별자치도 서귀포시 안덕면 형제해안로 66 서귀포해양경찰서 사계출장소"
+    },
+    {
+      "id": "1451",
+      "name": "저지문화예술인마을",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1451",
+      "address": "제주특별자치도 제주시 한경면 저지14길 35"
+    },
+    {
+      "id": "1433",
+      "name": "와흘메밀마을협의회",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        1,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1433",
+      "address": "제주특별자치도 제주시 조천읍 와흘리 362-16"
+    },
+    {
+      "id": "1407",
+      "name": "비밀의숲",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        4,
+        10,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1407",
+      "address": "제주 제주시 구좌읍 송당리 2173"
+    },
+    {
+      "id": "1406",
+      "name": "제주신흥해수욕장",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        10,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1406",
+      "address": "제주특별자치도 제주시 조천읍 조함해안로 273-35"
+    },
+    {
+      "id": "1405",
+      "name": "왈종미술관",
+      "region": "서귀포시 동홍동",
+      "pictograms": [
+        10,
+        12,
+        13,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1405",
+      "address": "제주특별자치도 서귀포시 칠십리로214번길 30"
+    },
+    {
+      "id": "1404",
+      "name": "본태박물관",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        10,
+        12,
+        25,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1404",
+      "address": "제주특별자치도 서귀포시 안덕면 산록남로762번길 69 본태박물관"
+    },
+    {
+      "id": "1403",
+      "name": "뽀로로앤타요 테마파크 제주",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        7,
+        10,
+        12,
+        30,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1403",
+      "address": "제주특별자치도 서귀포시 안덕면 병악로 269 뽀로로앤타요테마파크제주"
+    },
+    {
+      "id": "1400",
+      "name": "녹차미로공원",
+      "region": "서귀포시 서부권 색달동",
+      "pictograms": [
+        7,
+        10,
+        11,
+        13,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1400",
+      "address": "제주특별자치도 서귀포시 산록남로 1246 키위사랑쉼터 녹차미로공원"
+    },
+    {
+      "id": "1399",
+      "name": "액트몬 제주점",
+      "region": "서귀포시 서부권 중문동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1399",
+      "address": "제주특별자치도 서귀포시 중문관광로 205 코시롱빌딩 지하 1층"
+    },
+    {
+      "id": "1387",
+      "name": "제주 스카이워터쇼",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        32,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1387",
+      "address": "제주특별자치도 제주시 구좌읍 번영로 2172-80 제주아트랜드"
+    },
+    {
+      "id": "1384",
+      "name": "제주문학관",
+      "region": "제주시 도남동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        25,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1384",
+      "address": "제주특별자치도 제주시 연북로 339"
+    },
+    {
+      "id": "1383",
+      "name": "고흐의정원",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        10,
+        11,
+        12,
+        13,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1383",
+      "address": "제주특별자치도 서귀포시 성산읍 삼달신풍로 126-5"
+    },
+    {
+      "id": "1381",
+      "name": "휘닉스 제주 유민 아르누보 뮤지엄",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        10,
+        11,
+        14,
+        25,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1381",
+      "address": "제주특별자치도 서귀포시 성산읍 섭지코지로 107 휘닉스아일랜드콘도 휘닉스 제주 유민 아르누보 뮤지엄"
+    },
+    {
+      "id": "1380",
+      "name": "세리월드",
+      "region": "서귀포시 법환동",
+      "pictograms": [
+        7,
+        10,
+        12,
+        13,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1380",
+      "address": "제주특별자치도 서귀포시 법환상로2번길 97-13 미로월드파크"
+    },
+    {
+      "id": "1379",
+      "name": "유동룡미술관",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        1,
+        11,
+        13,
+        16,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1379",
+      "address": "제주특별자치도 제주시 한림읍 용금로 906-10"
+    },
+    {
+      "id": "1378",
+      "name": "자구리공원",
+      "region": "서귀포시 서귀동",
+      "pictograms": [
+        7,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1378",
+      "address": "제주특별자치도 서귀포시 서귀동 71-1 장원주상복합건물"
+    },
+    {
+      "id": "1377",
+      "name": "렛츠런파크 제주",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        6,
+        12,
+        14,
+        17,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1377",
+      "address": "제주특별자치도 제주시 애월읍 평화로 2144"
+    },
+    {
+      "id": "1376",
+      "name": "갓전시관",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        10,
+        12,
+        14,
+        16,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1376",
+      "address": "제주특별자치도 제주시 조천읍 남조로 1904 갓전시관"
+    },
+    {
+      "id": "1375",
+      "name": "제주스위스마을",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1375",
+      "address": "제주특별자치도 제주시 조천읍 함와로 566-27"
+    },
+    {
+      "id": "1374",
+      "name": "제주드론파크",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        4,
+        10,
+        11,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1374",
+      "address": "제주특별자치도 제주시 조천읍 남조로 2109-36"
+    },
+    {
+      "id": "1363",
+      "name": "아이바가든",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        30,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1363",
+      "address": "제주특별자치도 제주시 애월읍 고성남서길 8"
+    },
+    {
+      "id": "1361",
+      "name": "스토리캐슬 EP.1 더 신데렐라",
+      "region": "서귀포시 서부권 중문동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        16,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1361",
+      "address": "제주특별자치도 서귀포시 중문관광로110번길 32 믿거나말거나 박물관 스토리캐슬 Ep.1 더 신데렐라 (믿거나 말거나 박물관x)"
+    },
+    {
+      "id": "1343",
+      "name": "하고수동해수욕장",
+      "region": "제주시 동부권 우도면",
+      "pictograms": [
+        7,
+        10,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1343",
+      "address": "제주특별자치도 제주시 우도면 연평리 1290-6"
+    },
+    {
+      "id": "1342",
+      "name": "산호해수욕장",
+      "region": "제주시 동부권 우도면",
+      "pictograms": [
+        4,
+        10,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1342",
+      "address": "제주특별자치도 제주시 우도면 우도해안길 256"
+    },
+    {
+      "id": "1341",
+      "name": "우도 봉수대, 득생곶등대",
+      "region": "제주시 동부권 우도면",
+      "pictograms": [
+        4,
+        10
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1341",
+      "address": "제주특별자치도 제주시 우도면 우도해안길 602"
+    },
+    {
+      "id": "1339",
+      "name": "김진사역사공원",
+      "region": "제주시 동부권 우도면",
+      "pictograms": [
+        10,
+        11,
+        12,
+        14,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1339",
+      "address": "제주특별자치도 제주시 우도면 연평리 501"
+    },
+    {
+      "id": "1337",
+      "name": "훈데르트바서파크",
+      "region": "제주시 동부권 우도면",
+      "pictograms": [
+        4,
+        12,
+        14,
+        30,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1337",
+      "address": "제주특별자치도 제주시 우도면 우도해안길 32-12"
+    },
+    {
+      "id": "1336",
+      "name": "우도정원",
+      "region": "제주시 동부권 우도면",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        19
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1336",
+      "address": "제주특별자치도 제주시 우도면 천진길 105"
+    },
+    {
+      "id": "1335",
+      "name": "국립제주박물관",
+      "region": "제주시 건입동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        25,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1335",
+      "address": "제주특별자치도 제주시 일주동로 17"
+    },
+    {
+      "id": "1331",
+      "name": "주정공장수용소 4.3역사관",
+      "region": "제주시 건입동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        16,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1331",
+      "address": "제주특별자치도 제주시 임항로 98"
+    },
+    {
+      "id": "1167",
+      "name": "스누피가든",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        4,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1167",
+      "address": "제주특별자치도 제주시 구좌읍 금백조로 930"
+    },
+    {
+      "id": "1166",
+      "name": "하도리철새도래지",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1166",
+      "address": "제주특별자치도 제주시 구좌읍 하도리 53-55 (하도리 53-2)"
+    },
+    {
+      "id": "1164",
+      "name": "걸매생태공원",
+      "region": "서귀포시 서호동",
+      "pictograms": [
+        4,
+        7,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1164",
+      "address": "제주특별자치도 서귀포시 서홍로 40 전천후게이트볼장 (서홍동 1207)"
+    },
+    {
+      "id": "1155",
+      "name": "1100고지 람사르습지",
+      "region": "서귀포시 서부권 색달동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1155",
+      "address": "제주특별자치도 서귀포시 1100로 1555 1100고지 휴게소"
+    },
+    {
+      "id": "1128",
+      "name": "아침미소목장",
+      "region": "제주시",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1128",
+      "address": "제주특별자치도 제주시 첨단동길 160-20"
+    },
+    {
+      "id": "1085",
+      "name": "제주해양동물박물관",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        12,
+        14,
+        25,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1085",
+      "address": "제주특별자치도 서귀포시 성산읍 서성일로 689-21"
+    },
+    {
+      "id": "1083",
+      "name": "기당미술관",
+      "region": "서귀포시 서홍동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        25,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1083",
+      "address": "제주특별자치도 서귀포시 남성중로153번길 15"
+    },
+    {
+      "id": "1071",
+      "name": "해거름마을공원",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        2,
+        5,
+        8,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1071",
+      "address": "제주특별자치도 제주시 한경면 판포리 1605-1"
+    },
+    {
+      "id": "1070",
+      "name": "한림성당",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        2,
+        5,
+        11,
+        12
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1070",
+      "address": "제주특별자치도 제주시 한림읍 한수풀로 20 천주교한림성당"
+    },
+    {
+      "id": "1069",
+      "name": "포레스트 공룡사파리",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        4,
+        11,
+        12,
+        13,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1069",
+      "address": "제주특별자치도 제주시 조천읍 선교로 474-1"
+    },
+    {
+      "id": "1068",
+      "name": "캔디원",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        4,
+        10,
+        11,
+        13,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1068",
+      "address": "제주특별자치도 제주시 조천읍 선교로 384"
+    },
+    {
+      "id": "1066",
+      "name": "천왕사",
+      "region": "제주시 노형동",
+      "pictograms": [
+        4,
+        7,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1066",
+      "address": "제주특별자치도 제주시 1100로 2528-111"
+    },
+    {
+      "id": "1062",
+      "name": "월대천",
+      "region": "제주시 내도동",
+      "pictograms": [
+        1,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1062",
+      "address": "제주특별자치도 제주시 내도동 896"
+    },
+    {
+      "id": "1060",
+      "name": "신산공원",
+      "region": "제주시 일도2동",
+      "pictograms": [
+        3,
+        6,
+        9,
+        14,
+        15
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1060",
+      "address": "제주특별자치도 제주시 신산로 92-12"
+    },
+    {
+      "id": "1058",
+      "name": "순례자의교회",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        4,
+        10
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1058",
+      "address": "제주특별자치도 제주시 한경면 일주서로 3960-24"
+    },
+    {
+      "id": "1057",
+      "name": "수목원길야시장",
+      "region": "제주시 연동",
+      "pictograms": [
+        8,
+        11,
+        12,
+        20,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1057",
+      "address": "제주특별자치도 제주시 은수길 69 수목원테마파크 내 수목원길 야시장"
+    },
+    {
+      "id": "1056",
+      "name": "서우봉둘레길",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        2,
+        5,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1056",
+      "address": "제주특별자치도 제주시 조천읍 함덕리 204 맞은 편 조천읍 함덕리 250-2 주차장"
+    },
+    {
+      "id": "1053",
+      "name": "이호테우해변말등대",
+      "region": "제주시 이호1동",
+      "pictograms": [
+        7,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1053",
+      "address": "제주특별자치도 제주시 서해안로 68"
+    },
+    {
+      "id": "1052",
+      "name": "레포츠공원",
+      "region": "제주시",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1052",
+      "address": "제주특별자치도 제주시 용담삼동 1089"
+    },
+    {
+      "id": "1051",
+      "name": "제주돌마을공원",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        13,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1051",
+      "address": "제주특별자치도 제주시 한림읍 금능남로 421 제주돌마을공원"
+    },
+    {
+      "id": "1050",
+      "name": "돈키쥬쥬",
+      "region": "제주시 연동",
+      "pictograms": [
+        7,
+        8,
+        11,
+        12,
+        13
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1050",
+      "address": "제주특별자치도 제주시 수목원서길 118"
+    },
+    {
+      "id": "1049",
+      "name": "남생이못",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        4,
+        7,
+        8
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1049",
+      "address": "제주특별자치도 제주시 조천읍 신촌리 2497"
+    },
+    {
+      "id": "1048",
+      "name": "남국사",
+      "region": "제주시 아라1동",
+      "pictograms": [
+        4,
+        10,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1048",
+      "address": "제주특별자치도 제주시 중앙로 738-16"
+    },
+    {
+      "id": "1047",
+      "name": "관음사",
+      "region": "제주시 아라1동",
+      "pictograms": [
+        6,
+        9,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1047",
+      "address": "제주특별자치도 제주시 산록북로 660"
+    },
+    {
+      "id": "1045",
+      "name": "고스트타운",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        13
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1045",
+      "address": "제주특별자치도 제주시 애월읍 부룡수길 35-14"
+    },
+    {
+      "id": "1042",
+      "name": "누에마루거리",
+      "region": "제주시 연동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1042",
+      "address": "제주특별자치도 제주시 연동7길 31"
+    },
+    {
+      "id": "1039",
+      "name": "피규어뮤지엄제주",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        1,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1039",
+      "address": "제주특별자치도 서귀포시 안덕면 한창로 243"
+    },
+    {
+      "id": "1037",
+      "name": "제주불빛정원",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        7,
+        11,
+        14,
+        25,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1037",
+      "address": "제주특별자치도 제주시 애월읍 평화로 2346 제주불빛정원"
+    },
+    {
+      "id": "1032",
+      "name": "옹포천",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        1,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1032",
+      "address": "제주특별자치도 제주시 한림읍 옹포리 9-6 옹포천 어울공원 수영장 주차장"
+    },
+    {
+      "id": "1030",
+      "name": "앵무야앵무야",
+      "region": "제주시 노형동",
+      "pictograms": [
+        4,
+        10,
+        13,
+        20,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1030",
+      "address": "제주특별자치도 제주시 미리내길 92"
+    },
+    {
+      "id": "1029",
+      "name": "알작지",
+      "region": "제주시 내도동",
+      "pictograms": [
+        7,
+        11,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1029",
+      "address": "제주특별자치도 제주시 테우해안로 60 알작지 해변"
+    },
+    {
+      "id": "1027",
+      "name": "신엄포구&산책로",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1027",
+      "address": "제주특별자치도 제주시 애월읍 고내리 82 맞은 편 방파제"
+    },
+    {
+      "id": "1026",
+      "name": "헌마공신김만일기념관",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        1,
+        12,
+        14,
+        35,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1026",
+      "address": "제주특별자치도 서귀포시 남원읍 서성로 919"
+    },
+    {
+      "id": "1025",
+      "name": "신재생에너지홍보관",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1025",
+      "address": "제주특별자치도 제주시 구좌읍 해맞이해안로 712-3"
+    },
+    {
+      "id": "1020",
+      "name": "서프라이즈테마파크",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        6,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1020",
+      "address": "제주특별자치도 제주시 조천읍 남조로 2243"
+    },
+    {
+      "id": "1014",
+      "name": "산천단곰솔",
+      "region": "제주시 아라1동",
+      "pictograms": [
+        1,
+        11,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1014",
+      "address": "제주특별자치도 제주시 516로 3041-24"
+    },
+    {
+      "id": "1011",
+      "name": "귀덕리해녀상",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        2,
+        5,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1011",
+      "address": "제주특별자치도 제주시 한림읍 한림해안로 623-6 귀덕2리 방파제"
+    },
+    {
+      "id": "1010",
+      "name": "빛의 벙커",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        5,
+        11,
+        12,
+        13,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1010",
+      "address": "제주특별자치도 서귀포시 성산읍 고성리 2039-22 제주커피박물관"
+    },
+    {
+      "id": "1004",
+      "name": "폴개협동조합블루베리농장",
+      "region": "서귀포시",
+      "pictograms": [
+        2,
+        5,
+        8,
+        11,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1004",
+      "address": "제주특별자치도 서귀포시 남원읍 원님로 465-24 폴개협동조합 블루베리농장"
+    },
+    {
+      "id": "1000",
+      "name": "사려니숲길(한라산둘레길 7구간)",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        2,
+        5,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=1000",
+      "address": "제주 제주시 조천읍 교래리 산137-1"
+    },
+    {
+      "id": "995",
+      "name": "헬로키티아일랜드",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        4,
+        12,
+        14,
+        16,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=995",
+      "address": "제주특별자치도 서귀포시 안덕면 한창로 340 헬로키티 아일랜드 (상창리 1963-2)"
+    },
+    {
+      "id": "971",
+      "name": "제주올레길17코스휠체어구간",
+      "region": "제주시 도두2동",
+      "pictograms": [
+        4,
+        7,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=971",
+      "address": "제주특별자치도 제주시 서해안로 289 (도두봉 내려오는길 - 용연다리)"
+    },
+    {
+      "id": "970",
+      "name": "제주올레길14코스휠체어구간",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        2,
+        5,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=970",
+      "address": "제주특별자치도 제주시 한림읍 한림로 127 일성비치콘도미니엄 (일성콘도 - 금능으뜸해변 입구)"
+    },
+    {
+      "id": "969",
+      "name": "제주올레길12코스휠체어구간",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        4,
+        7,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=969",
+      "address": "제주특별자치도 제주시 한경면 노을해안로 1032-20 (엉알길 입구 - 자구내포구 입구)"
+    },
+    {
+      "id": "968",
+      "name": "제주올레길10코스휠체어구간",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        1,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=968",
+      "address": "제주특별자치도 서귀포시 안덕면 형제해안로 13-1 사계어촌체험관광센터 (사계포구 - 송악산 주차장)"
+    },
+    {
+      "id": "967",
+      "name": "제주올레길8코스휠체어구간",
+      "region": "서귀포시 서부권 하예동",
+      "pictograms": [
+        4,
+        7,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=967",
+      "address": "제주특별자치도 서귀포시 예래해안로 253 (논짓물 - 대평포구)"
+    },
+    {
+      "id": "966",
+      "name": "제주올레길6코스휠체어구간",
+      "region": "서귀포시 하효동",
+      "pictograms": [
+        3,
+        6,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=966",
+      "address": "제주특별자치도 서귀포시 쇠소깍로 138 (쇠소깍 안내센터 - 보목포구)"
+    },
+    {
+      "id": "965",
+      "name": "제주올레길5코스휠체어구간",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        4,
+        7
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=965",
+      "address": "제주특별자치도 서귀포시 남원읍 위미중앙로300번길 84 (국립수산과학원 - 위미항)"
+    },
+    {
+      "id": "964",
+      "name": "제주올레길4코스휠체어구간",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        2,
+        5
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=964",
+      "address": "제주특별자치도 서귀포시 표선면 민속해안로 537 (해비치호텔&리조트 - 가마리개 쉼터)"
+    },
+    {
+      "id": "963",
+      "name": "제주올레길1코스휠체어구간",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        1
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=963",
+      "address": "제주특별자치도 제주시 구좌읍 종달동길 3 종달웰빙소금밭체험시설 (종달리 옛 소금닽 - 성산갑문 입구)"
+    },
+    {
+      "id": "958",
+      "name": "연화지",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        7,
+        10,
+        11,
+        14,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=958",
+      "address": "제주특별자치도 제주시 애월읍 고하상로 122"
+    },
+    {
+      "id": "954",
+      "name": "함덕해수욕장",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        5,
+        11,
+        12,
+        14,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=954",
+      "address": "제주특별자치도 제주시 조천읍 조함해안로 519-10"
+    },
+    {
+      "id": "953",
+      "name": "광치기해변",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        7,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=953",
+      "address": "제주특별자치도 서귀포시 성산읍 섭지코지로 63"
+    },
+    {
+      "id": "948",
+      "name": "녹산로",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        2,
+        5,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=948",
+      "address": "제주특별자치도 서귀포시 표선면 녹산로 381-15 가시리조랑말체험공원 (제주시 조천읍 교래리 15-3 ~ 가시리 사거리)"
+    },
+    {
+      "id": "947",
+      "name": "영등할망 밭담길",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        1,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=947",
+      "address": "제주특별자치도 제주시 한림읍 귀덕로 97-2"
+    },
+    {
+      "id": "946",
+      "name": "한림민속오일시장",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=946",
+      "address": "제주특별자치도 제주시 한림읍 한수풀로4길 10 한림민속오일장"
+    },
+    {
+      "id": "939",
+      "name": "방주교회",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        5,
+        8,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=939",
+      "address": "제주특별자치도 서귀포시 안덕면 산록남로762번길 113"
+    },
+    {
+      "id": "930",
+      "name": "보롬왓",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        3,
+        6,
+        11,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=930",
+      "address": "제주특별자치도 서귀포시 표선면 번영로 2350-104"
+    },
+    {
+      "id": "929",
+      "name": "제주피싱테마파크",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        5,
+        9,
+        11,
+        13,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=929",
+      "address": "제주특별자치도 제주시 조천읍 조함해안로 247-2"
+    },
+    {
+      "id": "928",
+      "name": "낙천리 아홉굿의자마을",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        3,
+        6,
+        11,
+        14,
+        16
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=928",
+      "address": "제주특별자치도 제주시 한경면 낙수로 97"
+    },
+    {
+      "id": "927",
+      "name": "월령선인장군락지",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=927",
+      "address": "제주특별자치도 제주시 한림읍 월령안길 24 (해당 주소지 부근에 주차장이 있음)"
+    },
+    {
+      "id": "926",
+      "name": "싱계물공원",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        7,
+        12,
+        14,
+        20,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=926",
+      "address": "제주 제주시 한경면 신창리 1322-1"
+    },
+    {
+      "id": "924",
+      "name": "성이시돌목장",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=924",
+      "address": "제주특별자치도 제주시 한림읍 산록남로 53 성이시돌피정의집"
+    },
+    {
+      "id": "923",
+      "name": "더럭분교",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        4,
+        10,
+        11,
+        12
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=923",
+      "address": "제주특별자치도 제주시 애월읍 하가로 195 더럭초등학교"
+    },
+    {
+      "id": "770",
+      "name": "제주항공우주박물관",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        1,
+        12,
+        14,
+        33,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=770",
+      "address": "제주특별자치도 서귀포시 안덕면 녹차분재로 218 제주항공우주박물관"
+    },
+    {
+      "id": "769",
+      "name": "점보빌리지",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        5,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=769",
+      "address": "제주특별자치도 서귀포시 안덕면 평화로319번길 31-11"
+    },
+    {
+      "id": "768",
+      "name": "별빛누리공원",
+      "region": "제주시 오등동",
+      "pictograms": [
+        10,
+        12,
+        14,
+        25,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=768",
+      "address": "제주특별자치도 제주시 선돌목동길 60 별빛누리공원"
+    },
+    {
+      "id": "767",
+      "name": "제주세계자연유산센터",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        4,
+        12,
+        14,
+        25,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=767",
+      "address": "제주특별자치도 제주시 조천읍 선교로 569-36 제주세계자연유산센터"
+    },
+    {
+      "id": "766",
+      "name": "제주삼양동유적",
+      "region": "제주시 삼양1동",
+      "pictograms": [
+        1,
+        6,
+        12,
+        25,
+        37
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=766",
+      "address": "제주특별자치도 제주시 선사로2길 13 제주 삼양동 유적"
+    },
+    {
+      "id": "764",
+      "name": "아쿠아플라넷 제주",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        24,
+        32
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=764",
+      "address": "제주특별자치도 서귀포시 성산읍 섭지코지로 95 Aqua Planet Jeju"
+    },
+    {
+      "id": "761",
+      "name": "제주국제평화센터",
+      "region": "서귀포시 서부권 중문동",
+      "pictograms": [
+        6,
+        12,
+        14,
+        32,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=761",
+      "address": "제주특별자치도 서귀포시 중문관광로 227-24 제주국제평화센터"
+    },
+    {
+      "id": "760",
+      "name": "제주추사관",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        5,
+        12,
+        14,
+        33,
+        36
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=760",
+      "address": "제주특별자치도 서귀포시 대정읍 추사로 44"
+    },
+    {
+      "id": "759",
+      "name": "아라리오뮤지엄 탑동시네마",
+      "region": "제주시 삼도2동",
+      "pictograms": [
+        1,
+        13,
+        14,
+        16,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=759",
+      "address": "제주특별자치도 제주시 탑동로 14"
+    },
+    {
+      "id": "758",
+      "name": "서귀포감귤박물관",
+      "region": "서귀포시 신효동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        32,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=758",
+      "address": "제주특별자치도 서귀포시 효돈순환로 441"
+    },
+    {
+      "id": "757",
+      "name": "건강과성박물관",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        5,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=757",
+      "address": "제주특별자치도 서귀포시 안덕면 일주서로 1611 건강과성박물관"
+    },
+    {
+      "id": "756",
+      "name": "제주도립미술관",
+      "region": "제주시 연동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        25,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=756",
+      "address": "제주특별자치도 제주시 1100로 2894-78 제주도립미술관"
+    },
+    {
+      "id": "755",
+      "name": "제주현대미술관",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        10,
+        12,
+        14,
+        32,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=755",
+      "address": "제주특별자치도 제주시 한경면 저지14길 35 제주현대미술관"
+    },
+    {
+      "id": "753",
+      "name": "천지연폭포",
+      "region": "서귀포시 서홍동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        32,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=753",
+      "address": "제주특별자치도 서귀포시 남성중로 2-15 천지연매표소"
+    },
+    {
+      "id": "751",
+      "name": "소암기념관",
+      "region": "서귀포시 서귀동",
+      "pictograms": [
+        2,
+        12,
+        14,
+        16,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=751",
+      "address": "제주특별자치도 서귀포시 소암로 15 소암현중화기념관"
+    },
+    {
+      "id": "750",
+      "name": "그리스신화박물관",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        7,
+        12,
+        13,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=750",
+      "address": "제주특별자치도 제주시 한림읍 광산로 942"
+    },
+    {
+      "id": "749",
+      "name": "블루마운틴4255",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        3,
+        6,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=749",
+      "address": "제주특별자치도 서귀포시 성산읍 중산간동로 4255"
+    },
+    {
+      "id": "748",
+      "name": "세계자동차&피아노 박물관",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        1,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=748",
+      "address": "제주특별자치도 서귀포시 안덕면 중산간서로 1610 세계자동차 제주박물관"
+    },
+    {
+      "id": "744",
+      "name": "박물관은살아있다",
+      "region": "서귀포시 서부권 색달동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=744",
+      "address": "제주특별자치도 서귀포시 중문관광로 42"
+    },
+    {
+      "id": "743",
+      "name": "더마파크",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        2,
+        5,
+        12,
+        14,
+        24
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=743",
+      "address": "제주특별자치도 제주시 한림읍 월림7길 155 더마파크"
+    },
+    {
+      "id": "741",
+      "name": "곶자왈생태체험관",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        3,
+        6,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=741",
+      "address": "제주특별자치도 제주시 조천읍 남조로 2023 교래자연휴양림 내 곶자왈생태체험관"
+    },
+    {
+      "id": "739",
+      "name": "대포주상절리",
+      "region": "서귀포시 서부권 중문동",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=739",
+      "address": "제주특별자치도 서귀포시 이어도로 36-24"
+    },
+    {
+      "id": "738",
+      "name": "제주교육박물관",
+      "region": "제주시 이도2동",
+      "pictograms": [
+        5,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=738",
+      "address": "제주특별자치도 제주시 오복4길 25 제주교육박물관 (이도이동 539-14)"
+    },
+    {
+      "id": "736",
+      "name": "제주민속오일시장",
+      "region": "제주시 도두1동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=736",
+      "address": "제주특별자치도 제주시 오일장서길 26"
+    },
+    {
+      "id": "734",
+      "name": "이호테우해수욕장",
+      "region": "제주시 이호2동",
+      "pictograms": [
+        4,
+        7,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=734",
+      "address": "제주특별자치도 제주시 이호일동 1600-2 (이호일동 1665-11 - 이호해수욕장 주차장)"
+    },
+    {
+      "id": "733",
+      "name": "도두무지개해안도로",
+      "region": "제주시 도두1동",
+      "pictograms": [
+        1
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=733",
+      "address": "제주특별자치도 제주시 서해안로 232 (도두일동 1734-2)"
+    },
+    {
+      "id": "732",
+      "name": "어영공원",
+      "region": "제주시 용담3동",
+      "pictograms": [
+        6,
+        9,
+        12,
+        14,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=732",
+      "address": "제주특별자치도 제주시 용담삼동 2396-2 (용담삼동 2396-16)"
+    },
+    {
+      "id": "731",
+      "name": "어영해안도로",
+      "region": "제주시 용담3동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=731",
+      "address": "제주특별자치도 제주시 서해안로 516 (용담삼동 2292)"
+    },
+    {
+      "id": "730",
+      "name": "용두암해안도로",
+      "region": "제주시 용담3동",
+      "pictograms": [
+        2,
+        5
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=730",
+      "address": "제주특별자치도 제주시 서해안로 671 제주시 서해안로 일대 (용담삼동 503-5)"
+    },
+    {
+      "id": "729",
+      "name": "용연구름다리",
+      "region": "제주시 용담2동",
+      "pictograms": [
+        4,
+        7,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=729",
+      "address": "제주특별자치도 제주시 흥운길 73 (용담이동 454-1)"
+    },
+    {
+      "id": "728",
+      "name": "탑동광장테마거리",
+      "region": "제주시 건입동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14,
+        15
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=728",
+      "address": "제주특별자치도 제주시 중앙로 1 탑동광장 (건입동 1444)"
+    },
+    {
+      "id": "727",
+      "name": "탑동해변공연장",
+      "region": "제주시 삼도2동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        15,
+        24
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=727",
+      "address": "제주특별자치도 제주시 중앙로 2 탑동해변공연장 (삼도이동 1262)"
+    },
+    {
+      "id": "726",
+      "name": "칠성로",
+      "region": "제주시 일도1동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=726",
+      "address": "제주특별자치도 제주시 일도일동 1461-4 관덕로 11길(일대)"
+    },
+    {
+      "id": "725",
+      "name": "산지천",
+      "region": "제주시 일도1동",
+      "pictograms": [
+        4,
+        7,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=725",
+      "address": "제주특별자치도 제주시 일도일동 1466-2 동문시장 입구 맞은편 (관덕로 59)"
+    },
+    {
+      "id": "724",
+      "name": "동문재래시장",
+      "region": "제주시 이도1동",
+      "pictograms": [
+        4,
+        7,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=724",
+      "address": "제주특별자치도 제주시 관덕로14길 20 (이도1동 1434)"
+    },
+    {
+      "id": "723",
+      "name": "제주항국제여객터미널공원",
+      "region": "제주시 건입동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=723",
+      "address": "제주특별자치도 제주시 임항로 191 크루즈 여객 터미널 (건입동 1453)"
+    },
+    {
+      "id": "722",
+      "name": "사라봉공원",
+      "region": "제주시 건입동",
+      "pictograms": [
+        4,
+        7,
+        10,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=722",
+      "address": "제주특별자치도 제주시 사라봉길 75"
+    },
+    {
+      "id": "721",
+      "name": "산지등대",
+      "region": "제주시 건입동",
+      "pictograms": [
+        4,
+        10,
+        11,
+        20
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=721",
+      "address": "제주특별자치도 제주시 사라봉동길 108-1 산지항로표지관리소 (건입동 340-2)"
+    },
+    {
+      "id": "720",
+      "name": "전농로 벚꽃거리",
+      "region": "제주시 이도1동",
+      "pictograms": [
+        2,
+        5,
+        8
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=720",
+      "address": "제주특별자치도 제주시 전농로 118 교보빌딩 제주 칼호텔 사거리 (이도일동 1689-1)"
+    },
+    {
+      "id": "719",
+      "name": "제주종합경기장(벚꽃거리)",
+      "region": "제주시 오라1동",
+      "pictograms": [
+        1,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=719",
+      "address": "제주특별자치도 제주시 서광로2길 24 제주시종합경기장 (오라일동 1137)"
+    },
+    {
+      "id": "495",
+      "name": "잃어버린마을 무등이왓",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        2,
+        5
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=495",
+      "address": "제주특별자치도 서귀포시 안덕면 신화역사로586번길 21-7 (동광리 233-1)"
+    },
+    {
+      "id": "493",
+      "name": "섯알오름학살터",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=493",
+      "address": "서귀포시 대정읍 상모리 1618"
+    },
+    {
+      "id": "492",
+      "name": "백조일손지묘",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        1,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=492",
+      "address": "서귀포 대정읍 상모리 586-1"
+    },
+    {
+      "id": "491",
+      "name": "한모살학살터",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        4,
+        10,
+        11
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=491",
+      "address": "표선 해수욕장 일대"
+    },
+    {
+      "id": "490",
+      "name": "송령이골",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        4,
+        7
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=490",
+      "address": "서귀포시 남원읍 의귀리 1974-3번지"
+    },
+    {
+      "id": "489",
+      "name": "현의합장묘",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        4,
+        10
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=489",
+      "address": "서귀포시 남원읍 수망리 893번지"
+    },
+    {
+      "id": "488",
+      "name": "성산 4.3희생자위령비",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=488",
+      "address": "성산 터진목 해안"
+    },
+    {
+      "id": "487",
+      "name": "진아영할머니삶터",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        4,
+        10,
+        11,
+        12,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=487",
+      "address": "제주특별자치도 제주시 한림읍 월령1길 22 (월령리 380)"
+    },
+    {
+      "id": "486",
+      "name": "조일구락부옛터",
+      "region": "제주시 삼도2동",
+      "pictograms": [
+        1
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=486",
+      "address": "제주시 관덕로 2길"
+    },
+    {
+      "id": "485",
+      "name": "잃어버린마을 다랑쉬",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        4,
+        7
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=485",
+      "address": "제주시 구좌읍 세화리 산6"
+    },
+    {
+      "id": "483",
+      "name": "북촌초등학교",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        1,
+        11,
+        12
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=483",
+      "address": "제주특별자치도 제주시 조천읍 일주동로 1481 북촌초등학교 (북촌리 1212)"
+    },
+    {
+      "id": "482",
+      "name": "너븐숭이기념관",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=482",
+      "address": "제주특별자치도 제주시 조천읍 북촌3길 3 북촌너븐숭이4.3기념관 (북촌리 1599)"
+    },
+    {
+      "id": "480",
+      "name": "조천중학원옛터",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=480",
+      "address": "제주시 조천읍 신북로 264"
+    },
+    {
+      "id": "477",
+      "name": "4.3 해원방사탑",
+      "region": "제주시 일도2동",
+      "pictograms": [
+        1,
+        11,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=477",
+      "address": "제주시 일도2동 837-20번지(일대, 신산공원 내)"
+    },
+    {
+      "id": "116",
+      "name": "제주한란전시관",
+      "region": "서귀포시 상효동",
+      "pictograms": [
+        8,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=116",
+      "address": "제주특별자치도 서귀포시 돈내코로67번길 19 제주한란방문자센터 (상효동 1421-15)"
+    },
+    {
+      "id": "113",
+      "name": "혼인지",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        7,
+        11,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=113",
+      "address": "서귀포시 성산읍 혼인지로 39-22 (온평리 1693)"
+    },
+    {
+      "id": "112",
+      "name": "이중섭미술관",
+      "region": "서귀포시 서귀동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        33,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=112",
+      "address": "제주특별자치도 서귀포시 이중섭로 27-3 이중섭전시관 (서귀동 532-1)"
+    },
+    {
+      "id": "111",
+      "name": "초콜릿박물관",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        4,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=111",
+      "address": "제주특별자치도 서귀포시 대정읍 일주서로3000번길 144 초콜릿박물관 (일과리 551-18)"
+    },
+    {
+      "id": "109",
+      "name": "서귀포자연휴양림",
+      "region": "서귀포시 하원동",
+      "pictograms": [
+        4,
+        7,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=109",
+      "address": "제주특별자치도 서귀포시 영실로 226 (하원동 산 1-1)"
+    },
+    {
+      "id": "106",
+      "name": "수월봉지질트레일",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=106",
+      "address": "제주특별자치도 제주시 한경면 노을해안로 1013-70 고산기상대 (고산리 3763)"
+    },
+    {
+      "id": "105",
+      "name": "서귀포 치유의숲",
+      "region": "서귀포시 호근동",
+      "pictograms": [
+        5,
+        12,
+        14,
+        25,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=105",
+      "address": "제주특별자치도 서귀포시 산록남로 2271 (호근동 산 4)"
+    },
+    {
+      "id": "103",
+      "name": "큰엉해안경승지",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=103",
+      "address": "제주특별자치도 서귀포시 남원읍 태위로 522-17 큰엄전망대 (남원리 2379-3)"
+    },
+    {
+      "id": "99",
+      "name": "비자림",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=99",
+      "address": "제주특별자치도 제주시 구좌읍 비자숲길 55 (평대리 3161-1)"
+    },
+    {
+      "id": "98",
+      "name": "송악산",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        11,
+        12
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=98",
+      "address": "제주특별자치도 서귀포시 대정읍 송악관광로 421-1 (상모리 131)"
+    },
+    {
+      "id": "97",
+      "name": "김영갑갤러리",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        7,
+        8,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=97",
+      "address": "제주특별자치도 서귀포시 성산읍 삼달로 137 김영갑갤러리 두모악 (삼달리 437-5)"
+    },
+    {
+      "id": "95",
+      "name": "일출랜드",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        12,
+        14,
+        25,
+        30
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=95",
+      "address": "제주특별자치도 서귀포시 성산읍 중산간동로 4150-30 일출랜드 (삼달리 1010)"
+    },
+    {
+      "id": "94",
+      "name": "제주전시컨벤션센터",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=94",
+      "address": "제주특별자치도 서귀포시 성산읍 난산로 293 (난산리 2515)"
+    },
+    {
+      "id": "93",
+      "name": "베니스랜드",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=93",
+      "address": "제주특별자치도 서귀포시 성산읍 서성일로 474 (난산리 2570)"
+    },
+    {
+      "id": "92",
+      "name": "섭지코지",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        12,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=92",
+      "address": "제주특별자치도 서귀포시 성산읍 섭지코지로 107 고성리 124-1, 섭지코지주차장매표소"
+    },
+    {
+      "id": "91",
+      "name": "성산일출봉",
+      "region": "서귀포시 동부권 성산읍",
+      "pictograms": [
+        4,
+        7,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=91",
+      "address": "제주특별자치도 서귀포시 성산읍 일출로 284-12 매표소 (성산리 114)"
+    },
+    {
+      "id": "89",
+      "name": "오설록 티 뮤지엄",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=89",
+      "address": "제주특별자치도 서귀포시 안덕면 신화역사로 15 오설록 (서광리 1235-1)"
+    },
+    {
+      "id": "88",
+      "name": "노리매",
+      "region": "서귀포시 서부권 대정읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        32
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=88",
+      "address": "제주특별자치도 서귀포시 대정읍 중산간서로 2260-15 (구억리 654-1)"
+    },
+    {
+      "id": "86",
+      "name": "제주도립김창열미술관",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        1,
+        12,
+        14,
+        33,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=86",
+      "address": "제주특별자치도 제주시 한림읍 용금로 883-5 김창열미술관"
+    },
+    {
+      "id": "85",
+      "name": "한림공원",
+      "region": "제주시 서부권 한림읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=85",
+      "address": "제주특별자치도 제주시 한림읍 한림로 300 한림공원 (협재리 2487)"
+    },
+    {
+      "id": "82",
+      "name": "방림원",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        7,
+        9,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=82",
+      "address": "제주특별자치도 제주시 한경면 용금로 864 방림원 (저지리 2120-91)"
+    },
+    {
+      "id": "78",
+      "name": "제주4.3평화공원",
+      "region": "제주시 봉개동",
+      "pictograms": [
+        2,
+        12,
+        14,
+        33,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=78",
+      "address": "제주특별자치도 제주시 명림로 430 제주4.3평화기념관 (봉개동 237-2)"
+    },
+    {
+      "id": "77",
+      "name": "절물자연휴양림",
+      "region": "제주시 봉개동",
+      "pictograms": [
+        4,
+        7,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=77",
+      "address": "제주특별자치도 제주시 명림로 584 절물휴양림 (봉개동 산 78-1)"
+    },
+    {
+      "id": "76",
+      "name": "한라생태숲",
+      "region": "제주시 용강동",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=76",
+      "address": "제주특별자치도 제주시 516로 2596 한라생태숲관리연구소 (용강동 산 14-1)"
+    },
+    {
+      "id": "75",
+      "name": "항파두리항몽유적지",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=75",
+      "address": "제주특별자치도 제주시 애월읍 항파두리로 50 항목유적지 (상귀리 1012)"
+    },
+    {
+      "id": "73",
+      "name": "제주민속촌",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=73",
+      "address": "제주특별자치도 서귀포시 표선면 민속해안로 631-34 제주민속촌박물관 (표선리 40-1)"
+    },
+    {
+      "id": "72",
+      "name": "생각하는 정원",
+      "region": "제주시 서부권 한경면",
+      "pictograms": [
+        7,
+        8,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=72",
+      "address": "제주특별자치도 제주시 한경면 녹차분재로 675 생각하는정원 (저지리 1534)"
+    },
+    {
+      "id": "71",
+      "name": "넥슨뮤지엄(넥슨컴퓨터박물관)",
+      "region": "제주시 노형동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        16,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=71",
+      "address": "제주특별자치도 제주시 1100로 3198-8 NXC센터 (노형동 86)"
+    },
+    {
+      "id": "69",
+      "name": "세계술박물관",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        1,
+        12,
+        13,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=69",
+      "address": "제주특별자치도 서귀포시 표선면 한마음초등로 431 세계술박물관 (하천리 1814-1)"
+    },
+    {
+      "id": "68",
+      "name": "성읍민속마을",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        10,
+        14,
+        25,
+        33,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=68",
+      "address": "제주특별자치도 서귀포시 표선면 성읍리 3292 제주 서귀포시 표선면 성읍리 3294"
+    },
+    {
+      "id": "67",
+      "name": "테디베어하우스 테지움",
+      "region": "제주시 서부권 애월읍",
+      "pictograms": [
+        5,
+        12,
+        14,
+        16,
+        30
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=67",
+      "address": "제주특별자치도 제주시 애월읍 평화로 2157-1 (소길리 155-114)"
+    },
+    {
+      "id": "66",
+      "name": "허브동산",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        4,
+        7,
+        10,
+        12,
+        13
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=66",
+      "address": "제주특별자치도 서귀포시 표선면 돈오름로 170 (표선리 2608)"
+    },
+    {
+      "id": "64",
+      "name": "휴애리자연생활공원",
+      "region": "서귀포시 동부권 남원읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=64",
+      "address": "제주특별자치도 서귀포시 남원읍 신례동로 256 휴애리 (신례리 2081)"
+    },
+    {
+      "id": "60",
+      "name": "김녕미로공원",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=60",
+      "address": "제주특별자치도 제주시 구좌읍 만장굴길 122 (김녕리 산 16)"
+    },
+    {
+      "id": "59",
+      "name": "붉은오름자연휴양림",
+      "region": "서귀포시 동부권 표선면",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=59",
+      "address": "제주특별자치도 서귀포시 표선면 남조로 1487-73 붉은오름 자연휴양림 숲속의 집 (가시리 산 158)"
+    },
+    {
+      "id": "57",
+      "name": "신비의도로",
+      "region": "제주시 노형동",
+      "pictograms": [
+        2,
+        5,
+        12,
+        14,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=57",
+      "address": "제주특별자치도 제주시 1100로 2894-63 노형동 291-17 신비의도로"
+    },
+    {
+      "id": "56",
+      "name": "제주민속자연사박물관",
+      "region": "제주시 일도2동",
+      "pictograms": [
+        6,
+        12,
+        14,
+        24,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=56",
+      "address": "제주특별자치도 제주시 삼성로 40 민속자연사박물관 (일도이동 996-1)"
+    },
+    {
+      "id": "55",
+      "name": "제주교래자연휴양림",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        6,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=55",
+      "address": "제주특별자치도 제주시 조천읍 남조로 2023 교래자연휴양림 (교래리 산 119)"
+    },
+    {
+      "id": "53",
+      "name": "한라아트홀",
+      "region": "제주시 노형동",
+      "pictograms": [
+        1,
+        12,
+        14,
+        16,
+        17
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=53",
+      "address": "제주특별자치도 제주시 한라대학로 38 제주한라대학교 (노형동 1534)"
+    },
+    {
+      "id": "52",
+      "name": "수목원테마파크",
+      "region": "제주시 연동",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=52",
+      "address": "제주특별자치도 제주시 은수길 69 (연동 1320)"
+    },
+    {
+      "id": "49",
+      "name": "상효원수목원",
+      "region": "서귀포시 상효동",
+      "pictograms": [
+        5,
+        8,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=49",
+      "address": "제주특별자치도 서귀포시 산록남로 2847-37 (상효동 산 25)"
+    },
+    {
+      "id": "47",
+      "name": "한국야구명예전당",
+      "region": "서귀포시 강정동",
+      "pictograms": [
+        2,
+        5,
+        12,
+        13,
+        14
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=47",
+      "address": "제주특별자치도 서귀포시 중산간서로 97-1 서귀포청소년수련관 (강정동 1481-3)"
+    },
+    {
+      "id": "45",
+      "name": "제주세계성문화박물관",
+      "region": "서귀포시 법환동",
+      "pictograms": [
+        2,
+        5,
+        11,
+        12,
+        16
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=45",
+      "address": "제주특별자치도 서귀포시 월드컵로 33 제주월드컵경기장 (법환동 914)"
+    },
+    {
+      "id": "44",
+      "name": "아프리카박물관",
+      "region": "서귀포시 대포동",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=44",
+      "address": "제주특별자치도 서귀포시 이어도로 49 아프리카박물관 (대포동 1833)"
+    },
+    {
+      "id": "43",
+      "name": "테디베어뮤지엄",
+      "region": "서귀포시 서부권 색달동",
+      "pictograms": [
+        6,
+        10,
+        12,
+        14,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=43",
+      "address": "제주특별자치도 서귀포시 중문관광로110번길 31 테디베어박물관 (색달동 2889)"
+    },
+    {
+      "id": "41",
+      "name": "여미지식물원",
+      "region": "서귀포시 서부권 색달동",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        32
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=41",
+      "address": "제주특별자치도 서귀포시 중문관광로 93 여미지식물원 (색달동 2484-1)"
+    },
+    {
+      "id": "38",
+      "name": "제주센트럴파크",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        1,
+        12,
+        13,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=38",
+      "address": "제주특별자치도 제주시 조천읍 비자림로 606 (교래리 산 56-4)"
+    },
+    {
+      "id": "37",
+      "name": "선녀와나무꾼",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        3,
+        6,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=37",
+      "address": "제주특별자치도 제주시 조천읍 선교로 267 선녀와나무꾼테마공원 (선흘리 1997)"
+    },
+    {
+      "id": "36",
+      "name": "메이즈랜드",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        32,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=36",
+      "address": "제주특별자치도 제주시 구좌읍 비자림로 2134-47 매이즈랜드 (평대리 3322)"
+    },
+    {
+      "id": "35",
+      "name": "제주해녀박물관",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        7,
+        8,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=35",
+      "address": "제주특별자치도 제주시 구좌읍 해녀박물관길 26 해녀박물관 (하도리 3204-1)"
+    },
+    {
+      "id": "33",
+      "name": "노루생태관찰원",
+      "region": "제주시 봉개동",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=33",
+      "address": "제주특별자치도 제주시 명림로 520 (봉개동 산 51-2)"
+    },
+    {
+      "id": "32",
+      "name": "한라수목원",
+      "region": "제주시 연동",
+      "pictograms": [
+        7,
+        12,
+        14,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=32",
+      "address": "제주특별자치도 제주시 수목원길 72 한라수목원 (연동 1000)"
+    },
+    {
+      "id": "29",
+      "name": "제주항일기념관",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        7,
+        8,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=29",
+      "address": "제주특별자치도 제주시 조천읍 신북로 303 제주항일기념관 (조천리 1156)"
+    },
+    {
+      "id": "28",
+      "name": "북앤토이 뮤지엄",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        5,
+        10,
+        12,
+        13,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=28",
+      "address": "제주특별자치도 서귀포시 안덕면 동광로 267-7 토이파크 (동광리 383)"
+    },
+    {
+      "id": "27",
+      "name": "카멜리아힐",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        7,
+        10,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=27",
+      "address": "제주특별자치도 서귀포시 안덕면 병악로 166 카멜리아힐동백언덕 (상창리 271)"
+    },
+    {
+      "id": "23",
+      "name": "제주유리박물관",
+      "region": "서귀포시 서부권 상예동",
+      "pictograms": [
+        6,
+        9,
+        12,
+        25,
+        26
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=23",
+      "address": "제주특별자치도 서귀포시 중산간서로 1403 (상예동 4303)"
+    },
+    {
+      "id": "20",
+      "name": "제주목관아",
+      "region": "제주시 삼도2동",
+      "pictograms": [
+        5,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=20",
+      "address": "제주특별자치도 제주시 관덕로 25 제주목관아 (삼도이동 1045-1)"
+    },
+    {
+      "id": "19",
+      "name": "제주레일바이크",
+      "region": "제주시 동부권 구좌읍",
+      "pictograms": [
+        4,
+        7,
+        10,
+        12,
+        13
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=19",
+      "address": "제주특별자치도 제주시 구좌읍 용눈이오름로 641 (종달리 4639)"
+    },
+    {
+      "id": "18",
+      "name": "제주돌문화공원",
+      "region": "제주시 동부권 조천읍",
+      "pictograms": [
+        7,
+        12,
+        14,
+        33,
+        35
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=18",
+      "address": "제주특별자치도 제주시 조천읍 남조로 2023 제주돌문화공원"
+    },
+    {
+      "id": "16",
+      "name": "정방폭포",
+      "region": "서귀포시 동홍동",
+      "pictograms": [
+        4,
+        10,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=16",
+      "address": "제주특별자치도 서귀포시 칠십리로214번길 37 정방폭포매표소 (동홍동 278)"
+    },
+    {
+      "id": "14",
+      "name": "용두암",
+      "region": "제주시 용담2동",
+      "pictograms": [
+        5,
+        10,
+        12,
+        14,
+        31
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=14",
+      "address": "제주특별자치도 제주시 용두암길 15 제주시종합관광안내소 (용담2동 483)"
+    },
+    {
+      "id": "12",
+      "name": "소인국테마파크",
+      "region": "서귀포시 서부권 안덕면",
+      "pictograms": [
+        6,
+        9,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=12",
+      "address": "제주특별자치도 서귀포시 안덕면 중산간서로 1878 (서광리 725)"
+    },
+    {
+      "id": "9",
+      "name": "서복전시관",
+      "region": "서귀포시 서귀동",
+      "pictograms": [
+        3,
+        6,
+        12,
+        14,
+        33
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=9",
+      "address": "제주특별자치도 서귀포시 칠십리로 156-8 서복전시관"
+    },
+    {
+      "id": "8",
+      "name": "삼성혈",
+      "region": "제주시 이도1동",
+      "pictograms": [
+        4,
+        7,
+        12,
+        14,
+        25
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=8",
+      "address": "제주특별자치도 제주시 삼성로 22 삼성혈 (이도이동 1313)"
+    },
+    {
+      "id": "6",
+      "name": "대유랜드(대유산업)",
+      "region": "서귀포시 서부권 상예동",
+      "pictograms": [
+        4,
+        7,
+        10,
+        12,
+        13
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=6",
+      "address": "제주특별자치도 서귀포시 상예로 381 (상예동 144)"
+    },
+    {
+      "id": "5",
+      "name": "김만덕기념관",
+      "region": "제주시 건입동",
+      "pictograms": [
+        2,
+        5,
+        12,
+        14,
+        30
+      ],
+      "url": "https://easyjeju.net/pages.php?p=tourist&folders=tour&no=5",
+      "address": "제주특별자치도 제주시 산지로 7 김만덕 기념관 (건입동 1164)"
+    }
+  ]
+}

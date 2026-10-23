@@ -1,3 +1,4 @@
+import PlaceAccessIcons from '../components/PlaceAccessIcons';
 import AllinMascot from '../components/AllinMascot';
 import PlaceText, {PlaceTags} from '../components/PlaceText';
 import Localize from '../components/Localize';
@@ -214,6 +215,7 @@ export default function MyTrip() {
                   <h3 className="destination-title font-bold text-[16px]"><PlaceText place={c} field="name" /></h3>
                   <p className="place-description text-sm text-sub"><PlaceText place={c} field="desc" /></p>
                   <AccessSummary place={c} access={profile?.access} />
+<PlaceAccessIcons place={c} />
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     <PlaceTags place={c} limit={3} />
                   </div>
